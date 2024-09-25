@@ -21,3 +21,5 @@ dependencyResolutionManagement {
 
 rootProject.name = "Laxmi emi"
 include(":app")
+include(":rexandroidsecureclient")
+include(":rexcommon")
