@@ -16,8 +16,13 @@ import androidx.compose.ui.unit.sp
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Icon
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberImagePainter // For loading images
@@ -26,39 +31,44 @@ import com.trex.laxmiemi.R
 
 @Composable
 fun Banner(
-    backgroundImage: Painter,
-    verticalText: String,
-    rightImage: Painter
+    backgroundImage: Painter, verticalText: String, rightImage: Painter
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    ) {
-        // Background image
-        Image(
-            painter = backgroundImage,
-            contentDescription = null,
-            modifier = Modifier.fillMaxWidth()
-        )
+    Column(modifier = Modifier.background(colorResource(id = R.color.grey_100))) {
+        Box(
 
-        // Content overlay
-        Row(
-            modifier = Modifier
-                .fillMaxSize(),
-                verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween // Space between text and right image
+            modifier = Modifier.fillMaxWidth()
+
         ) {
+            // Background image
             Image(
-                painter = rightImage,
+                painter = backgroundImage,
                 contentDescription = null,
-                modifier = Modifier
-                    .size(80.dp) // Adjust size as needed
-                    .align(Alignment.CenterVertically) // Center vertically
+                modifier = Modifier.fillMaxWidth(),
+                contentScale = ContentScale.FillWidth
             )
 
 
+        }
 
+        Row(
+            Modifier.padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            dealerCodeHolder(dealerCode = "112233")
+        }
+    }
+}
+
+@Composable
+fun UserIcon(name: String) {
+    Box(Modifier.padding(start = 10.dp, end = 10.dp)) {
+        Box(Modifier.background(Color.White, shape = RoundedCornerShape(10.dp))) {
+            Icon(
+                modifier = Modifier.padding(2.dp),
+                imageVector = Icons.Default.AccountCircle,
+                contentDescription = "user icon"
+            )
         }
     }
 }
@@ -66,12 +76,17 @@ fun Banner(
 
 @Composable
 fun dealerCodeHolder(dealerCode: String) {
-    Box(modifier = Modifier.background(Color.Blue, shape = RoundedCornerShape(5.dp))) {
+    Row(
+        modifier = Modifier.background(Color.Blue, shape = RoundedCornerShape(5.dp)).padding(5.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        UserIcon(name = "Ritesh")
+
         Text(
-            fontSize = 30.sp,
+            fontSize = 15.sp,
             color = Color.White,
             fontWeight = FontWeight.Bold,
-            text = dealerCode,
+            text = "Dealer code : ${dealerCode}",
             modifier = Modifier.padding(10.dp)
         )
     }
