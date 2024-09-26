@@ -1,29 +1,20 @@
 package com.trex.laxmiemi
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.lifecycleScope
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
 import com.trex.laxmiemi.databinding.ActivityMainBinding
-import com.trex.laxmiemi.ui.theme.LaxmiEmiTheme
-import com.trex.rexcommon.data.RetrofitClient
+import com.trex.laxmiemi.ui.homescreen.HomescreenActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var mAuth: FirebaseAuth
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,18 +25,30 @@ class MainActivity : ComponentActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mAuth = Firebase.auth
+        mainViewModel.firebaseUser.observe(this) { firebaseUser->
+            if (firebaseUser != null){
 
-        if (mAuth.currentUser != null)
-            binding.tvMobile.text = "User Phone Number\n${mAuth.currentUser!!.phoneNumber}"
+                binding.tvMobile.text = "User Phone Number\n${firebaseUser.phoneNumber}"
+                startActivity(Intent(this,HomescreenActivity::class.java))
+
+            }
+            else{
+                startActivity(Intent(this, OtpSendActivity::class.java))
+                finish()
+            }
+
+        }
 
         binding.btnSignOut.setOnClickListener {
-            mAuth.signOut()
-//            startActivity(Intent(this, OtpSendActivity::class.java))
-            finish()
+            mainViewModel.signOut()
         }
+//
+//        binding.btnT.setOnClickListener {
+//            lifecycleScope.launch(Dispatchers.IO) {
+//                DummyDatabaseScript().testFirestoreOperations()
+//            }
+//        }
     }
-
 
 
 }
