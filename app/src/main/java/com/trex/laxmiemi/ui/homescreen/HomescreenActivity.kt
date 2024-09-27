@@ -8,8 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.trex.laxmiemi.R
-import com.trex.laxmiemi.ui.components.EmisafeScreen
+import com.trex.laxmiemi.ui.components.SESHomeScreen
 
 class HomescreenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,7 +16,7 @@ class HomescreenActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContent {
             Box(Modifier.padding(top = 10.dp)) {
-                EmisafeScreen()
+                SESHomeScreen()
             }
         }
 
