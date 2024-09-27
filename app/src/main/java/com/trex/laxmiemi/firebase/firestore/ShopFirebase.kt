@@ -4,6 +4,7 @@ data class Shop(
     val shopId: String = "",
     val ownerName: String = "",
     val shopName: String = "",
+    val dealerCode:String ="",
     val tokenBalance: Int = 0,
     val activeDevicesCount: Int = 0
 )
