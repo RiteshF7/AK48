@@ -3,6 +3,11 @@ package com.trex.laxmiemi.firebase.firestore
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 
+enum class FireStoreExeptions {
+    DOC_NOT_FOUND
+}
+
+
 abstract class FirestoreBase<T : Any>(private val collectionPath: String) {
 
     protected val db = FirebaseFirestore.getInstance()
@@ -19,7 +24,7 @@ abstract class FirestoreBase<T : Any>(private val collectionPath: String) {
                         onFailure(Exception("Document does not match expected type."))
                     }
                 } else {
-                    onFailure(Exception("Document not found."))
+                    onFailure(Exception(FireStoreExeptions.DOC_NOT_FOUND.toString()))
                 }
             }
             .addOnFailureListener { exception ->

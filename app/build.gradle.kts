@@ -89,6 +89,11 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
+    // ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+
+    // ViewModel utilities for Compose
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
 
 

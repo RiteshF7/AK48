@@ -1,7 +1,6 @@
 package com.trex.laxmiemi.firebase.firestore
 
 data class Shop(
-    val shopId: String = "",
     val ownerName: String = "",
     val shopName: String = "",
     val dealerCode:String ="",

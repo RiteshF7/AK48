@@ -4,46 +4,72 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.trex.rexcommon.data.NotificationBody
-import com.trex.rexcommon.data.RetrofitClient
-import com.trex.rexcommon.data.SendMessageDto
-import kotlinx.coroutines.launch
+import com.trex.laxmiemi.firebase.firestore.FireStoreExeptions
+import com.trex.laxmiemi.firebase.firestore.Shop
+import com.trex.laxmiemi.firebase.firestore.ShopFirestore
+import com.trex.laxmiemi.utils.CommonConstants
 
-class MainActivityViewModel :ViewModel() {
 
+class MainActivityViewModel : ViewModel() {
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
     val firebaseUser: LiveData<FirebaseUser?> get() = _firebaseUser
-    val mAuth = Firebase.auth
-
-    private fun isUserLoggedIn() = mAuth.currentUser
+    private val mAuth = Firebase.auth
+    private val _dealerCode = MutableLiveData("------")
+    val dealerCode: LiveData<String> = _dealerCode
+    private val shopFirestore = ShopFirestore();
 
     init {
-        _firebaseUser.postValue(isUserLoggedIn())
+        _firebaseUser.postValue(getCurrentUser())
     }
 
-    fun signOut(){
+    private fun getDealerCode() {
+        shopFirestore.getSingleField(CommonConstants.shodId, Shop::dealerCode.name,
+            onSuccess = {
+                _dealerCode.value = it.toString()
+            }, onFailure = {
+                _dealerCode.value = "------"
+            })
+
+    }
+
+    private fun getCurrentUser() = mAuth.currentUser
+
+
+    fun signOut() {
         mAuth.signOut()
-        _firebaseUser.postValue(isUserLoggedIn())
+        _firebaseUser.postValue(getCurrentUser())
     }
 
-    fun sendMessage(){
-        viewModelScope.launch {
-            val data = SendMessageDto(
-                "some token",
-                NotificationBody("some title","some des")
-            )
+    fun checkIfShopExists() {
+        val userPhoneNumber = mAuth.currentUser?.phoneNumber
+        if (userPhoneNumber.isNullOrEmpty()) return
 
-            try {
-                RetrofitClient.builder.sendMessage(data)
-            }
-            catch (error:Exception){
-                Log.i("sendMessageerror", "sendMessage: $error")
-            }
-
-        }
+        shopFirestore.getShopById(userPhoneNumber.toString(),
+            {
+                CommonConstants.shodId = userPhoneNumber;
+                getDealerCode()
+            },
+            { error ->
+                if (error.message == FireStoreExeptions.DOC_NOT_FOUND.toString()) {
+                    createNewShop(userPhoneNumber);
+                }
+            })
     }
+
+    private fun createNewShop(userPhoneNumber: String) {
+        shopFirestore.createOrUpdateShop(
+            userPhoneNumber,
+            Shop(dealerCode = kotlin.random.Random.nextInt(1, 100000).toString()),
+            {
+                Log.i("", "createNewShop: ShopCreatedSuccessfully !")
+                CommonConstants.shodId = userPhoneNumber;
+            },
+            {
+                Log.i("TAG", "error createNewShop: ")
+            })
+    }
+
 }

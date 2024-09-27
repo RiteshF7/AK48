@@ -22,8 +22,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".ui.homescreen.HomescreenActivity"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
+            android:name=".ui.devicesscreen.DevicesActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"

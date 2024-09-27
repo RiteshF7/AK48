@@ -69,7 +69,6 @@ class OtpVerifyActivity : AppCompatActivity() {
                 if (mVerificationId != null) {
                     val smsCode = "$c1$c2$c3$c4$c5$c6"
                     val credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode)
-
                     Firebase.auth.signInWithCredential(credential)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
