@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -66,6 +67,17 @@ fun RoundedCardText(dealerCode: String) {
 }
 
 @Composable
+fun TitleText(text: String,modifier: Modifier,color: Color){
+    Text(text = text,
+        style = TextStyle(
+            fontFamily = FontFamily(Font(R.font.opensans_bold)),
+            fontSize = 20.sp,
+            color = color
+        ),
+        modifier = modifier)
+}
+
+@Composable
 fun CircleIcon(bgColor: Color, icon: ImageVector) {
     Box(
         modifier = Modifier
@@ -82,5 +94,16 @@ fun CircleIcon(bgColor: Color, icon: ImageVector) {
             contentDescription = "Lock Icon",
             tint = Color.White
         )
+    }
+}
+
+@Composable
+fun LoadingScreen(){
+    Box(
+        modifier = Modifier
+            .padding(16.dp)
+    ){
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
     }
 }

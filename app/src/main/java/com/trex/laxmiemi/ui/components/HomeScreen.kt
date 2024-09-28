@@ -25,15 +25,17 @@ import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.devicesscreen.DevicesActivity
+import com.trex.laxmiemi.utils.AppFont
+import com.trex.laxmiemi.utils.AppTypography
 
 
-// -- Main Screen Composable --
 @Composable
 fun HomeScreen(homeScreenViewmodel: MainActivityViewModel) {
     val scrollState = rememberScrollState()
     val dealerCode = homeScreenViewmodel.dealerCode.observeAsState("------")
     val localContext = LocalContext.current
-    MaterialTheme {
+    MaterialTheme(typography = AppTypography) {
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
