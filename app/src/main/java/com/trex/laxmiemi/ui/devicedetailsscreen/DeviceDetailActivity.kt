@@ -1,6 +1,7 @@
 package com.trex.laxmiemi.ui.devicedetailsscreen
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -15,12 +16,15 @@ class DeviceDetailActivity : ComponentActivity() {
         val device = intent.getSerializableExtra(SINGLE_DEVICE_DATA)
         setContent {
             DeviceDetails(device as Device) {
+                val messageData = SendMessageDto(device.fcmTokenId, it);
+                Log.i("TAG", "onCreate: ${messageData.action}")
                 vm.sendAction(
                     SendMessageDto(
                         device.fcmTokenId,
                         it,
                     ),
-                )
+                );
+
             }
         }
     }

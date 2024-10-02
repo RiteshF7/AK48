@@ -7,6 +7,6 @@ enum class DeviceActions {
 
 data class SendMessageDto(
     val to: String?,
-    val actions: DeviceActions,
+    val action: DeviceActions,
     val payload: Map<String, String> = emptyMap(),
 )
