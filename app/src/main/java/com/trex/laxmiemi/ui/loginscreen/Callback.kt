@@ -1,4 +1,4 @@
-package com.trex.laxmiemi
+package com.trex.laxmiemi.ui.loginscreen
 
 import android.content.Context
 import android.text.format.DateUtils

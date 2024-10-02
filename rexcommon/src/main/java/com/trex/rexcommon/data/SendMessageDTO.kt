@@ -1,11 +1,12 @@
 package com.trex.rexcommon.data
 
+enum class DeviceActions {
+    LOCK_DEVICE,
+    UNLOCK_DEVICE,
+}
+
 data class SendMessageDto(
     val to: String?,
-    val notification: NotificationBody
-)
-
-data class NotificationBody(
-    val title: String,
-    val body: String
+    val actions: DeviceActions,
+    val payload: Map<String, String> = emptyMap(),
 )

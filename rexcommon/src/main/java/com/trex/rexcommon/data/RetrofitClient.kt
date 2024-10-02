@@ -7,22 +7,20 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface FcmApi {
-
     @POST("/send")
     suspend fun sendMessage(
-        @Body body: SendMessageDto
+        @Body body: SendMessageDto,
     )
-
 }
 
 object RetrofitClient {
-    private const val BASE_URL = "http://192.168.0.165:8080/"
+    private const val BASE_URL = "http://10.0.2.16:8080/"
 
-
-    val builder: FcmApi = Retrofit.Builder()
-        .baseUrl(BASE_URL)
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
-        .create()
-
+    val builder: FcmApi =
+        Retrofit
+            .Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+            .create()
 }

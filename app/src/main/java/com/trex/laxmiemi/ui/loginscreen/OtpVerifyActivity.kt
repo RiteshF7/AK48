@@ -1,7 +1,6 @@
-package com.trex.laxmiemi
+package com.trex.laxmiemi.ui.loginscreen
 
 import android.content.Intent
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -15,6 +14,8 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.trex.laxmiemi.MainActivity
+import com.trex.laxmiemi.R
 import com.trex.laxmiemi.databinding.ActivityOtpVerifyBinding
 import java.util.concurrent.TimeUnit
 

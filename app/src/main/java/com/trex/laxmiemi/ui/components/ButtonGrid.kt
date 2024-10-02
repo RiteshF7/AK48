@@ -43,30 +43,33 @@ enum class ButtonActions {
     InstallationVideo,
     OldQR,
     AppShare,
-    UserProfile
+    UserProfile,
 }
 
-data class GridButton(val action: ButtonActions, val key: String, val icon: ImageVector)
+data class GridButton(
+    val action: ButtonActions,
+    val key: String,
+    val icon: ImageVector,
+)
+
 @Composable
 fun ButtonGrid(onClick: (action: ButtonActions) -> Unit) {
-
-    val buttons = listOf(
-        GridButton(ButtonActions.AddCustomer, "Add Customer", Icons.Default.Add),
-        GridButton(ButtonActions.SES20QR, "SES 2.0 QR", Icons.Default.Warning),
-        GridButton(ButtonActions.TotalCustomer, "Total Customer", Icons.Default.Person),
-        GridButton(ButtonActions.BalanceKeys, "Balance Keys", Icons.Default.Warning),
-        GridButton(ButtonActions.CallForService, "Call For Service", Icons.Default.Call),
-        GridButton(ButtonActions.InstallationVideo, "Installation Video", Icons.Default.PlayArrow),
-        GridButton(ButtonActions.OldQR, "Old QR", Icons.Default.Warning),
-        GridButton(ButtonActions.AppShare, "App Share", Icons.Default.Share),
-        GridButton(ButtonActions.UserProfile, "User Profile", Icons.Default.AccountCircle)
-    );
-
-
+    val buttons =
+        listOf(
+            GridButton(ButtonActions.AddCustomer, "Add Customer", Icons.Default.Add),
+            GridButton(ButtonActions.SES20QR, "SES 2.0 QR", Icons.Default.Warning),
+            GridButton(ButtonActions.TotalCustomer, "Total Customer", Icons.Default.Person),
+            GridButton(ButtonActions.BalanceKeys, "Balance Keys", Icons.Default.Warning),
+            GridButton(ButtonActions.CallForService, "Call For Service", Icons.Default.Call),
+            GridButton(ButtonActions.InstallationVideo, "Installation Video", Icons.Default.PlayArrow),
+            GridButton(ButtonActions.OldQR, "Old QR", Icons.Default.Warning),
+            GridButton(ButtonActions.AppShare, "App Share", Icons.Default.Share),
+            GridButton(ButtonActions.UserProfile, "User Profile", Icons.Default.AccountCircle),
+        )
 
     Column(modifier = Modifier.padding(16.dp)) {
         buttons.chunked(3).forEach { rowButtons ->
-            ButtonRow(rowButtons,onClick)
+            ButtonRow(rowButtons, onClick)
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
@@ -74,42 +77,46 @@ fun ButtonGrid(onClick: (action: ButtonActions) -> Unit) {
 
 // -- Single Row in the Button Grid --
 @Composable
-fun ButtonRow(buttons: List<GridButton>,onAction:(action:ButtonActions)->Unit) {
+fun ButtonRow(
+    buttons: List<GridButton>,
+    onAction: (action: ButtonActions) -> Unit,
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
     ) {
-        buttons.forEach { button->
-            ActionButton(button, Modifier.weight(1f),onAction)
+        buttons.forEach { button ->
+            ActionButton(button, Modifier.weight(1f), onAction)
         }
     }
 }
-
 
 // -- Action Button in the Grid --
 @Composable
 fun ActionButton(
     button: GridButton,
     modifier: Modifier,
-    onClick:(action:ButtonActions)->Unit
+    onClick: (action: ButtonActions) -> Unit,
 ) {
     Button(
         onClick = { onClick(button.action) },
-        modifier = modifier
-            .aspectRatio(1f)
-            .padding(4.dp),
+        modifier =
+            modifier
+                .aspectRatio(1f)
+                .padding(4.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Color.White),
-        shape = RoundedCornerShape(8.dp)
+        shape = RoundedCornerShape(8.dp),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(imageVector = button.icon, contentDescription = button.key, tint = Color(0xFF3F51B5))
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 textAlign = TextAlign.Center,
-                style = TextStyle(
-                    fontSize = 13.sp,
-                    fontFamily = FontFamily(Font(R.font.opensans_bold))
-                ),
+                style =
+                    TextStyle(
+                        fontSize = 13.sp,
+                        fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                    ),
                 text = button.key,
                 color = Color(0xFF3F51B5),
             )

@@ -7,10 +7,11 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.trex.laxmiemi.firebase.firestore.FireStoreExeptions
-import com.trex.laxmiemi.firebase.firestore.Shop
-import com.trex.laxmiemi.firebase.firestore.ShopFirestore
+import com.trex.laxmiemi.data.firebase.firestore.FireStoreExeptions
+import com.trex.laxmiemi.data.firebase.firestore.Shop
+import com.trex.laxmiemi.data.firebase.firestore.ShopFirestore
 import com.trex.laxmiemi.utils.CommonConstants
+import kotlin.random.Random
 
 
 class MainActivityViewModel : ViewModel() {
@@ -62,7 +63,7 @@ class MainActivityViewModel : ViewModel() {
     private fun createNewShop(userPhoneNumber: String) {
         shopFirestore.createOrUpdateShop(
             userPhoneNumber,
-            Shop(dealerCode = kotlin.random.Random.nextInt(1, 100000).toString()),
+            Shop(dealerCode = Random.nextInt(1, 100000).toString()),
             {
                 Log.i("", "createNewShop: ShopCreatedSuccessfully !")
                 CommonConstants.shodId = userPhoneNumber;

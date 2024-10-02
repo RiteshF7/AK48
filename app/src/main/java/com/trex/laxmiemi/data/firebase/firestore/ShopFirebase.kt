@@ -1,4 +1,4 @@
-package com.trex.laxmiemi.firebase.firestore
+package com.trex.laxmiemi.data.firebase.firestore
 
 data class Shop(
     val ownerName: String = "",

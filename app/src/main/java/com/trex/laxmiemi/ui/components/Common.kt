@@ -2,12 +2,15 @@ package com.trex.laxmiemi.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -27,21 +30,26 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
+import com.trex.laxmiemi.utils.CommonConstants
 
 // -- Logout Button --
 @Composable
-fun RexActionButton(text:String, onClick:()->Unit) {
+fun RexActionButton(
+    text: String,
+    onClick: () -> Unit,
+) {
     Button(
         onClick = onClick,
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE57373))
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE57373)),
     ) {
         Text(
             text,
             color = Color.White,
-            style = MaterialTheme.typography.labelSmall
+            style = MaterialTheme.typography.labelSmall,
         )
     }
 }
@@ -49,61 +57,107 @@ fun RexActionButton(text:String, onClick:()->Unit) {
 @Composable
 fun RoundedCardText(dealerCode: String) {
     Row(
-        modifier = Modifier
-            .background(colorResource(id = R.color.grey_100), shape = RoundedCornerShape(50.dp))
-            .padding(5.dp),
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            Modifier
+                .background(colorResource(id = R.color.grey_100), shape = RoundedCornerShape(50.dp))
+                .padding(5.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             modifier = Modifier.padding(horizontal = 10.dp),
             text = dealerCode,
-            style = TextStyle(
+            style =
+                TextStyle(
+                    fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                    fontSize = 20.sp,
+                    color = colorResource(id = R.color.blue_600),
+                ),
+        )
+    }
+}
+
+@Composable
+fun TitleText(
+    text: String,
+    modifier: Modifier,
+    color: Color,
+) {
+    Text(
+        text = text,
+        style =
+            TextStyle(
                 fontFamily = FontFamily(Font(R.font.opensans_bold)),
                 fontSize = 20.sp,
-                color = colorResource(id = R.color.blue_600)
-            )
-        )
-    }
+                color = color,
+            ),
+        modifier = modifier,
+    )
 }
 
 @Composable
-fun TitleText(text: String,modifier: Modifier,color: Color){
-    Text(text = text,
-        style = TextStyle(
-            fontFamily = FontFamily(Font(R.font.opensans_bold)),
-            fontSize = 20.sp,
-            color = color
-        ),
-        modifier = modifier)
-}
-
-@Composable
-fun CircleIcon(bgColor: Color, icon: ImageVector) {
+fun CircleIcon(
+    bgColor: Color,
+    icon: ImageVector,
+) {
     Box(
-        modifier = Modifier
-            .size(60.dp)
-            .clip(CircleShape)
-            .background(bgColor)
-            .padding(8.dp)
+        modifier =
+            Modifier
+                .size(60.dp)
+                .clip(CircleShape)
+                .background(bgColor)
+                .padding(8.dp),
     ) {
         Icon(
-            modifier = Modifier
-                .align(Alignment.Center)
-                .size(35.dp),
+            modifier =
+                Modifier
+                    .align(Alignment.Center)
+                    .size(35.dp),
             imageVector = icon,
             contentDescription = "Lock Icon",
-            tint = Color.White
+            tint = Color.White,
         )
     }
 }
 
 @Composable
-fun LoadingScreen(){
+fun LoadingScreen() {
     Box(
-        modifier = Modifier
-            .padding(16.dp)
-    ){
+        modifier =
+            Modifier
+                .padding(16.dp),
+    ) {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-
     }
 }
+
+@Composable
+fun MyTopAppBar() {
+    Box(
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .height(80.dp)
+                .background(color = colorResource(id = R.color.blue_600)),
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .padding(top = 20.dp)
+                    .align(Alignment.Center),
+        ) {
+            Column {
+                Divider()
+                TitleText(
+                    text = CommonConstants.appName,
+                    modifier =
+                        Modifier
+                            .padding(0.dp)
+                            .fillMaxWidth(),
+                    color = Color.White,
+                )
+                Divider()
+            }
+        }
+    }
+}
+

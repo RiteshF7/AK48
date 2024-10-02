@@ -1,4 +1,4 @@
-package com.trex.laxmiemi.firebase.firestore
+package com.trex.laxmiemi.data.firebase.firestore
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
@@ -88,7 +88,7 @@ class DummyDatabaseScript {
 
         // Create a new device
         val deviceFirestore = DeviceFirestore("shop1")
-        deviceFirestore.createOrUpdateDevice(null, Device(imei = "123456789", customerName = "Jane Doe", emiStatus = "on-time", dateTimeSold = "2024-09-01"), {
+        deviceFirestore.createOrUpdateDevice(null, Device(imei = "123456789", customerName = "Jane Doe"), {
             Log.d("Firestore", "Device added or updated successfully!")
         }, {
             Log.e("Firestore", "Failed to add or update device", it)

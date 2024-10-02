@@ -1,9 +1,8 @@
-package com.trex.laxmiemi
+package com.trex.laxmiemi.ui.loginscreen
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -14,6 +13,7 @@ import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.trex.laxmiemi.MainActivity
 import com.trex.laxmiemi.databinding.ActivityOtpSendBinding
 import java.util.concurrent.TimeUnit
 
