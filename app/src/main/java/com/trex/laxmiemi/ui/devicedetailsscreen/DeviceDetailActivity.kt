@@ -16,15 +16,14 @@ class DeviceDetailActivity : ComponentActivity() {
         val device = intent.getSerializableExtra(SINGLE_DEVICE_DATA)
         setContent {
             DeviceDetails(device as Device) {
-                val messageData = SendMessageDto(device.fcmTokenId, it);
+                val messageData = SendMessageDto(device.fcmTokenId, it)
                 Log.i("TAG", "onCreate: ${messageData.action}")
                 vm.sendAction(
                     SendMessageDto(
                         device.fcmTokenId,
                         it,
                     ),
-                );
-
+                )
             }
         }
     }

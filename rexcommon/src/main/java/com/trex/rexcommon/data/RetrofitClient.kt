@@ -6,17 +6,22 @@ import retrofit2.create
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface FcmApi {
+interface RexKtorServer {
     @POST("/send")
     suspend fun sendMessage(
         @Body body: SendMessageDto,
+    )
+
+    @POST("/regdevice")
+    suspend fun registerNewDevice(
+        @Body body: NewDevice,
     )
 }
 
 object RetrofitClient {
     private const val BASE_URL = "http://10.0.2.2:8080/"
 
-    val builder: FcmApi =
+    val builder: RexKtorServer =
         Retrofit
             .Builder()
             .baseUrl(BASE_URL)
