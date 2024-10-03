@@ -48,5 +48,13 @@ class RexDeviceOwnerReceiver : DeviceAdminReceiver() {
         Toast.makeText(context, "Profile Provisioning Completed", Toast.LENGTH_LONG).show()
     }
 
-    // Other methods remain the same
+    fun requestDeviceAdmin(context: Context) {
+        val componentName = ComponentName(context, RexDeviceOwnerReceiver::class.java)
+        val intent =
+            Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN).apply {
+                putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, componentName)
+                putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "Enable admin to manage device")
+            }
+        context.startActivity(intent)
+    }
 }
