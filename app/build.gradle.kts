@@ -26,7 +26,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -53,9 +53,8 @@ android {
 
 dependencies {
 
-    //local dependencies
+    // local dependencies
     implementation(project(":rexcommon"))
-
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -81,7 +80,7 @@ dependencies {
 
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
-    implementation ("com.hbb20:ccp:2.7.3")
+    implementation("com.hbb20:ccp:2.7.3")
     implementation("com.google.firebase:firebase-firestore")
     implementation("io.coil-kt:coil:2.7.0")
     implementation("io.coil-kt:coil-compose:2.7.0")
@@ -95,11 +94,5 @@ dependencies {
     // ViewModel utilities for Compose
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
-
-
-
-
-
-
-
+    implementation("androidx.compose.material:material-icons-extended:1.7.3")
 }
