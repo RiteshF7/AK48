@@ -5,25 +5,27 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import com.trex.laxmiemi.data.firebase.firestore.Device
 import com.trex.laxmiemi.utils.CommonConstants.SINGLE_DEVICE_DATA
+import com.trex.rexcommon.data.NewDevice
 import com.trex.rexcommon.data.SendMessageDto
 
 class DeviceDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val vm by viewModels<DeviceScreenDetailViewModel>()
-        val device = intent.getSerializableExtra(SINGLE_DEVICE_DATA)
+        val device = intent.getParcelableExtra<NewDevice>(SINGLE_DEVICE_DATA)
         setContent {
-            DeviceDetails(device as Device) {
-                val messageData = SendMessageDto(device.fcmTokenId, it)
-                Log.i("TAG", "onCreate: ${messageData.action}")
-                vm.sendAction(
-                    SendMessageDto(
-                        device.fcmTokenId,
-                        it,
-                    ),
-                )
+            device?.let {
+                DeviceDetails(device) {
+                    val messageData = SendMessageDto(device.fcmToken, it)
+                    Log.i("TAG", "onCreate: ${messageData.action}")
+                    vm.sendAction(
+                        SendMessageDto(
+                            device.fcmToken,
+                            it,
+                        ),
+                    )
+                }
             }
         }
     }

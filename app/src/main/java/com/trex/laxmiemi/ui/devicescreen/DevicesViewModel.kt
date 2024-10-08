@@ -4,13 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.trex.laxmiemi.data.firebase.firestore.Device
 import com.trex.laxmiemi.data.firebase.firestore.DeviceFirestore
 import com.trex.laxmiemi.utils.CommonConstants
+import com.trex.rexcommon.data.NewDevice
 
 class DevicesViewModel : ViewModel() {
-    val _devices = MutableLiveData<List<Device>>()
-    val devices: LiveData<List<Device>> = _devices
+    val _devices = MutableLiveData<List<NewDevice>>()
+    val devices: LiveData<List<NewDevice>> = _devices
     private val devicesFirestore = DeviceFirestore(CommonConstants.shodId)
 
     fun getAllDevices() {

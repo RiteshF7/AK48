@@ -61,7 +61,11 @@ fun ButtonGrid(onClick: (action: ButtonActions) -> Unit) {
             GridButton(ButtonActions.TotalCustomer, "Total Customer", Icons.Default.Person),
             GridButton(ButtonActions.BalanceKeys, "Balance Keys", Icons.Default.Warning),
             GridButton(ButtonActions.CallForService, "Call For Service", Icons.Default.Call),
-            GridButton(ButtonActions.InstallationVideo, "Installation Video", Icons.Default.PlayArrow),
+            GridButton(
+                ButtonActions.InstallationVideo,
+                "Installation Video",
+                Icons.Default.PlayArrow,
+            ),
             GridButton(ButtonActions.OldQR, "Old QR", Icons.Default.Warning),
             GridButton(ButtonActions.AppShare, "App Share", Icons.Default.Share),
             GridButton(ButtonActions.UserProfile, "User Profile", Icons.Default.AccountCircle),
@@ -91,7 +95,6 @@ fun ButtonRow(
     }
 }
 
-// -- Action Button in the Grid --
 @Composable
 fun ActionButton(
     button: GridButton,
@@ -108,7 +111,11 @@ fun ActionButton(
         shape = RoundedCornerShape(8.dp),
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(imageVector = button.icon, contentDescription = button.key, tint = Color(0xFF3F51B5))
+            Icon(
+                imageVector = button.icon,
+                contentDescription = button.key,
+                tint = Color(0xFF3F51B5),
+            )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 textAlign = TextAlign.Center,

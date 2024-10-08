@@ -1,23 +1,16 @@
 package com.trex.laxmiemi.data.firebase.firestore
 
-import java.io.Serializable
-
-data class Device(
-    val imei: String = "",
-    val customerName: String = "",
-    val fcmTokenId: String = "",
-    val lockStatus: Boolean = false,
-) : Serializable
+import com.trex.rexcommon.data.NewDevice
 
 class DeviceFirestore(
     shopId: String,
-) : FirestoreBase<Device>("shops/$shopId/devices") {
-    override fun dataClass(): Class<Device> = Device::class.java
+) : FirestoreBase<NewDevice>("shops/$shopId/devices") {
+    override fun dataClass(): Class<NewDevice> = NewDevice::class.java
 
     // Create or update a device
     fun createOrUpdateDevice(
         deviceId: String? = null,
-        device: Device,
+        device: NewDevice,
         onSuccess: () -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
@@ -44,7 +37,7 @@ class DeviceFirestore(
     }
 
     fun getAllDevices(
-        onSuccess: (List<Device>) -> Unit,
+        onSuccess: (List<NewDevice>) -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
         getAllDocuments(dataClass(), onSuccess, onFailure)
@@ -52,7 +45,7 @@ class DeviceFirestore(
 
     fun getSingleDevice(
         deviceId: String,
-        onSuccess: (Device) -> Unit,
+        onSuccess: (NewDevice) -> Unit,
         onFailure: (Exception) -> Unit,
     ) {
         getDocument(deviceId, dataClass(), onSuccess, onFailure)

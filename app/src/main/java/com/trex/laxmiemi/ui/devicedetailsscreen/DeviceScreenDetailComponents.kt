@@ -29,12 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
-import com.trex.laxmiemi.data.firebase.firestore.Device
 import com.trex.rexcommon.data.DeviceActions
+import com.trex.rexcommon.data.NewDevice
 
 @Composable
 fun DeviceDetails(
-    device: Device,
+    device: NewDevice,
     onActionClick: (DeviceActions) -> Unit,
 ) {
     Column {
@@ -43,7 +43,7 @@ fun DeviceDetails(
         DeviceActionRectButton(
             DeviceActionData(
                 Icons.Default.Lock,
-                DeviceActions.LOCK_DEVICE,
+                DeviceActions.ACTION_LOCK_DEVICE,
                 "Lock",
             ),
             onActionClick,
@@ -52,7 +52,7 @@ fun DeviceDetails(
         DeviceActionRectButton(
             DeviceActionData(
                 Icons.Default.Clear,
-                DeviceActions.UNLOCK_DEVICE,
+                DeviceActions.ACTION_UNLOCK_DEVICE,
                 "Unlock",
             ),
             onActionClick,
@@ -63,13 +63,13 @@ fun DeviceDetails(
 }
 
 @Composable
-private fun DeviceDetailHeader(device: Device?) {
+private fun DeviceDetailHeader(device: NewDevice) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier =
-        Modifier
-            .fillMaxWidth()
-            .background(color = colorResource(id = R.color.blue_900)),
+            Modifier
+                .fillMaxWidth()
+                .background(color = colorResource(id = R.color.blue_900)),
     ) {
         Box {
             Icon(
@@ -77,10 +77,10 @@ private fun DeviceDetailHeader(device: Device?) {
                 contentDescription = "",
                 tint = Color.White,
                 modifier =
-                Modifier
-                    .padding(10.dp)
-                    .height(100.dp)
-                    .width(100.dp),
+                    Modifier
+                        .padding(10.dp)
+                        .height(100.dp)
+                        .width(100.dp),
             )
         }
         Column {
@@ -88,7 +88,7 @@ private fun DeviceDetailHeader(device: Device?) {
                 fontSize = 20.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                text = "Device : ${device?.fcmTokenId}",
+                text = "Device : ${device.fcmToken}",
                 modifier = Modifier.padding(bottom = 5.dp),
             )
 
@@ -96,7 +96,7 @@ private fun DeviceDetailHeader(device: Device?) {
                 fontSize = 20.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                text = "Custumer : ${device?.customerName} ",
+                text = "Custumer : ${device.costumerName} ",
                 modifier = Modifier.padding(bottom = 5.dp),
             )
         }
@@ -149,9 +149,9 @@ fun DeviceActionButton(
                 Icon(
                     tint = Color.White,
                     modifier =
-                    Modifier
-                        .align(Alignment.Center)
-                        .padding(10.dp),
+                        Modifier
+                            .align(Alignment.Center)
+                            .padding(10.dp),
                     imageVector = deviceActionData.icon,
                     contentDescription = "",
                 )
@@ -210,14 +210,19 @@ val dummyData =
     listOf(
         DeviceActionData(
             Icons.Default.Lock,
-            DeviceActions.LOCK_DEVICE,
+            DeviceActions.ACTION_LOCK_DEVICE,
             "Lock",
         ),
         DeviceActionData(
             Icons.Default.Lock,
-            DeviceActions.UNLOCK_DEVICE,
+            DeviceActions.ACTION_UNLOCK_DEVICE,
             "Unlock",
-        )
+        ),
+        DeviceActionData(
+            Icons.Default.Lock,
+            DeviceActions.ACTION_EMI_AUDIO_REMINDER,
+            "Audio reminder",
+        ),
     )
 
 @Preview(name = "DeviceDetailsPreview", showBackground = true, showSystemUi = true)

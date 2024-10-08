@@ -10,10 +10,8 @@ class SendDataRepository {
     suspend fun sendDataToServer(data: SendMessageDto) {
         try {
             retrofit.sendMessage(data)
+        } catch (error: Exception) {
+            Log.i("errorrr", "sendDataToServer: $error")
         }
-        catch (error: Exception){
-            Log.i("errorrr", "sendDataToServer: ${error}")
-        }
-
     }
 }

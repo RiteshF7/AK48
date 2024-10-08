@@ -5,10 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trex.laxmiemi.data.firebase.firestore.Device
 import com.trex.laxmiemi.data.firebase.firestore.DeviceFirestore
 import com.trex.laxmiemi.ui.devicescreen.DevicesViewModel.Companion.TAG
 import com.trex.laxmiemi.utils.CommonConstants
+import com.trex.rexcommon.data.NewDevice
 import com.trex.rexcommon.data.SendMessageDto
 import com.trex.rexcommon.data.repository.SendDataRepository
 import kotlinx.coroutines.Dispatchers
@@ -18,8 +18,8 @@ import kotlinx.coroutines.withContext
 class DeviceScreenDetailViewModel : ViewModel() {
     private val repo = SendDataRepository()
 
-    private val _devices = MutableLiveData<Device>()
-    val devices: LiveData<Device> = _devices
+    private val _devices = MutableLiveData<NewDevice>()
+    val devices: LiveData<NewDevice> = _devices
     private val devicesFirestore = DeviceFirestore(CommonConstants.shodId)
 
     fun getAllDevices() {

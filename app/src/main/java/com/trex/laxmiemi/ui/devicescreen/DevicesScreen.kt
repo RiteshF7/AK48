@@ -36,10 +36,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.R
-import com.trex.laxmiemi.data.firebase.firestore.Device
 import com.trex.laxmiemi.ui.components.TitleText
 import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
 import com.trex.laxmiemi.utils.CommonConstants.SINGLE_DEVICE_DATA
+import com.trex.rexcommon.data.NewDevice
 
 @Composable
 fun DeviceScreen(vm: DevicesViewModel) {
@@ -48,7 +48,7 @@ fun DeviceScreen(vm: DevicesViewModel) {
 }
 
 @Composable
-fun DeviceList(devices: List<Device>) {
+fun DeviceList(devices: List<NewDevice>) {
     val context = LocalContext.current
 
     Box(
@@ -71,15 +71,15 @@ fun DeviceList(devices: List<Device>) {
 }
 
 @Composable
-fun DeviceListItem(device: Device) {
+fun DeviceListItem(device: NewDevice) {
     val localContext = LocalContext.current
 
     val deviceInformation =
         remember {
             listOf(
-                Pair(device::fcmTokenId.name, device.fcmTokenId),
-                Pair(device::imei.name, device.imei),
-                Pair(device::customerName.name, device.customerName),
+                Pair(device::fcmToken.name, device.fcmToken),
+                Pair(device::imeiOne.name, device.imeiOne),
+                Pair(device::costumerName.name, device.costumerName),
             )
         }
 
@@ -94,7 +94,7 @@ fun DeviceListItem(device: Device) {
     ) {
         Card(Modifier.padding(10.dp)) {
             Column {
-                DeviceItemHeader(device.fcmTokenId)
+                DeviceItemHeader(device.fcmToken)
                 DeviceInformation(deviceInformation)
                 DeviceItemFooter()
             }
