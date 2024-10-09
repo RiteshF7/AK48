@@ -1,5 +1,8 @@
 package com.trex.rexcommon.data
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
+
 enum class DeviceActions {
     ACTION_LOCK_DEVICE,
     ACTION_UNLOCK_DEVICE,
@@ -27,8 +30,28 @@ enum class DeviceActions {
     ACTION_REMOVE_DEVICE,
 }
 
+object DeviceActionsMapper {
+    // Convert enum to string
+    fun fromEnumToString(action: DeviceActions): String = action.name
+
+    // Convert string to enum
+    fun fromStringToEnum(actionString: String): DeviceActions? =
+        try {
+            DeviceActions.valueOf(actionString)
+        } catch (e: IllegalArgumentException) {
+            null // Return null if no matching enum is found
+        }
+}
+
+@Parcelize
 data class SendMessageDto(
     val to: String?,
     val action: DeviceActions,
     val payload: Map<String, String> = emptyMap(),
-)
+) : Parcelable
+
+@Parcelize
+data class AndroidConfig(
+    val priority: String,
+    val delay_while_idle: Boolean = false,
+) : Parcelable

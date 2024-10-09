@@ -13,64 +13,74 @@ import com.trex.laxmiemi.data.firebase.firestore.ShopFirestore
 import com.trex.laxmiemi.utils.CommonConstants
 import kotlin.random.Random
 
-
 class MainActivityViewModel : ViewModel() {
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
     val firebaseUser: LiveData<FirebaseUser?> get() = _firebaseUser
     private val mAuth = Firebase.auth
     private val _dealerCode = MutableLiveData("------")
     val dealerCode: LiveData<String> = _dealerCode
-    private val shopFirestore = ShopFirestore();
+    private val shopFirestore = ShopFirestore()
 
     init {
         _firebaseUser.postValue(getCurrentUser())
     }
 
     private fun getDealerCode() {
-        shopFirestore.getSingleField(CommonConstants.shodId, Shop::dealerCode.name,
+        shopFirestore.getSingleField(
+            CommonConstants.shodId,
+            Shop::dealerCode.name,
             onSuccess = {
                 _dealerCode.value = it.toString()
-            }, onFailure = {
+            },
+            onFailure = {
                 _dealerCode.value = "------"
-            })
-
+            },
+        )
     }
 
     private fun getCurrentUser() = mAuth.currentUser
-
 
     fun signOut() {
         mAuth.signOut()
         _firebaseUser.postValue(getCurrentUser())
     }
 
-    fun checkIfShopExists() {
+    fun checkIfShopExists(onComplete: () -> Unit) {
         val userPhoneNumber = mAuth.currentUser?.phoneNumber
         if (userPhoneNumber.isNullOrEmpty()) return
 
-        shopFirestore.getShopById(userPhoneNumber.toString(),
+        shopFirestore.getShopById(
+            userPhoneNumber.toString(),
             {
-                CommonConstants.shodId = userPhoneNumber;
+                CommonConstants.shodId = userPhoneNumber
+                onComplete()
                 getDealerCode()
             },
             { error ->
                 if (error.message == FireStoreExeptions.DOC_NOT_FOUND.toString()) {
-                    createNewShop(userPhoneNumber);
+                    createNewShop(userPhoneNumber) {
+                        onComplete()
+                    }
                 }
-            })
+            },
+        )
     }
 
-    private fun createNewShop(userPhoneNumber: String) {
+    private fun createNewShop(
+        userPhoneNumber: String,
+        onComplete: () -> Unit,
+    ) {
         shopFirestore.createOrUpdateShop(
             userPhoneNumber,
             Shop(dealerCode = Random.nextInt(1, 100000).toString()),
             {
                 Log.i("", "createNewShop: ShopCreatedSuccessfully !")
-                CommonConstants.shodId = userPhoneNumber;
+                CommonConstants.shodId = userPhoneNumber
+                onComplete()
             },
             {
                 Log.i("TAG", "error createNewShop: ")
-            })
+            },
+        )
     }
-
 }

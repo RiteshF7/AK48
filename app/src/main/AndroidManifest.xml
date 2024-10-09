@@ -23,6 +23,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.qrcodescreen.ScanQrActivity"
+            android:exported="false"
+            android:label="@string/title_activity_scan_qr"
+            android:theme="@style/Theme.LaxmiEmi" />
+        <activity
             android:name=".ui.devicescreen.DevicesActivity"
             android:exported="false" />
         <activity

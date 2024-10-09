@@ -23,9 +23,10 @@ class MainActivity : ComponentActivity() {
         val mainViewModel: MainActivityViewModel by viewModels()
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {
-                mainViewModel.checkIfShopExists()
-                setContent {
-                    MyApp(mainViewModel)
+                mainViewModel.checkIfShopExists {
+                    setContent {
+                        MyApp(mainViewModel)
+                    }
                 }
             } else {
                 val sendOtpActivity = Intent(this, OtpSendActivity::class.java)

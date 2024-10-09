@@ -95,4 +95,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
 
     implementation("androidx.compose.material:material-icons-extended:1.7.3")
+
+    implementation("com.lightspark:compose-qr-code:1.0.1")
+
+
 }

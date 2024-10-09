@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.components
 
+import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.devicescreen.DevicesActivity
+import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
 import com.trex.laxmiemi.utils.AppTypography
 import com.trex.laxmiemi.utils.CommonConstants
 
@@ -45,14 +47,12 @@ fun HomeScreen(homeScreenViewmodel: MainActivityViewModel) {
             ButtonGrid {
                 when (it) {
                     ButtonActions.AddCustomer -> TODO()
-                    ButtonActions.SES20QR -> TODO()
+                    ButtonActions.SES20QR -> {
+                        startMyActivity(localContext, ScanQrActivity::class.java)
+                    }
+
                     ButtonActions.TotalCustomer -> {
-                        localContext.startActivity(
-                            Intent(
-                                localContext,
-                                DevicesActivity::class.java,
-                            ),
-                        )
+                        startMyActivity(localContext, DevicesActivity::class.java)
                     }
 
                     ButtonActions.BalanceKeys -> TODO()
@@ -69,6 +69,18 @@ fun HomeScreen(homeScreenViewmodel: MainActivityViewModel) {
             }
         }
     }
+}
+
+private fun <T> startMyActivity(
+    localContext: Context,
+    activityClass: Class<T>,
+) {
+    localContext.startActivity(
+        Intent(
+            localContext,
+            activityClass,
+        ),
+    )
 }
 
 // -- Dealer Code Component --
