@@ -37,14 +37,10 @@ class ScanQrActivity : ComponentActivity() {
 
 @Composable
 private fun MyScreen(modifier: Modifier) {
-    val apkUrl = "https://tmpfiles.org/dl/14438345/toast.apk"
-    val apkChecksum = "xyUH1FX5VRzz55ECmhfhj6YcT562fSZrHpx7eWWxd28"
     val qrCodeImageBitmap =
         QrUtils()
-            .getQrBitmap(
-                apkUrl,
-                apkChecksum,
-            ).asImageBitmap()
+            .getQrBitmap()
+            .asImageBitmap()
     Box(
         modifier =
             modifier
@@ -53,7 +49,7 @@ private fun MyScreen(modifier: Modifier) {
     ) {
         Box(modifier = Modifier.align(Alignment.Center)) {
             Image(
-                modifier = Modifier.width(250.dp).height(250.dp),
+                modifier = Modifier.width(300.dp).height(300.dp),
                 bitmap = qrCodeImageBitmap,
                 contentDescription = "some useful description",
             )

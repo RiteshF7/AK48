@@ -9,23 +9,21 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class QrUtils {
-    fun getQrBitmap(
-        apkUrl: String,
-        apkChecksum: String,
-    ): Bitmap {
-        val qrJson = getQrJson(apkChecksum, apkUrl)
+    private val apkUrl = "https://tmpfiles.org/dl/14482678/ddd.apk"
+    private val apkChecksum = "uEfSdZTvepuqMPQvjLoZysR3cyhigaEvdEhT8WVDYjk"
+
+    fun getQrBitmap(): Bitmap {
+        val qrJson = getQrJson()
         return generateQRCodeBitmap(qrJson.toString())
     }
 
-    private fun getQrJson(
-        apkChecksum: String,
-        apkUrl: String,
-    ): JsonObject {
+    private fun getQrJson(): JsonObject {
+        val clientPackageName = "com.trex.rexandroidsecureclient"
         val qrJson =
             buildJsonObject {
                 put(
                     DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_COMPONENT_NAME,
-                    "${CommonConstants.packageName}/$CommonConstants.DeviceAdminReceiver",
+                    "$clientPackageName/$clientPackageName.DeviceAdminReceiver",
                 )
                 put(
                     DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_CHECKSUM,

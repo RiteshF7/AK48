@@ -18,7 +18,7 @@ class DeviceDetailActivity : ComponentActivity() {
             device?.let {
                 DeviceDetails(device) {
                     val messageData = SendMessageDto(device.fcmToken, it)
-                    Log.i("TAG", "onCreate: ${messageData.action}")
+                    Log.i("TAG", "message sending .... : ${messageData.action}")
                     vm.sendAction(
                         SendMessageDto(
                             device.fcmToken,

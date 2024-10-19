@@ -98,4 +98,5 @@ dependencies {
     implementation("com.lightspark:compose-qr-code:1.0.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+
 }
