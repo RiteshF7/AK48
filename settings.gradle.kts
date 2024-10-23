@@ -21,4 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Laxmi emi"
 include(":app")
-include(":rexcommon")
+include(":rexnetwork")
+project(":rexnetwork").projectDir =
+    File("C:\\Users\\rites\\AndroidStudioProjects\\RexNetwork\\app\\rexnetwork")

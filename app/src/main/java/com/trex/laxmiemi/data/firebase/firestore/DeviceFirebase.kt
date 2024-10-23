@@ -1,6 +1,6 @@
 package com.trex.laxmiemi.data.firebase.firestore
 
-import com.trex.rexcommon.data.NewDevice
+import com.trex.rexnetwork.data.NewDevice
 
 class DeviceFirestore(
     shopId: String,

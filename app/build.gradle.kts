@@ -53,8 +53,6 @@ android {
 
 dependencies {
 
-    // local dependencies
-    implementation(project(":rexcommon"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -70,6 +68,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.runtime.livedata)
+    implementation(project(":rexnetwork"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -98,5 +97,4 @@ dependencies {
     implementation("com.lightspark:compose-qr-code:1.0.1")
     implementation("com.journeyapps:zxing-android-embedded:4.3.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-
 }

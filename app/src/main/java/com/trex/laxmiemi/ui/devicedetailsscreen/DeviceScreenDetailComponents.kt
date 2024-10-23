@@ -56,13 +56,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
-import com.trex.rexcommon.data.DeviceActions
-import com.trex.rexcommon.data.NewDevice
+import com.trex.rexnetwork.data.Actions
+import com.trex.rexnetwork.data.NewDevice
 
 @Composable
 fun DeviceDetails(
     device: NewDevice,
-    onActionClick: (DeviceActions) -> Unit,
+    onActionClick: (Actions) -> Unit,
 ) {
     Column {
         DeviceDetailHeader(device)
@@ -70,7 +70,7 @@ fun DeviceDetails(
         DeviceActionRectButton(
             DeviceActionData(
                 Icons.Default.Lock,
-                DeviceActions.ACTION_LOCK_DEVICE,
+                Actions.ACTION_LOCK_DEVICE,
                 "Lock",
             ),
             onActionClick,
@@ -79,7 +79,7 @@ fun DeviceDetails(
         DeviceActionRectButton(
             DeviceActionData(
                 Icons.Default.Clear,
-                DeviceActions.ACTION_UNLOCK_DEVICE,
+                Actions.ACTION_UNLOCK_DEVICE,
                 "Unlock",
             ),
             onActionClick,
@@ -133,7 +133,7 @@ private fun DeviceDetailHeader(device: NewDevice) {
 @Composable
 fun ActionsButtonGrid(
     list: List<DeviceActionData>,
-    onActionClick: (DeviceActions) -> Unit,
+    onActionClick: (Actions) -> Unit,
 ) {
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 100.dp),
@@ -154,7 +154,7 @@ fun ActionsButtonGrid(
 
 data class DeviceActionData(
     val icon: ImageVector,
-    val action: DeviceActions,
+    val action: Actions,
     val actionName: String,
 )
 
@@ -162,7 +162,7 @@ data class DeviceActionData(
 fun DeviceActionButton(
     deviceActionData: DeviceActionData,
     modifier: Modifier = Modifier,
-    onActionClick: (DeviceActions) -> Unit,
+    onActionClick: (Actions) -> Unit,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -205,7 +205,7 @@ fun DeviceActionButton(
 @Composable
 fun DeviceActionRectButton(
     deviceActionData: DeviceActionData,
-    onActionClick: (DeviceActions) -> Unit,
+    onActionClick: (Actions) -> Unit,
 ) {
     Box(Modifier.clickable { onActionClick(deviceActionData.action) }) {
         Column(
@@ -248,163 +248,179 @@ fun DeviceActionRectButton(
 }
 
 val deviceActionDataList =
-    DeviceActions.values().map { action ->
+    Actions.values().map { action ->
         when (action) {
-            DeviceActions.ACTION_LOCK_DEVICE -> DeviceActionData(Icons.Default.Lock, action, "Lock")
-            DeviceActions.ACTION_UNLOCK_DEVICE ->
+            Actions.ACTION_LOCK_DEVICE -> DeviceActionData(Icons.Default.Lock, action, "Lock")
+            Actions.ACTION_UNLOCK_DEVICE ->
                 DeviceActionData(
                     Icons.Default.LockOpen,
                     action,
                     "Unlock",
                 )
 
-            DeviceActions.ACTION_EMI_AUDIO_REMINDER ->
+            Actions.ACTION_EMI_AUDIO_REMINDER ->
                 DeviceActionData(
                     Icons.Default.Notifications,
                     action,
                     "EMI Audio Reminder",
                 )
 
-            DeviceActions.ACTION_EMI_SCREEN_REMINDER ->
+            Actions.ACTION_EMI_SCREEN_REMINDER ->
                 DeviceActionData(
                     Icons.Default.ScreenLockRotation,
                     action,
                     "EMI Screen Reminder",
                 )
 
-            DeviceActions.ACTION_GET_PHONE_NUMBER ->
+            Actions.ACTION_GET_PHONE_NUMBER ->
                 DeviceActionData(
                     Icons.Default.Phone,
                     action,
                     "Get Phone Number",
                 )
 
-            DeviceActions.ACTION_GET_CONTACTS ->
+            Actions.ACTION_GET_CONTACTS ->
                 DeviceActionData(
                     Icons.Default.Contacts,
                     action,
                     "Get Contacts",
                 )
 
-            DeviceActions.ACTION_GET_CONTACTS_VIA_MESSAGE ->
+            Actions.ACTION_GET_CONTACTS_VIA_MESSAGE ->
                 DeviceActionData(
                     Icons.Default.Message,
                     action,
                     "Get Contacts via Message",
                 )
 
-            DeviceActions.ACTION_OFFLINE_LOCK_UNLOCK ->
-                DeviceActionData(
-                    Icons.Default.OfflineBolt,
-                    action,
-                    "Offline Lock/Unlock",
-                )
+//            Actions.ACTION_OFFLINE_LOCK_UNLOCK ->
+//                DeviceActionData(
+//                    Icons.Default.OfflineBolt,
+//                    action,
+//                    "Offline Lock/Unlock",
+//                )
 
-            DeviceActions.ACTION_APP_UNLOCK ->
+            Actions.ACTION_APP_UNLOCK ->
                 DeviceActionData(
                     Icons.Default.VpnKey,
                     action,
                     "App Unlock",
                 )
 
-            DeviceActions.ACTION_CAMERA_LOCK ->
+            Actions.ACTION_CAMERA_LOCK ->
                 DeviceActionData(
                     Icons.Default.Camera,
                     action,
                     "Camera Lock",
                 )
 
-            DeviceActions.ACTION_CAMERA_UNLOCK ->
+            Actions.ACTION_CAMERA_UNLOCK ->
                 DeviceActionData(
                     Icons.Default.CameraAlt,
                     action,
                     "Camera Unlock",
                 )
 
-            DeviceActions.ACTION_SET_WALLPAPER ->
+            Actions.ACTION_SET_WALLPAPER ->
                 DeviceActionData(
                     Icons.Default.Wallpaper,
                     action,
                     "Set Wallpaper",
                 )
 
-            DeviceActions.ACTION_REMOVE_WALLPAPER ->
+            Actions.ACTION_REMOVE_WALLPAPER ->
                 DeviceActionData(
                     Icons.Default.Wallpaper,
                     action,
                     "Remove Wallpaper",
                 )
 
-            DeviceActions.ACTION_GET_LOCATION ->
+            Actions.ACTION_GET_LOCATION ->
                 DeviceActionData(
                     Icons.Default.LocationOn,
                     action,
                     "Get Location",
                 )
 
-            DeviceActions.ACTION_GET_LOCATION_VIA_MESSAGE ->
+            Actions.ACTION_GET_LOCATION_VIA_MESSAGE ->
                 DeviceActionData(
                     Icons.Default.Message,
                     action,
                     "Get Location via Message",
                 )
 
-            DeviceActions.ACTION_REBOOT_DEVICE ->
+            Actions.ACTION_REBOOT_DEVICE ->
                 DeviceActionData(
                     Icons.Default.RestartAlt,
                     action,
                     "Reboot Device",
                 )
 
-            DeviceActions.ACTION_CALL_LOCK -> DeviceActionData(Icons.Default.Call, action, "Call Lock")
-            DeviceActions.ACTION_CALL_UNLOCK ->
+            Actions.ACTION_CALL_LOCK -> DeviceActionData(Icons.Default.Call, action, "Call Lock")
+            Actions.ACTION_CALL_UNLOCK ->
                 DeviceActionData(
                     Icons.Default.CallEnd,
                     action,
                     "Call Unlock",
                 )
 
-            DeviceActions.ACTION_RESET_PASSWORD ->
+            Actions.ACTION_RESET_PASSWORD ->
                 DeviceActionData(
                     Icons.Default.VpnKey,
                     action,
                     "Reset Password",
                 )
 
-            DeviceActions.ACTION_REACTIVATE_DEVICE ->
-                DeviceActionData(
-                    Icons.Default.Sync,
-                    action,
-                    "Reactivate Device",
-                )
+//            Actions.ACTION_REACTIVATE_DEVICE ->
+//                DeviceActionData(
+//                    Icons.Default.Sync,
+//                    action,
+//                    "Reactivate Device",
+//                )
+//
+//            Actions.ACTION_DEACTIVATE_DEVICE ->
+//                DeviceActionData(
+//                    Icons.Default.Block,
+//                    action,
+//                    "Deactivate Device",
+//                )
 
-            DeviceActions.ACTION_DEACTIVATE_DEVICE ->
-                DeviceActionData(
-                    Icons.Default.Block,
-                    action,
-                    "Deactivate Device",
-                )
-
-            DeviceActions.ACTION_GET_DEVICE_INFO ->
+            Actions.ACTION_GET_DEVICE_INFO ->
                 DeviceActionData(
                     Icons.Default.Info,
                     action,
                     "Get Device Info",
                 )
 
-            DeviceActions.ACTION_GET_UNLOCK_CODE ->
+            Actions.ACTION_GET_UNLOCK_CODE ->
                 DeviceActionData(
                     Icons.Default.LockOpen,
                     action,
                     "Get Unlock Code",
                 )
 
-            DeviceActions.ACTION_REMOVE_DEVICE ->
+            Actions.ACTION_REMOVE_DEVICE ->
                 DeviceActionData(
                     Icons.Default.Delete,
                     action,
                     "Remove Device",
                 )
+
+            Actions.ACTION_OFFLINE_LOCK -> DeviceActionData(
+                Icons.Default.Delete,
+                action,
+                "Offline Device",
+            )
+            Actions.ACTION_OFFLINE_UNLOCK -> DeviceActionData(
+                Icons.Default.Delete,
+                action,
+                "Offline unlock",
+            )
+            Actions.ACTION_LOCK_SCREEN -> DeviceActionData(
+                Icons.Default.Delete,
+                action,
+                "Lock screen",
+            )
         }
     }
 

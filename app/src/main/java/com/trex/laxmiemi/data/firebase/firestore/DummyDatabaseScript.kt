@@ -2,7 +2,7 @@ package com.trex.laxmiemi.data.firebase.firestore
 
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import com.trex.rexcommon.data.NewDevice
+import com.trex.rexnetwork.data.NewDevice
 
 class DummyDatabaseScript {
 

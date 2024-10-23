@@ -6,8 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.trex.laxmiemi.utils.CommonConstants.SINGLE_DEVICE_DATA
-import com.trex.rexcommon.data.NewDevice
-import com.trex.rexcommon.data.SendMessageDto
+import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.data.ActionMessageDTO
 
 class DeviceDetailActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,10 +17,10 @@ class DeviceDetailActivity : ComponentActivity() {
         setContent {
             device?.let {
                 DeviceDetails(device) {
-                    val messageData = SendMessageDto(device.fcmToken, it)
+                    val messageData = ActionMessageDTO(device.fcmToken, it)
                     Log.i("TAG", "message sending .... : ${messageData.action}")
                     vm.sendAction(
-                        SendMessageDto(
+                        ActionMessageDTO(
                             device.fcmToken,
                             it,
                         ),

@@ -12,7 +12,7 @@ object CommonConstants {
         packageName = context.packageName
     }
 
-    var shodId = ""
+    var shodId = "+919910000163"
 
     val MaxScreenWidth = 500.dp
     val SINGLE_DEVICE_DATA = "single_device_data"

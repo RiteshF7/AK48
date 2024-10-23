@@ -39,7 +39,7 @@ import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.TitleText
 import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
 import com.trex.laxmiemi.utils.CommonConstants.SINGLE_DEVICE_DATA
-import com.trex.rexcommon.data.NewDevice
+import com.trex.rexnetwork.data.NewDevice
 
 @Composable
 fun DeviceScreen(vm: DevicesViewModel) {
