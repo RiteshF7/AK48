@@ -5,11 +5,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.trex.laxmiemi.data.firebase.firestore.DeviceFirestore
 import com.trex.laxmiemi.ui.devicescreen.DevicesViewModel.Companion.TAG
 import com.trex.laxmiemi.utils.CommonConstants
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.domain.firebasecore.DeviceFirestore
 import com.trex.rexnetwork.domain.repositories.SendActionMessageRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

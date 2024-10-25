@@ -5,11 +5,12 @@ import androidx.compose.ui.unit.dp
 
 object CommonConstants {
     lateinit var appName: String
-    lateinit var packageName: String
+    lateinit var applicationContext: Context
     const val KEY_SHOP_ID = "SHOP_ID"
+
     fun initialize(context: Context) {
+        applicationContext = context
         appName = context.getString(context.applicationInfo.labelRes)
-        packageName = context.packageName
     }
 
     var shodId = "+919910000163"

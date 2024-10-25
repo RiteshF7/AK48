@@ -7,10 +7,11 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
-import com.trex.laxmiemi.data.firebase.firestore.FireStoreExeptions
-import com.trex.laxmiemi.data.firebase.firestore.Shop
-import com.trex.laxmiemi.data.firebase.firestore.ShopFirestore
 import com.trex.laxmiemi.utils.CommonConstants
+import com.trex.rexnetwork.domain.firebasecore.FCMTokenManager
+import com.trex.rexnetwork.domain.firebasecore.FireStoreExeptions
+import com.trex.rexnetwork.domain.firebasecore.Shop
+import com.trex.rexnetwork.domain.firebasecore.ShopFirestore
 import kotlin.random.Random
 
 class MainActivityViewModel : ViewModel() {
@@ -20,6 +21,7 @@ class MainActivityViewModel : ViewModel() {
     private val _dealerCode = MutableLiveData("------")
     val dealerCode: LiveData<String> = _dealerCode
     private val shopFirestore = ShopFirestore()
+    private val fcmTokenManager = FCMTokenManager(CommonConstants.applicationContext)
 
     init {
         _firebaseUser.postValue(getCurrentUser())
