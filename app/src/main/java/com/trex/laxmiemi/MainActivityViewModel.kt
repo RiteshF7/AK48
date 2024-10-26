@@ -8,10 +8,10 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.trex.laxmiemi.utils.CommonConstants
-import com.trex.rexnetwork.domain.firebasecore.FCMTokenManager
-import com.trex.rexnetwork.domain.firebasecore.FireStoreExeptions
-import com.trex.rexnetwork.domain.firebasecore.Shop
-import com.trex.rexnetwork.domain.firebasecore.ShopFirestore
+import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
+import com.trex.rexnetwork.domain.firebasecore.firesstore.FireStoreExeptions
+import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
+import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import kotlin.random.Random
 
 class MainActivityViewModel : ViewModel() {
@@ -21,7 +21,6 @@ class MainActivityViewModel : ViewModel() {
     private val _dealerCode = MutableLiveData("------")
     val dealerCode: LiveData<String> = _dealerCode
     private val shopFirestore = ShopFirestore()
-    private val fcmTokenManager = FCMTokenManager(CommonConstants.applicationContext)
 
     init {
         _firebaseUser.postValue(getCurrentUser())
@@ -47,20 +46,24 @@ class MainActivityViewModel : ViewModel() {
         _firebaseUser.postValue(getCurrentUser())
     }
 
-    fun checkIfShopExists(onComplete: () -> Unit) {
+    fun checkIfShopExists(
+        fcmTokenManager: FCMTokenManager,
+        onComplete: () -> Unit,
+    ) {
         val userPhoneNumber = mAuth.currentUser?.phoneNumber
         if (userPhoneNumber.isNullOrEmpty()) return
 
         shopFirestore.getShopById(
             userPhoneNumber.toString(),
-            {
+            { shop ->
+                fcmTokenManager.refreshToken(shop.fcmToken)
                 CommonConstants.shodId = userPhoneNumber
                 onComplete()
                 getDealerCode()
             },
             { error ->
                 if (error.message == FireStoreExeptions.DOC_NOT_FOUND.toString()) {
-                    createNewShop(userPhoneNumber) {
+                    createNewShop(userPhoneNumber, fcmTokenManager) {
                         onComplete()
                     }
                 }
@@ -70,11 +73,13 @@ class MainActivityViewModel : ViewModel() {
 
     private fun createNewShop(
         userPhoneNumber: String,
+        fcmTokenManager: FCMTokenManager,
         onComplete: () -> Unit,
     ) {
+        val fcmToken = fcmTokenManager.getFcmToken() ?: "nope!"
         shopFirestore.createOrUpdateShop(
             userPhoneNumber,
-            Shop(dealerCode = Random.nextInt(1, 100000).toString()),
+            Shop(dealerCode = Random.nextInt(1, 100000).toString(), fcmToken = fcmToken),
             {
                 Log.i("", "createNewShop: ShopCreatedSuccessfully !")
                 CommonConstants.shodId = userPhoneNumber

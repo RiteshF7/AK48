@@ -11,6 +11,7 @@ object CommonConstants {
     fun initialize(context: Context) {
         applicationContext = context
         appName = context.getString(context.applicationInfo.labelRes)
+
     }
 
     var shodId = "+919910000163"

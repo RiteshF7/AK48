@@ -3,9 +3,9 @@ package com.trex.laxmiemi.data.firebase.firestore
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.trex.rexnetwork.data.NewDevice
-import com.trex.rexnetwork.domain.firebasecore.DeviceFirestore
-import com.trex.rexnetwork.domain.firebasecore.Shop
-import com.trex.rexnetwork.domain.firebasecore.ShopFirestore
+import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
+import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
+import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 
 class DummyDatabaseScript {
     val db = FirebaseFirestore.getInstance()

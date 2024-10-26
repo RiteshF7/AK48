@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Laxmi emi</string>
     <string name="title_activity_scan_qr">ScanQrActivity</string>
+    <string name="title_activity_action_result">ActionResultActivity</string>
 </resources>

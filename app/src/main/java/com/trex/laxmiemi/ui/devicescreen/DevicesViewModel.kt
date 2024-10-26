@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.trex.laxmiemi.utils.CommonConstants
 import com.trex.rexnetwork.data.NewDevice
-import com.trex.rexnetwork.domain.firebasecore.DeviceFirestore
+import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
 
 class DevicesViewModel : ViewModel() {
     val _devices = MutableLiveData<List<NewDevice>>()

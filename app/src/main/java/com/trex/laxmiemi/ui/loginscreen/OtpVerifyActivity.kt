@@ -17,6 +17,7 @@ import com.google.firebase.ktx.Firebase
 import com.trex.laxmiemi.MainActivity
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.databinding.ActivityOtpVerifyBinding
+import com.trex.rexnetwork.utils.SharedPreferenceManager
 import java.util.concurrent.TimeUnit
 
 class OtpVerifyActivity : AppCompatActivity() {
@@ -73,6 +74,7 @@ class OtpVerifyActivity : AppCompatActivity() {
                     Firebase.auth.signInWithCredential(credential)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
+                                SharedPreferenceManager(this).saveShopId(mPhoneNumber)
                                 isVisible(true)
                                 Callback(this).onToast("Welcome .... ${task.result}")
                                 startActivity(
@@ -82,6 +84,7 @@ class OtpVerifyActivity : AppCompatActivity() {
                                     ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                                 )
                             } else {
+
                                 isVisible(false)
                                 Callback(this).onToast("OTP is not valid!")
                             }

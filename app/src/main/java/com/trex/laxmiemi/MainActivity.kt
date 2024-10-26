@@ -14,16 +14,20 @@ import androidx.compose.ui.Modifier
 import com.google.firebase.FirebaseApp
 import com.trex.laxmiemi.ui.components.HomeScreen
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
+import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
+import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
 
 class MainActivity : ComponentActivity() {
+    private lateinit var shopFCMTokenManager: FCMTokenManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        shopFCMTokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
         enableEdgeToEdge()
-        FirebaseApp.initializeApp(this)
         val mainViewModel: MainActivityViewModel by viewModels()
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {
-                mainViewModel.checkIfShopExists {
+                mainViewModel.checkIfShopExists(shopFCMTokenManager) {
                     setContent {
                         MyApp(mainViewModel)
                     }
