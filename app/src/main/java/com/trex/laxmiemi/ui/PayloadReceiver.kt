@@ -16,6 +16,7 @@ class PayloadReceiver : BroadcastReceiver() {
             val intent =
                 Intent(context, ActionResultActivity::class.java).apply {
                     putExtra(ActionResultActivity.ACTION_RESULT_INTENT_KEY, actionMessageDTO)
+                    flags = Intent.FLAG_ACTIVITY_NEW_TASK
                 }
             context.startActivity(intent)
 

@@ -79,6 +79,8 @@ class ActionResultActivity : ComponentActivity() {
     }
 }
 
+
+//download contacts or share contacts
 @Composable
 fun ContactsList(contacts: Map<String, String>) {
     LazyColumn(
