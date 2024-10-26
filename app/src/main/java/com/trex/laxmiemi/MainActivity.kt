@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.google.firebase.FirebaseApp
+import com.trex.laxmiemi.ui.actionresultscreen.ActionResultActivity
 import com.trex.laxmiemi.ui.components.HomeScreen
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
@@ -28,6 +28,8 @@ class MainActivity : ComponentActivity() {
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {
                 mainViewModel.checkIfShopExists(shopFCMTokenManager) {
+                    val sendOtpActivity = Intent(this, ActionResultActivity::class.java)
+                    startActivity(sendOtpActivity)
                     setContent {
                         MyApp(mainViewModel)
                     }
