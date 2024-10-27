@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.trex.laxmiemi.ui.actionresultscreen.ActionResultActivity
 import com.trex.laxmiemi.ui.components.HomeScreen
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
@@ -26,11 +27,11 @@ class MainActivity : ComponentActivity() {
         shopFCMTokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
         mshardPref = SharedPreferenceManager(this)
         enableEdgeToEdge()
+//        startActivity(Intent(this,ActionResultActivity::class.java))
         val mainViewModel: MainActivityViewModel by viewModels()
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {
                 mainViewModel.checkIfShopExists(shopFCMTokenManager,mshardPref) {
-
                     setContent {
                         MyApp(mainViewModel)
                     }

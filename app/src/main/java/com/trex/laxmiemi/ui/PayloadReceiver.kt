@@ -13,6 +13,7 @@ class PayloadReceiver : BroadcastReceiver() {
         intent: Intent,
     ) {
         ActionMessageDTOMapper.getPayloadString(intent)?.let { actionMessageDTO ->
+            Log.i("onPayloadReceive", "onReceive: payload ::: ${actionMessageDTO}")
             val intent =
                 Intent(context, ActionResultActivity::class.java).apply {
                     putExtra(ActionResultActivity.ACTION_RESULT_INTENT_KEY, actionMessageDTO)
