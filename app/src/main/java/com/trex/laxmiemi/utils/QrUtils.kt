@@ -4,13 +4,14 @@ import android.app.admin.DevicePolicyManager
 import android.graphics.Bitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import com.trex.rexnetwork.Constants
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class QrUtils {
-    private val apkUrl = "https://tmpfiles.org/dl/14482678/ddd.apk"
-    private val apkChecksum = "uEfSdZTvepuqMPQvjLoZysR3cyhigaEvdEhT8WVDYjk"
+    private val apkUrl = "${Constants.BASE_URL}/file"
+    private val apkChecksum = "2dLdHvgDnIR05cnWLM65KUIy7PZNU2wwg63UORe48FA"
 
     fun getQrBitmap(): Bitmap {
         val qrJson = getQrJson()
@@ -36,7 +37,7 @@ class QrUtils {
                 put(
                     DevicePolicyManager.EXTRA_PROVISIONING_ADMIN_EXTRAS_BUNDLE,
                     buildJsonObject {
-                        put(CommonConstants.KEY_SHOP_ID, CommonConstants.shodId)
+                        put(Constants.KEY_QR_SHOP_ID, CommonConstants.shodId)
                     },
                 )
             }
