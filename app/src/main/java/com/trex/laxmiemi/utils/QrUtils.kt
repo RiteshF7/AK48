@@ -11,14 +11,14 @@ import kotlinx.serialization.json.put
 
 class QrUtils {
     private val apkUrl = "${Constants.BASE_URL}/file"
-    private val apkChecksum = "2dLdHvgDnIR05cnWLM65KUIy7PZNU2wwg63UORe48FA"
+    private val apkChecksum = "A5VrNiaoa_gob4jYAhlUtTOHG_IOQ6paiabS7sl_8YM"
 
-    fun getQrBitmap(): Bitmap {
-        val qrJson = getQrJson()
+    fun getQrBitmap(shopId: String): Bitmap {
+        val qrJson = getQrJson(shopId)
         return generateQRCodeBitmap(qrJson.toString())
     }
 
-    private fun getQrJson(): JsonObject {
+    private fun getQrJson(shopId: String): JsonObject {
         val clientPackageName = "com.trex.rexandroidsecureclient"
         val qrJson =
             buildJsonObject {
@@ -37,7 +37,7 @@ class QrUtils {
                 put(
                     DevicePolicyManager.EXTRA_PROVISIONING_ADMIN_EXTRAS_BUNDLE,
                     buildJsonObject {
-                        put(Constants.KEY_QR_SHOP_ID, CommonConstants.shodId)
+                        put(Constants.ADMIN_SHOP_ID, shopId)
                     },
                 )
             }

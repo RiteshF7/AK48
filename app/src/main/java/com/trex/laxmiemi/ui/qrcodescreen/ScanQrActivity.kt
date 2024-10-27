@@ -20,15 +20,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.ui.theme.LaxmiEmiTheme
 import com.trex.laxmiemi.utils.QrUtils
+import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 class ScanQrActivity : ComponentActivity() {
+    private lateinit var mSharefPref: SharedPreferenceManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mSharefPref = SharedPreferenceManager(this)
+        val shopId = mSharefPref.getShopId()
+
         enableEdgeToEdge()
         setContent {
             LaxmiEmiTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MyScreen(Modifier.padding(innerPadding))
+                    MyScreen(Modifier.padding(innerPadding), shopId)
                 }
             }
         }
@@ -36,23 +42,28 @@ class ScanQrActivity : ComponentActivity() {
 }
 
 @Composable
-private fun MyScreen(modifier: Modifier) {
-    val qrCodeImageBitmap =
-        QrUtils()
-            .getQrBitmap()
-            .asImageBitmap()
-    Box(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .fillMaxHeight(),
-    ) {
-        Box(modifier = Modifier.align(Alignment.Center)) {
-            Image(
-                modifier = Modifier.width(300.dp).height(300.dp),
-                bitmap = qrCodeImageBitmap,
-                contentDescription = "some useful description",
-            )
+private fun MyScreen(
+    modifier: Modifier,
+    shopId: String?,
+) {
+    shopId?.let { id ->
+        val qrCodeImageBitmap =
+            QrUtils()
+                .getQrBitmap(id)
+                .asImageBitmap()
+        Box(
+            modifier =
+                modifier
+                    .fillMaxSize()
+                    .fillMaxHeight(),
+        ) {
+            Box(modifier = Modifier.align(Alignment.Center)) {
+                Image(
+                    modifier = Modifier.width(300.dp).height(300.dp),
+                    bitmap = qrCodeImageBitmap,
+                    contentDescription = "some useful description",
+                )
+            }
         }
     }
 }
