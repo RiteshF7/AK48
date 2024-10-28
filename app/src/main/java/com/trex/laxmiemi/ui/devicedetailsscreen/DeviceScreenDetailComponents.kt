@@ -421,6 +421,12 @@ val deviceActionDataList =
                 action,
                 "Lock screen",
             )
+
+            Actions.ACTION_REG_DEVICE -> DeviceActionData(
+                Icons.Default.Delete,
+                action,
+                "Lock screen",
+            )
         }
     }
 

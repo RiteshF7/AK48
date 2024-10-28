@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.auth
 import com.trex.laxmiemi.utils.CommonConstants
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
+import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
 import com.trex.rexnetwork.domain.firebasecore.firesstore.FCMTokenFirestore
 import com.trex.rexnetwork.domain.firebasecore.firesstore.FireStoreExeptions
 import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
@@ -52,6 +53,7 @@ class MainActivityViewModel : ViewModel() {
     fun checkIfShopExists(
         fcmTokenManager: FCMTokenManager,
         mshardPref: SharedPreferenceManager,
+        updater: ShopFcmTokenUpdater,
         onComplete: () -> Unit,
     ) {
         val userPhoneNumber = mAuth.currentUser?.phoneNumber
@@ -69,7 +71,7 @@ class MainActivityViewModel : ViewModel() {
             },
             { error ->
                 if (error.message == FireStoreExeptions.DOC_NOT_FOUND.toString()) {
-                    createNewShop(userPhoneNumber, fcmTokenManager,mshardPref) {
+                    createNewShop(userPhoneNumber, fcmTokenManager, mshardPref) {
                         onComplete()
                     }
                 }
