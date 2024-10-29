@@ -29,6 +29,10 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.utils.parcelable
+import com.trex.rexnetwork.data.DeviceInfo
+import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.domain.repositories.RegisterDeviceRepo
+import com.trex.rexnetwork.utils.SharedPreferenceManager
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -44,17 +48,35 @@ data class FormData(
 ) : Parcelable
 
 class CreateDeviceActivity : ComponentActivity() {
-    private lateinit var formData: FormData
+    private lateinit var sharedPreferences: SharedPreferenceManager
+    private lateinit var newDevice: NewDevice
+    private val deviceRepo = RegisterDeviceRepo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        formData = getFormData(intent)
+        val deviceInfo = getDeviceInfo(intent)
+        val formData = FormData(deviceModel = deviceInfo.deviceModel)
+
+        sharedPreferences = SharedPreferenceManager(this)
+        newDevice = NewDevice()
+        sharedPreferences.getShopId()?.let { shopId ->
+            newDevice.shopId = shopId
+            newDevice.fcmToken = deviceInfo.fcmToken
+        }
         setContent {
             MaterialTheme {
                 DeviceFormScreen(
                     initialFormState = formData,
                     onFormSubmit = { data ->
-                        formData = data
+                        newDevice.imeiOne = data.imeiOne
+                        newDevice.imeiTwo = data.imeiTwo
+                        newDevice.costumerName = data.costumerName
+                        newDevice.costumerPhone = data.costumerPhone
+                        newDevice.emiPerMonth = data.emiPerMonth
+                        newDevice.dueDate = data.dueDate
+                        newDevice.durationInMonths = data.durationInMonths
+                        newDevice.modelNumber = data.deviceModel
+
                         handleFormSubmission()
                     },
                 )
@@ -63,29 +85,29 @@ class CreateDeviceActivity : ComponentActivity() {
     }
 
     private fun handleFormSubmission() {
-        Log.i("form data", "handleFormSubmission: $formData ")
+        deviceRepo.registerNewDevice(newDevice) { isSuccess ->
+            if (isSuccess) {
+                Log.i("", "handleFormSubmission: Device Added successfully!")
+            } else {
+                Log.e("", "handleFormSubmission: error")
+            }
+        }
     }
 
     companion object {
-        private const val EXTRA_FORM_DATA = "extra_form_data"
+        private const val EXTRA_DEVICE_DATA = "extra_form_data"
 
         fun startCreateDeviceActivity(
             context: Context,
-            formData: FormData,
+            deviceInfo: DeviceInfo,
         ) {
             val intent = Intent(context, CreateDeviceActivity::class.java)
-            intent.putExtra(EXTRA_FORM_DATA, formData)
+            intent.putExtra(EXTRA_DEVICE_DATA, deviceInfo)
             context.startActivity(intent)
         }
 
-        fun getFormData(intent: Intent): FormData =
-            intent.parcelable<FormData>(EXTRA_FORM_DATA) ?: FormData(
-                "",
-                "",
-                "",
-                "",
-                "",
-                "",
+        fun getDeviceInfo(intent: Intent): DeviceInfo =
+            intent.parcelable<DeviceInfo>(EXTRA_DEVICE_DATA) ?: DeviceInfo(
                 "",
                 "",
             )
