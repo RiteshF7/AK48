@@ -24,6 +24,11 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ui.createdevicescreen.CreateDeviceActivity"
+            android:exported="false"
+            android:label="@string/title_activity_create_device"
+            android:theme="@style/Theme.LaxmiEmi" />
+        <activity
             android:name=".ui.actionresultscreen.ActionResultActivity"
             android:exported="false"
             android:label="@string/title_activity_action_result"

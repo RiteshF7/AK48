@@ -1,0 +1,365 @@
+package com.trex.laxmiemi.ui.createdevicescreen
+
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.os.Parcelable
+import android.util.Log
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
+import com.trex.laxmiemi.utils.parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+data class FormData(
+    val costumerName: String = "",
+    val costumerPhone: String = "",
+    val emiPerMonth: String = "",
+    val dueDate: String = "",
+    val durationInMonths: String = "",
+    val imeiOne: String = "",
+    val imeiTwo: String = "",
+    val deviceModel: String = "",
+) : Parcelable
+
+class CreateDeviceActivity : ComponentActivity() {
+    private lateinit var formData: FormData
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        formData = getFormData(intent)
+        setContent {
+            MaterialTheme {
+                DeviceFormScreen(
+                    initialFormState = formData,
+                    onFormSubmit = { data ->
+                        formData = data
+                        handleFormSubmission()
+                    },
+                )
+            }
+        }
+    }
+
+    private fun handleFormSubmission() {
+        Log.i("form data", "handleFormSubmission: $formData ")
+    }
+
+    companion object {
+        private const val EXTRA_FORM_DATA = "extra_form_data"
+
+        fun startCreateDeviceActivity(
+            context: Context,
+            formData: FormData,
+        ) {
+            val intent = Intent(context, CreateDeviceActivity::class.java)
+            intent.putExtra(EXTRA_FORM_DATA, formData)
+            context.startActivity(intent)
+        }
+
+        fun getFormData(intent: Intent): FormData =
+            intent.parcelable<FormData>(EXTRA_FORM_DATA) ?: FormData(
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+                "",
+            )
+    }
+}
+
+@Composable
+fun DeviceFormScreen(
+    initialFormState: FormData,
+    onFormSubmit: (FormData) -> Unit,
+) {
+    val requiredFields = setOf("costumerName", "imeiOne", "deviceModel")
+
+    var formState by remember {
+        mutableStateOf(
+            initialFormState,
+        )
+    }
+    var errors by remember { mutableStateOf(mapOf<String, String>()) }
+
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+    ) {
+        LazyColumn(
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+        ) {
+            // Customer Name field
+            item {
+                FormField(
+                    label = "Customer Name*",
+                    value = formState.costumerName,
+                    error = errors["costumerName"],
+                    onValueChange = {
+                        formState = formState.copy(costumerName = it)
+                        errors = errors - "costumerName"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Words,
+                        ),
+                )
+            }
+
+            // Customer Phone field
+            item {
+                FormField(
+                    label = "Customer Phone",
+                    value = formState.costumerPhone,
+                    error = errors["costumerPhone"],
+                    onValueChange = {
+                        formState = formState.copy(costumerPhone = it)
+                        errors = errors - "costumerPhone"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+
+            // EMI Per Month field
+            item {
+                FormField(
+                    label = "EMI Per Month",
+                    value = formState.emiPerMonth,
+                    error = errors["emiPerMonth"],
+                    onValueChange = {
+                        formState = formState.copy(emiPerMonth = it)
+                        errors = errors - "emiPerMonth"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+
+            // Due Date field
+            item {
+                FormField(
+                    label = "Due Date",
+                    value = formState.dueDate,
+                    error = errors["dueDate"],
+                    onValueChange = {
+                        formState = formState.copy(dueDate = it)
+                        errors = errors - "dueDate"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+
+            // Duration in Months field
+            item {
+                FormField(
+                    label = "Duration (Months)",
+                    value = formState.durationInMonths,
+                    error = errors["durationInMonths"],
+                    onValueChange = {
+                        formState = formState.copy(durationInMonths = it)
+                        errors = errors - "durationInMonths"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+
+            // IMEI One field
+            item {
+                FormField(
+                    label = "IMEI 1*",
+                    value = formState.imeiOne,
+                    error = errors["imeiOne"],
+                    onValueChange = {
+                        formState = formState.copy(imeiOne = it)
+                        errors = errors - "imeiOne"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+
+            // IMEI Two field
+            item {
+                FormField(
+                    label = "IMEI 2",
+                    value = formState.imeiTwo,
+                    error = errors["imeiTwo"],
+                    onValueChange = {
+                        formState = formState.copy(imeiTwo = it)
+                        errors = errors - "imeiTwo"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+
+            // Device Model field
+            item {
+                FormField(
+                    label = "Device Model*",
+                    value = formState.deviceModel,
+                    error = errors["deviceModel"],
+                    onValueChange = {
+                        formState = formState.copy(deviceModel = it)
+                        errors = errors - "deviceModel"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Done,
+                        ),
+                )
+            }
+        }
+
+        // Submit button
+        Button(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
+            onClick = {
+                if (validateForm(formState, requiredFields)) {
+                    onFormSubmit(formState)
+                } else {
+                    errors = getFormErrors(formState, requiredFields)
+                }
+            },
+        ) {
+            Text("Submit")
+        }
+    }
+}
+
+@Composable
+fun FormField(
+    label: String,
+    value: String,
+    error: String?,
+    onValueChange: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = value,
+            onValueChange = onValueChange,
+            label = { Text(label) },
+            isError = error != null,
+            keyboardOptions = keyboardOptions,
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
+        )
+
+        error?.let {
+            Text(
+                text = it,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.padding(start = 16.dp, top = 4.dp),
+            )
+        }
+    }
+}
+
+private fun validateForm(
+    data: FormData,
+    requiredFields: Set<String>,
+): Boolean = getFormErrors(data, requiredFields).isEmpty()
+
+private fun getFormErrors(
+    data: FormData,
+    requiredFields: Set<String>,
+): Map<String, String> {
+    val errors = mutableMapOf<String, String>()
+
+    // Required field validation
+    if (requiredFields.contains("costumerName") && data.costumerName.isBlank()) {
+        errors["costumerName"] = "Customer name is required"
+    }
+
+    if (requiredFields.contains("costumerPhone") && data.costumerPhone.isBlank()) {
+        errors["costumerPhone"] = "Customer phone is required"
+    } else if (data.costumerPhone.isNotBlank() &&
+        !android.util.Patterns.PHONE
+            .matcher(data.costumerPhone)
+            .matches()
+    ) {
+        errors["costumerPhone"] = "Invalid phone format"
+    }
+
+    if (data.emiPerMonth.isNotBlank() && data.emiPerMonth.toDoubleOrNull() == null) {
+        errors["emiPerMonth"] = "EMI must be a valid number"
+    }
+
+    if (data.durationInMonths.isNotBlank() && data.durationInMonths.toIntOrNull() == null) {
+        errors["durationInMonths"] = "Duration must be a valid number"
+    }
+
+    if (requiredFields.contains("imeiOne") && data.imeiOne.isBlank()) {
+        errors["imeiOne"] = "IMEI 1 is required"
+    } else if (data.imeiOne.isNotBlank() && !data.imeiOne.matches(Regex("^[0-9]{15}$"))) {
+        errors["imeiOne"] = "Invalid IMEI format (should be 15 digits)"
+    }
+
+    if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
+        errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"
+    }
+
+    if (requiredFields.contains("deviceModel") && data.deviceModel.isBlank()) {
+        errors["deviceModel"] = "Device model is required"
+    }
+
+    return errors
+}

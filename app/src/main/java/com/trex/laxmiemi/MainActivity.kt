@@ -12,6 +12,8 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.trex.laxmiemi.ui.components.HomeScreen
+import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
+import com.trex.laxmiemi.ui.createdevicescreen.FormData
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
@@ -26,7 +28,7 @@ class MainActivity : ComponentActivity() {
         shopFCMTokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
         mshardPref = SharedPreferenceManager(this)
         enableEdgeToEdge()
-//        startActivity(Intent(this,ActionResultActivity::class.java))
+        CreateDeviceActivity.startCreateDeviceActivity(this, FormData("Ritesh", imeiOne = "123456789012345", deviceModel = "Samsung!"))
         val mainViewModel: MainActivityViewModel by viewModels()
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {
