@@ -4,20 +4,20 @@ import android.content.Context
 import android.content.Intent
 import com.google.gson.Gson
 import com.trex.laxmiemi.ui.actionresultscreen.ActionResultActivity
+import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
-import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmResponseManager
+import com.trex.rexnetwork.utils.startMyActivity
 
 class ActionExecutor(
     private val context: Context,
 ) {
     fun execute(messageDTO: ActionMessageDTO) {
-
-        FcmResponseManager.handleResponse(messageDTO.requestId,messageDTO)
         val action = messageDTO.action
         when {
             action == Actions.ACTION_REG_DEVICE -> {
-                HandleDeviceRegistration(context).handle(messageDTO)
+//                HandleDeviceRegistration(context).handle(messageDTO)
+                context.startMyActivity(CreateDeviceActivity::class.java, messageDTO)
             }
 
             else -> {

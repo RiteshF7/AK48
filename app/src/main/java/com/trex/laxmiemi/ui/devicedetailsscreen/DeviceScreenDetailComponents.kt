@@ -427,6 +427,8 @@ val deviceActionDataList =
                 action,
                 "Lock screen",
             )
+
+            Actions.ACTION_REG_DEVICE_COMPLETED -> TODO()
         }
     }
 

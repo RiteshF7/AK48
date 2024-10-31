@@ -14,6 +14,7 @@ import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
 import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity
 import com.trex.rexnetwork.utils.SharedPreferenceManager
+import com.trex.rexnetwork.utils.startMyActivity
 
 class DeviceDetailActivity : ComponentActivity() {
     private lateinit var context: Context
@@ -33,8 +34,8 @@ class DeviceDetailActivity : ComponentActivity() {
                     Log.i("TAG", "message sending .... : ${messageData.action}")
                     Toast.makeText(this, "Completed!!", Toast.LENGTH_SHORT).show()
                     if (isGetRequest) {
-                        FcmRequestActivity.go(
-                            context,
+                        context.startMyActivity(
+                            FcmRequestActivity::class.java,
                             ActionMessageDTO(device.fcmToken, it),
                         )
                     }
