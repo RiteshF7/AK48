@@ -17,6 +17,7 @@ import com.trex.laxmiemi.ui.createdevicescreen.FormData
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
+import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 class MainActivity : ComponentActivity() {
@@ -28,7 +29,7 @@ class MainActivity : ComponentActivity() {
         shopFCMTokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
         mshardPref = SharedPreferenceManager(this)
         enableEdgeToEdge()
-        CreateDeviceActivity.startCreateDeviceActivity(this, FormData("Ritesh", imeiOne = "123456789012345", deviceModel = "Samsung!"))
+//        CreateDeviceActivity.startCreateDeviceActivity(this, FormData("Ritesh", imeiOne = "123456789012345", deviceModel = "Samsung!"))
         val mainViewModel: MainActivityViewModel by viewModels()
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {

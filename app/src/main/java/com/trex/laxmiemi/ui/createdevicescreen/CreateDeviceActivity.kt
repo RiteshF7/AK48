@@ -1,7 +1,5 @@
 package com.trex.laxmiemi.ui.createdevicescreen
 
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.util.Log
@@ -28,11 +26,11 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.trex.laxmiemi.utils.parcelable
 import com.trex.rexnetwork.data.DeviceInfo
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.repositories.RegisterDeviceRepo
 import com.trex.rexnetwork.utils.SharedPreferenceManager
+import com.trex.rexnetwork.utils.getExtraData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -54,7 +52,7 @@ class CreateDeviceActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val deviceInfo = getDeviceInfo(intent)
+        val deviceInfo = intent.getExtraData<DeviceInfo>()
         val formData = FormData(deviceModel = deviceInfo.deviceModel)
 
         sharedPreferences = SharedPreferenceManager(this)
@@ -92,25 +90,6 @@ class CreateDeviceActivity : ComponentActivity() {
                 Log.e("", "handleFormSubmission: error")
             }
         }
-    }
-
-    companion object {
-        private const val EXTRA_DEVICE_DATA = "extra_form_data"
-
-        fun startCreateDeviceActivity(
-            context: Context,
-            deviceInfo: DeviceInfo,
-        ) {
-            val intent = Intent(context, CreateDeviceActivity::class.java)
-            intent.putExtra(EXTRA_DEVICE_DATA, deviceInfo)
-            context.startActivity(intent)
-        }
-
-        fun getDeviceInfo(intent: Intent): DeviceInfo =
-            intent.parcelable<DeviceInfo>(EXTRA_DEVICE_DATA) ?: DeviceInfo(
-                "",
-                "",
-            )
     }
 }
 

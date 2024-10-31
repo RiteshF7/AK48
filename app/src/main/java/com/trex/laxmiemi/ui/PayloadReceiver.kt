@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.trex.laxmiemi.handlers.ActionExecutor
-import com.trex.laxmiemi.ui.actionresultscreen.ActionResultActivity
 import com.trex.rexnetwork.data.ActionMessageDTOMapper
 
 class PayloadReceiver : BroadcastReceiver() {
@@ -18,8 +17,6 @@ class PayloadReceiver : BroadcastReceiver() {
             ActionMessageDTOMapper.fromJsonToDTO(actionMessageDTOString)?.let { actionMessageDTO ->
                 ActionExecutor(context).execute(actionMessageDTO)
             }
-
-
         } ?: {
             Log.e("", "onReceive: no payload found in broadcast !!")
         }
