@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Block
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
@@ -34,11 +33,9 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.OfflineBolt
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.ScreenLockRotation
-import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.Icon
@@ -85,7 +82,7 @@ fun DeviceDetails(
             onActionClick,
         )
 
-        ActionsButtonGrid(list = deviceActionDataList, onActionClick)
+        ActionsButtonGrid(list = deviceActionDataList as List<DeviceActionData>, onActionClick)
     }
 }
 
@@ -406,29 +403,36 @@ val deviceActionDataList =
                     "Remove Device",
                 )
 
-            Actions.ACTION_OFFLINE_LOCK -> DeviceActionData(
-                Icons.Default.Delete,
-                action,
-                "Offline Device",
-            )
-            Actions.ACTION_OFFLINE_UNLOCK -> DeviceActionData(
-                Icons.Default.Delete,
-                action,
-                "Offline unlock",
-            )
-            Actions.ACTION_LOCK_SCREEN -> DeviceActionData(
-                Icons.Default.Delete,
-                action,
-                "Lock screen",
-            )
+            Actions.ACTION_OFFLINE_LOCK ->
+                DeviceActionData(
+                    Icons.Default.Delete,
+                    action,
+                    "Offline Device",
+                )
 
-            Actions.ACTION_REG_DEVICE -> DeviceActionData(
-                Icons.Default.Delete,
-                action,
-                "Lock screen",
-            )
+            Actions.ACTION_OFFLINE_UNLOCK ->
+                DeviceActionData(
+                    Icons.Default.Delete,
+                    action,
+                    "Offline unlock",
+                )
 
-            Actions.ACTION_REG_DEVICE_COMPLETED -> TODO()
+            Actions.ACTION_LOCK_SCREEN ->
+                DeviceActionData(
+                    Icons.Default.Delete,
+                    action,
+                    "Lock screen",
+                )
+
+            Actions.ACTION_REG_DEVICE ->
+                DeviceActionData(
+                    Icons.Default.Delete,
+                    action,
+                    "Lock screen",
+                )
+
+            else -> {
+            }
         }
     }
 

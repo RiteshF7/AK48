@@ -45,11 +45,5 @@ class DeviceScreenDetailViewModel : ViewModel() {
         }
     }
 
-    fun sendAction(data: ActionMessageDTO) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                repo.sendActionMessage(data)
-            }
-        }
-    }
+
 }

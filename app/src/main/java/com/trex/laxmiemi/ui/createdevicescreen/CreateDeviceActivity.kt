@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.createdevicescreen
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.activity.ComponentActivity
@@ -26,6 +27,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
+import com.trex.laxmiemi.handlers.ShopActionExecutor
+import com.trex.rexnetwork.Constants
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.DeviceInfo
@@ -85,29 +88,39 @@ class CreateDeviceActivity : ComponentActivity() {
                         newDevice.durationInMonths = data.durationInMonths
                         newDevice.modelNumber = data.deviceModel
 
-                        handleFormSubmission(deviceInfo.fcmToken)
+                        handleFormSubmission(deviceInfo.fcmToken, this)
                     },
                 )
             }
         }
     }
 
-    private fun handleFormSubmission(fcmToken: String) {
+    private fun handleFormSubmission(
+        fcmToken: String,
+        context: Context,
+    ) {
         deviceRepo.registerNewDevice(newDevice) { isSuccess ->
+            val status =
+                if (isSuccess) {
+                    Constants.RESPONSE_RESULT_SUCCESS
+                } else {
+                    Constants.RESPONSE_RESULT_FAILED
+                }
 
             val response =
                 ActionMessageDTO(
                     fcmToken = fcmToken,
-                    action = Actions.ACTION_REG_DEVICE_COMPLETED,
+                    action = Actions.ACTION_REG_DEVICE,
                     payload =
                         mapOf(
-                            Actions.ACTION_REG_DEVICE_COMPLETED.name to isSuccess.toString(),
+                            Constants.KEY_RESPOSE_RESULT_STATUS to status,
+                            Actions.ACTION_REG_DEVICE.name to "Device created successfully!!",
                         ),
                     requestId = messageDTO.requestId,
                 )
 
-            sendMessageReop.sendActionMessage(response)
-            //show success screen
+            // todo show success ui in this activity after sending and finish on button press!!
+            ShopActionExecutor(context).sendResponse(response)
             finish()
         }
     }
