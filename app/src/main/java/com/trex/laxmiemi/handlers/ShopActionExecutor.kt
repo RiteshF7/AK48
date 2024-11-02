@@ -2,6 +2,7 @@ package com.trex.laxmiemi.handlers
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import com.google.gson.Gson
 import com.trex.laxmiemi.ui.actionresultscreen.ActionResultActivity
 import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
@@ -15,7 +16,6 @@ import com.trex.rexnetwork.data.Actions.ACTION_GET_PHONE_NUMBER
 import com.trex.rexnetwork.data.Actions.ACTION_GET_UNLOCK_CODE
 import com.trex.rexnetwork.data.Actions.ACTION_REG_DEVICE
 import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity
-import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmResponseManager
 import com.trex.rexnetwork.domain.repositories.SendActionMessageRepository
 import com.trex.rexnetwork.utils.isGetRequest
 import com.trex.rexnetwork.utils.startMyActivity
@@ -25,36 +25,31 @@ class ShopActionExecutor(
 ) {
     private val sendActionRepo = SendActionMessageRepository()
 
-    fun sendAction(action: ActionMessageDTO) {
+    fun sendActionToClient(action: ActionMessageDTO) {
         context.startMyActivity(
             FcmRequestActivity::class.java,
             action,
         )
     }
 
-    fun receiveResponse(response: ActionMessageDTO) {
+    fun receiveResponseFromClient(response: ActionMessageDTO) {
         val action = response.action
-        // change the fcm request activity to process activity
-        FcmResponseManager.handleResponse(response.requestId, response)
         if (action.isGetRequest()) {
             when {
                 action == ACTION_GET_PHONE_NUMBER -> TODO()
-                action == ACTION_GET_CONTACTS -> TODO()
+                action == ACTION_GET_CONTACTS -> {
+                    Log.i("", "receiveResponseFromClient: some contacts response ")
+                }
                 action == ACTION_GET_CONTACTS_VIA_MESSAGE -> TODO()
                 action == ACTION_GET_DEVICE_INFO -> TODO()
                 action == ACTION_GET_UNLOCK_CODE -> TODO()
                 action == ACTION_GET_LOCATION -> TODO()
                 action == ACTION_GET_LOCATION_VIA_MESSAGE -> TODO()
             }
-        } else {
-            //todo start some activity that can show logp success message and failure message
-            //get message from payload and show it to user
-            startResultActivity(context, response)
-            return
         }
     }
 
-    // don't touch this now!!
+    // from here
     fun receiveAction(message: ActionMessageDTO) {
         when {
             message.action == ACTION_REG_DEVICE -> {
@@ -66,6 +61,8 @@ class ShopActionExecutor(
     fun sendResponse(response: ActionMessageDTO) {
         sendActionRepo.sendActionMessage(response)
     }
+
+    // to here is untouchable.
 
     private fun startResultActivity(
         context: Context,

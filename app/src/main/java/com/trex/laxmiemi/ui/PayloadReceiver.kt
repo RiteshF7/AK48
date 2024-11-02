@@ -31,7 +31,8 @@ class PayloadReceiver : BroadcastReceiver() {
         val shopActionExec = ShopActionExecutor(context)
 
         if (FcmResponseManager.hasRequest(actionMessageDTO.requestId)) {
-            shopActionExec.receiveResponse(actionMessageDTO)
+            FcmResponseManager.handleResponse(actionMessageDTO.requestId, actionMessageDTO)
+            shopActionExec.receiveResponseFromClient(actionMessageDTO)
             return
         }
 

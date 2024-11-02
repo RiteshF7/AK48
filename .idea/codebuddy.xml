@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CodebuddyPersistentProjectState">
+    <option name="autoFileMode" value="CURRENT_OPEN" />
+    <option name="promptHistory">
+      <list>
+        <option value="make handle form submission more clean readable and broken into functions " />
+      </list>
+    </option>
     <option name="selectedModel" value="codebuddy:CLAUDE_3.5_SONNET_V7" />
+    <option name="ttsEnabled" value="false" />
   </component>
 </project>

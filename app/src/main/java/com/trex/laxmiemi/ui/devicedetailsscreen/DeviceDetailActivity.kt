@@ -29,8 +29,9 @@ class DeviceDetailActivity : ComponentActivity() {
         setContent {
             device?.let {
                 DeviceDetails(device) {
+                    // todo add payload in case of some lock list of apps type
                     val message = ActionMessageDTO(device.fcmToken, it)
-                    ShopActionExecutor(context).sendAction(message)
+                    ShopActionExecutor(context).sendActionToClient(message)
                 }
             }
         }

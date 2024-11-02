@@ -56,7 +56,6 @@ class CreateDeviceActivity : ComponentActivity() {
     private lateinit var newDevice: NewDevice
     private val deviceRepo = RegisterDeviceRepo()
     private lateinit var messageDTO: ActionMessageDTO
-    private var sendMessageReop = SendActionMessageRepository()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,30 +99,44 @@ class CreateDeviceActivity : ComponentActivity() {
         context: Context,
     ) {
         deviceRepo.registerNewDevice(newDevice) { isSuccess ->
-            val status =
-                if (isSuccess) {
-                    Constants.RESPONSE_RESULT_SUCCESS
-                } else {
-                    Constants.RESPONSE_RESULT_FAILED
-                }
-
-            val response =
-                ActionMessageDTO(
-                    fcmToken = fcmToken,
-                    action = Actions.ACTION_REG_DEVICE,
-                    payload =
-                        mapOf(
-                            Constants.KEY_RESPOSE_RESULT_STATUS to status,
-                            Actions.ACTION_REG_DEVICE.name to "Device created successfully!!",
-                        ),
-                    requestId = messageDTO.requestId,
-                )
-
-            // todo show success ui in this activity after sending and finish on button press!!
-            ShopActionExecutor(context).sendResponse(response)
-            finish()
+            sendResponseAndFinish(isSuccess, fcmToken, context)
         }
     }
+
+    private fun sendResponseAndFinish(
+        isSuccess: Boolean,
+        fcmToken: String,
+        context: Context,
+    ) {
+        val status = getStatus(isSuccess)
+
+        val response = buildResponse(fcmToken, status)
+
+        // todo show success ui in this activity after sending and finish on button press!!
+        ShopActionExecutor(context).sendResponse(response)
+        finish()
+    }
+
+    private fun buildResponse(
+        fcmToken: String,
+        status: String,
+    ) = ActionMessageDTO(
+        fcmToken = fcmToken,
+        action = Actions.ACTION_REG_DEVICE,
+        payload =
+            mapOf(
+                Constants.KEY_RESPOSE_RESULT_STATUS to status,
+                Actions.ACTION_REG_DEVICE.name to "Device created successfully!!",
+            ),
+        requestId = messageDTO.requestId,
+    )
+
+    private fun getStatus(isSuccess: Boolean) =
+        if (isSuccess) {
+            Constants.RESPONSE_RESULT_SUCCESS
+        } else {
+            Constants.RESPONSE_RESULT_FAILED
+        }
 }
 
 @Composable
