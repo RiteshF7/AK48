@@ -48,6 +48,9 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
+            android:name="com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
             android:name=".ui.loginscreen.OtpVerifyActivity"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity

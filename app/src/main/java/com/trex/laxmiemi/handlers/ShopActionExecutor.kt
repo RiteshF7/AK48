@@ -2,7 +2,6 @@ package com.trex.laxmiemi.handlers
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import com.google.gson.Gson
 import com.trex.laxmiemi.ui.actionresultscreen.ActionResultActivity
 import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
@@ -38,8 +37,9 @@ class ShopActionExecutor(
             when {
                 action == ACTION_GET_PHONE_NUMBER -> TODO()
                 action == ACTION_GET_CONTACTS -> {
-                    Log.i("", "receiveResponseFromClient: some contacts response ")
+                    startResultActivity(context, response)
                 }
+
                 action == ACTION_GET_CONTACTS_VIA_MESSAGE -> TODO()
                 action == ACTION_GET_DEVICE_INFO -> TODO()
                 action == ACTION_GET_UNLOCK_CODE -> TODO()

@@ -18,6 +18,7 @@ class DeviceDetailActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        context = this;
         val vm by viewModels<DeviceScreenDetailViewModel>()
         // todo use intent extension function instead
         val device = intent.getParcelableExtra<NewDevice>(SINGLE_DEVICE_DATA)
