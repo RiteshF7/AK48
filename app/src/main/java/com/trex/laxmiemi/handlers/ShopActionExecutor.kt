@@ -15,6 +15,7 @@ import com.trex.rexnetwork.data.Actions.ACTION_GET_PHONE_NUMBER
 import com.trex.rexnetwork.data.Actions.ACTION_GET_UNLOCK_CODE
 import com.trex.rexnetwork.data.Actions.ACTION_REG_DEVICE
 import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity
+import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmResultActivity
 import com.trex.rexnetwork.domain.repositories.SendActionMessageRepository
 import com.trex.rexnetwork.utils.isGetRequest
 import com.trex.rexnetwork.utils.startMyActivity
@@ -46,6 +47,8 @@ class ShopActionExecutor(
                 action == ACTION_GET_LOCATION -> TODO()
                 action == ACTION_GET_LOCATION_VIA_MESSAGE -> TODO()
             }
+        } else {
+            context.startMyActivity(FcmResultActivity::class.java, response)
         }
     }
 
