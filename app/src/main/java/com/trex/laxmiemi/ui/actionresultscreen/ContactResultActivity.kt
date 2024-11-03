@@ -31,22 +31,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.ui.actionresultscreen.ui.theme.LaxmiEmiTheme
 import com.trex.laxmiemi.utils.GoogleMapUtils
-import com.trex.rexnetwork.data.ActionMessageDTOMapper
+import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
+import com.trex.rexnetwork.utils.getExtraData
 
-class ActionResultActivity : ComponentActivity() {
+class ContactResultActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val actionResultIntent =
-            intent.getStringExtra(ACTION_RESULT_INTENT_KEY)
-
-        val actionMessageDTO =
-            actionResultIntent?.let {
-                ActionMessageDTOMapper.fromJsonToDTO(it)
-            }
-        val actionKey = actionMessageDTO?.action?.name
-
-        val actionPayload = actionMessageDTO?.payload?.get(actionKey)
+        val actionMessageDTO = intent.getExtraData<ActionMessageDTO>()
+        val actionKey = actionMessageDTO.action.name
+        val actionPayload = actionMessageDTO.payload.get(actionKey)
 
         enableEdgeToEdge()
 
@@ -59,13 +53,13 @@ class ActionResultActivity : ComponentActivity() {
                                 actionKey == Actions.ACTION_GET_CONTACTS.name -> {
                                     val contactsMap = convertToMap(payloadString)
                                     ContactsList(contactsMap) {
-                                        shareContacts(this@ActionResultActivity, contactsMap)
+                                        shareContacts(this@ContactResultActivity, contactsMap)
                                     }
                                 }
 
                                 actionKey == Actions.ACTION_GET_LOCATION.name -> {
                                     GoogleMapUtils.openGoogleMapUrl(
-                                        this@ActionResultActivity,
+                                        this@ContactResultActivity,
                                         payloadString,
                                     )
                                     finish()
@@ -85,10 +79,6 @@ class ActionResultActivity : ComponentActivity() {
                 val (name, number) = pair.split(":")
                 name.trim() to number.trim()
             }
-
-    companion object {
-        const val ACTION_RESULT_INTENT_KEY = "action_result_intent_key"
-    }
 }
 
 @Composable

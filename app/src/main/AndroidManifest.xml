@@ -29,7 +29,7 @@
             android:label="@string/title_activity_create_device"
             android:theme="@style/Theme.LaxmiEmi" />
         <activity
-            android:name=".ui.actionresultscreen.ActionResultActivity"
+            android:name=".ui.actionresultscreen.ContactResultActivity"
             android:exported="false"
             android:label="@string/title_activity_action_result"
             android:theme="@style/Theme.LaxmiEmi" />
@@ -46,6 +46,12 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name=".ui.actionresultscreen.ResponseMapDetailsActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
+            android:name="com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmResultActivity"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
             android:name="com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity"

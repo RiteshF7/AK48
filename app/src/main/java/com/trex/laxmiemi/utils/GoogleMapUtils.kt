@@ -3,6 +3,7 @@ package com.trex.laxmiemi.utils
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import android.widget.Toast
 
 object GoogleMapUtils {
@@ -68,6 +69,8 @@ object GoogleMapUtils {
         try {
             // Create intent with the URL
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+
             intent.setPackage("com.google.android.apps.maps")
 
             // Check if Google Maps is installed
@@ -76,9 +79,11 @@ object GoogleMapUtils {
             } else {
                 // If Google Maps isn't installed, open in browser
                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                browserIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 context.startActivity(browserIntent)
             }
         } catch (e: Exception) {
+            Log.e("error map", "openGoogleMapUrl: ${e.localizedMessage}")
             Toast
                 .makeText(
                     context,
