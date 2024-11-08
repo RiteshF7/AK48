@@ -17,7 +17,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Key
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PhoneIphone
+import androidx.compose.material.icons.filled.QrCode
+import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -59,11 +64,14 @@ fun HomeScreen(homeScreenViewModel: MainActivityViewModel) {
                 .background(Color.Black.copy(alpha = 0.85f)),
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Header()
             ButtonGrid()
+            Spacer(modifier = Modifier.weight(1f))
+            RexActionButton("Logout") {
+            }
         }
     }
 }
@@ -117,118 +125,102 @@ fun HeaderText() {
     }
 }
 
-//
-// @Composable
-// fun Header(dealerCode: String) {
-//    Box(
-//        modifier =
-//            Modifier
-//                .fillMaxWidth()
-//                .background(Color(0xFF1F1F1F))
-//                .padding(vertical = 16.dp, horizontal = 20.dp),
-//    ) {
-//        Row(
-//            modifier = Modifier.fillMaxWidth(),
-//            verticalAlignment = Alignment.CenterVertically,
-//            horizontalArrangement = Arrangement.SpaceBetween,
-//        ) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.spacedBy(16.dp),
-//            ) {
-//                Icon(
-//                    painter = painterResource(R.drawable.shield),
-//                    contentDescription = null,
-//                    modifier = Modifier.size(64.dp),
-//                )
-//                Column {
-//                    Text(
-//                        text = "SECURE EMI SHIELD",
-//                        color = Color.White,
-//                        style =
-//                            TextStyle(
-//                                fontFamily = FontFamily(Font(R.font.opensans_bold)),
-//                                fontSize = 26.sp,
-//                            ),
-//                    )
-//                    Text(
-//                        text = "Secure EMI payments",
-//                        color = Color.White,
-//                        style =
-//                            TextStyle(
-//                                fontFamily = FontFamily(Font(R.font.opensans_bold)),
-//                                fontSize = 26.sp,
-//                            ),
-//                    )
-//                }
-//            }
-//            Text(
-//                text = "Dealer Code: $dealerCode",
-//                color = Color.White,
-//                style =
-//                    TextStyle(
-//                        fontFamily = FontFamily(Font(R.font.opensans_bold)),
-//                        fontSize = 26.sp,
-//                    ),
-//            )
-//        }
-//    }
-// }
+/*
+scan qr
+all customers
+user profile
+Balance keys
+call for assistance
+installation video
+
+*/
 
 @Composable
 fun ButtonGrid() {
     Column(
         modifier =
             Modifier
-                .fillMaxWidth()
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            ActionButton("View EMI Shield")
-            ActionButton("View EMI Details")
-            ActionButton("View EMI Details")
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.QrCode,
+                    action = ButtonActions.AddCustomer,
+                    title =
+                        "Scan \n" +
+                            "QR Code",
+                ),
+            ) {
+
+            }
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.PhoneIphone,
+                    action = ButtonActions.AddCustomer,
+                    title =
+                        "All \n" +
+                            "Devices",
+                ),
+            ) {
+            }
+
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.Person,
+                    action = ButtonActions.AddCustomer,
+                    title =
+                        "User\n" +
+                            "profile",
+                ),
+            ) {
+            }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            ActionButton("View EMI Shield")
-            ActionButton("View EMI Details")
-            ActionButton("View EMI Details")
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-        ) {
-            ActionButton("View EMI Shield")
-            ActionButton("View EMI Details")
-            ActionButton("View EMI Details")
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround,
-        ) {
-            ActionButton("View EMI Shield")
-            ActionButton("View EMI Details")
-            ActionButton("View EMI Details")
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.Key,
+                    action = ButtonActions.AddCustomer,
+                    title =
+                        "Balance\n" +
+                            " Keys",
+                ),
+            ) {
+            }
+
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.Videocam,
+                    action = ButtonActions.AddCustomer,
+                    title =
+                        "Installation\n Video",
+                ),
+            ) {
+            }
+
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.Call,
+                    action = ButtonActions.AddCustomer,
+                    title =
+                        "Call\nSupport",
+                ),
+            ) {
+            }
         }
     }
 }
 
 @Composable
 fun ActionButton(text: String) {
-    MenuItemCard(
-        GridButton(
-            icon = Icons.Default.Add,
-            action = ButtonActions.AddCustomer,
-            title = "Add \nsomething",
-        ),
-    ) { }
 }
 
 @Composable
@@ -255,7 +247,7 @@ fun MenuItemCard(
             ),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(26.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -270,7 +262,7 @@ fun MenuItemCard(
                     imageVector = item.icon,
                     contentDescription = item.title,
                     tint = Color(0xFF00C853),
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(42.dp).padding(5.dp),
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))
@@ -292,19 +284,21 @@ fun RexActionButton(
     text: String,
     onClick: () -> Unit,
 ) {
-    Button(
-        onClick = onClick,
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-                .height(40.dp),
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.red_300),
-                contentColor = Color.White,
-            ),
-    ) {
-        Text(text)
+    Box(Modifier.fillMaxWidth()) {
+        Button(
+            onClick = onClick,
+            modifier =
+                Modifier
+                    .padding(10.dp)
+                    .height(40.dp)
+                    .align(Alignment.BottomEnd),
+            colors =
+                ButtonDefaults.buttonColors(
+                    containerColor = colorResource(R.color.red_300),
+                    contentColor = Color.White,
+                ),
+        ) {
+            Text(text)
+        }
     }
 }
