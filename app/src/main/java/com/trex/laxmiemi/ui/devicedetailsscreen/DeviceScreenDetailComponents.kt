@@ -432,6 +432,12 @@ val deviceActionDataList =
                 )
 
             else -> {
+                DeviceActionData(
+                    Icons.Default.Delete,
+                    action,
+                    "Lock screen",
+                )
+
             }
         }
     }

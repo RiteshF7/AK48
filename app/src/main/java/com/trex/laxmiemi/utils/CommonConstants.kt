@@ -16,6 +16,6 @@ object CommonConstants {
 
     var shodId = "+919910000163"
 
-    val MaxScreenWidth = 500.dp
+    val MaxScreenWidth = 250.dp
     val SINGLE_DEVICE_DATA = "single_device_data"
 }

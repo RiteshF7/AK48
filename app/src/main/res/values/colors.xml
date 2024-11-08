@@ -3,6 +3,39 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <!-- Primary colors -->
+    <color name="primary">#00dc7f</color>
+    <color name="primary_variant">#ef9a9a</color>
+
+    <!-- Secondary colors -->
+    <color name="secondary">#03DAC6</color>
+
+    <!-- Background colors -->
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+
+    <!-- Text colors -->
+    <color name="text_primary">#E6FFFFFF</color>
+    <color name="text_secondary">#99FFFFFF</color>
+
+    <!-- Input field colors -->
+    <color name="input_background">#2C2C2C</color>
+    <color name="white_background">#3DFFFFFF</color>
+    <color name="input_stroke">#3DFFFFFF</color>
+    <color name="white_stroke">#2C2C2C</color>
+
+    <color name="colorPrimary">#0E68FF</color>
+    <color name="colorPrimaryDark">#0E68FF</color>
+    <color name="colorTextWhite">#ffffff</color>
+    <color name="colorWhite">#ffffff</color>
+    <color name="colorTextBlack">#000000</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorEditText">#14000000</color>
+    <color name="colorButton">#0E68FF</color>
+    <color name="colorButtonText">#ffffff</color>
+    <color name="colorPlaceholder">#505050</color>
+    <color name="colorTextPrimary">#0E68FF</color>
 
     <!-- Red -->
     <color name="red_50">#ffebee</color>

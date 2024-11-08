@@ -1,47 +1,52 @@
 package com.trex.laxmiemi
 
+import HomeScreen
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.trex.laxmiemi.ui.components.HomeScreen
-import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
-import com.trex.laxmiemi.ui.createdevicescreen.FormData
+import com.trex.laxmiemi.databinding.ActivityMainBinding
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
-import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 class MainActivity : ComponentActivity() {
-    private lateinit var shopFCMTokenManager: FCMTokenManager
-    private lateinit var mshardPref: SharedPreferenceManager
+    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        shopFCMTokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
-        mshardPref = SharedPreferenceManager(this)
-        enableEdgeToEdge()
-//        CreateDeviceActivity.startCreateDeviceActivity(this, FormData("Ritesh", imeiOne = "123456789012345", deviceModel = "Samsung!"))
-        val mainViewModel: MainActivityViewModel by viewModels()
+//        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+
+        val mainActivityViewModel: MainActivityViewModel by viewModels()
+        checkIsUserLoggedIn(mainActivityViewModel) {
+            setContent {
+                MyApp(mainActivityViewModel)
+            }
+        }
+    }
+
+    fun checkIsUserLoggedIn(
+        mainViewModel: MainActivityViewModel,
+        onSuccess: () -> Unit,
+    ) {
+        val shopFCMTokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
+        val mshardPref = SharedPreferenceManager(this)
+
         mainViewModel.firebaseUser.observe(this) {
             if (it != null) {
                 mainViewModel.checkIfShopExists(
                     shopFCMTokenManager,
                     mshardPref,
                     ShopFcmTokenUpdater(this),
-                ) {
-                    setContent {
-                        MyApp(mainViewModel)
-                    }
-                }
+                    onSuccess,
+                )
             } else {
                 val sendOtpActivity = Intent(this, OtpSendActivity::class.java)
                 startActivity(sendOtpActivity)

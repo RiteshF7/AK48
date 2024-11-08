@@ -1,5 +1,11 @@
 package com.trex.laxmiemi.ui.components
 
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,22 +14,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -59,7 +64,6 @@ fun RoundedCardText(dealerCode: String) {
     Row(
         modifier =
             Modifier
-                .background(colorResource(id = R.color.grey_100), shape = RoundedCornerShape(50.dp))
                 .padding(5.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -69,8 +73,8 @@ fun RoundedCardText(dealerCode: String) {
             style =
                 TextStyle(
                     fontFamily = FontFamily(Font(R.font.opensans_bold)),
-                    fontSize = 20.sp,
-                    color = colorResource(id = R.color.blue_600),
+                    fontSize = 22.sp,
+                    color = colorResource(id = R.color.primary),
                 ),
         )
     }
@@ -92,31 +96,6 @@ fun TitleText(
             ),
         modifier = modifier,
     )
-}
-
-@Composable
-fun CircleIcon(
-    bgColor: Color,
-    icon: ImageVector,
-) {
-    Box(
-        modifier =
-            Modifier
-                .size(60.dp)
-                .clip(CircleShape)
-                .background(bgColor)
-                .padding(8.dp),
-    ) {
-        Icon(
-            modifier =
-                Modifier
-                    .align(Alignment.Center)
-                    .size(35.dp),
-            imageVector = icon,
-            contentDescription = "Lock Icon",
-            tint = Color.White,
-        )
-    }
 }
 
 @Composable
@@ -160,4 +139,3 @@ fun MyTopAppBar() {
         }
     }
 }
-

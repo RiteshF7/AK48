@@ -3,15 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-
-    </data>
+    <data></data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/background"
         android:padding="20dp"
         tools:context=".ui.loginscreen.OtpSendActivity">
+
+        <ImageView
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/close"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            app:tint="@color/white" />
 
         <ImageView
             android:id="@+id/imageView"
@@ -22,94 +31,104 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_plane" />
+            app:srcCompat="@drawable/shield" />
 
         <TextView
             android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="OTP Verification"
-            android:textColor="@color/black"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Verify Your Phone Number"
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_primary"
             android:textSize="24sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="We will send otp to your entered mobile number."
-            app:layout_constraintEnd_toEndOf="@+id/textView"
-            app:layout_constraintStart_toStartOf="@+id/textView"
+            android:fontFamily="@font/roboto_medium"
+            android:text="We'll send an OTP to verify your phone number."
+            android:textAlignment="viewStart"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-
-        <com.hbb20.CountryCodePicker
-            android:id="@+id/ccp"
-            android:layout_width="110dp"
+        <LinearLayout
+            android:id="@+id/phoneContainer"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/border_left"
-            android:padding="8dp"
-            app:ccp_autoDetectCountry="true"
-            app:ccp_showFullName="false"
-            app:ccp_showNameCode="false"
-            app:ccp_showPhoneCode="true"
-            app:ccp_textSize="16sp"
-            app:layout_constraintEnd_toStartOf="@+id/etPhone"
-            app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-
-        <EditText
-            android:id="@+id/etPhone"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="@drawable/border_right"
-            android:ems="10"
-            android:hint="1234567890"
-            android:inputType="phone"
-            android:maxLength="15"
-            android:padding="15dp"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toBottomOf="@+id/ccp"
+            android:layout_marginTop="32dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/ccp"
-            app:layout_constraintTop_toTopOf="@+id/ccp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView2">
+
+            <com.hbb20.CountryCodePicker
+                android:id="@+id/ccp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/input_background_dark"
+                android:padding="7dp"
+                app:ccp_autoDetectCountry="true"
+                app:ccp_contentColor="@color/text_primary"
+                app:ccp_showFlag="false"
+                app:ccp_showFullName="false"
+                app:ccp_showNameCode="false"
+                app:ccp_showPhoneCode="true"
+                app:ccp_textSize="16sp" />
+
+            <EditText
+                android:id="@+id/etPhone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/input_background_dark"
+                android:hint="Enter your phone number"
+                android:inputType="phone"
+                android:maxLength="15"
+                android:padding="15dp"
+                android:textColor="@color/text_primary"
+                android:textColorHint="@color/grey_200"
+                android:textSize="16sp" />
+
+        </LinearLayout>
 
         <Button
             android:id="@+id/btnSend"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="45dp"
-            android:layout_marginBottom="45dp"
-            android:text="SEND"
-            android:textColor="@color/white"
-            android:background="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="24dp"
+            android:backgroundTint="@color/primary"
+            android:fontFamily="@font/roboto_bold"
+            android:padding="20dp"
+            android:text="Send OTP"
+            android:textColor="@color/text_primary"
+            app:cornerRadius="24dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etPhone" />
+            app:layout_constraintTop_toBottomOf="@+id/phoneContainer" />
 
         <ProgressBar
             android:id="@+id/progressBar"
             style="?android:attr/progressBarStyle"
+            android:padding="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primary"
             android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@+id/btnSend"
-            app:layout_constraintEnd_toEndOf="@+id/btnSend"
-            app:layout_constraintStart_toStartOf="@+id/btnSend"
-            app:layout_constraintTop_toTopOf="@+id/btnSend" />
-
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phoneContainer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

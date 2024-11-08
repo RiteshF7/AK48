@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
+import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
@@ -21,9 +22,9 @@ import com.trex.rexnetwork.utils.SharedPreferenceManager
 import java.util.concurrent.TimeUnit
 
 class OtpVerifyActivity : AppCompatActivity() {
-
     companion object {
         private const val TAG = "PhoneAuthActivity"
+
         /** CountDown Timer */
         const val DELAY: Long = 60000
         const val INTERVAL: Long = 1000
@@ -41,6 +42,14 @@ class OtpVerifyActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOtpVerifyBinding.inflate(layoutInflater)
+        supportActionBar?.hide()
+
+        // In Activity's onCreate() for instance
+        val w = window
+        w.setFlags(
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+        )
         setContentView(binding.root)
 
         editTextInput()
@@ -52,41 +61,56 @@ class OtpVerifyActivity : AppCompatActivity() {
 
         binding.tvMobile.text = mPhoneNumber
 
-
         /** countDownTimer */
         countDownTimer()
 
-
         binding.btnVerify.setOnClickListener {
-            val c1 = binding.etC1.text.toString().trim()
-            val c2 = binding.etC2.text.toString().trim()
-            val c3 = binding.etC3.text.toString().trim()
-            val c4 = binding.etC4.text.toString().trim()
-            val c5 = binding.etC5.text.toString().trim()
-            val c6 = binding.etC6.text.toString().trim()
-            if (c1.isEmpty() || c2.isEmpty() || c3.isEmpty() || c4.isEmpty() || c5.isEmpty() || c6.isEmpty())
-                Callback(this).onToast("OTP is not valid!")
-            else {
+            val c1 =
+                binding.etC1.text
+                    .toString()
+                    .trim()
+            val c2 =
+                binding.etC2.text
+                    .toString()
+                    .trim()
+            val c3 =
+                binding.etC3.text
+                    .toString()
+                    .trim()
+            val c4 =
+                binding.etC4.text
+                    .toString()
+                    .trim()
+            val c5 =
+                binding.etC5.text
+                    .toString()
+                    .trim()
+            val c6 =
+                binding.etC6.text
+                    .toString()
+                    .trim()
+            if (c1.isEmpty() || c2.isEmpty() || c3.isEmpty() || c4.isEmpty() || c5.isEmpty() || c6.isEmpty()) {
+                Callback(this).onToast("Invalid OTP. Please try again.")
+            } else {
                 isVisible(true)
                 if (mVerificationId != null) {
                     val smsCode = "$c1$c2$c3$c4$c5$c6"
                     val credential = PhoneAuthProvider.getCredential(mVerificationId, smsCode)
-                    Firebase.auth.signInWithCredential(credential)
+                    Firebase.auth
+                        .signInWithCredential(credential)
                         .addOnCompleteListener { task ->
                             if (task.isSuccessful) {
                                 SharedPreferenceManager(this).saveShopId(mPhoneNumber)
                                 isVisible(true)
-                                Callback(this).onToast("Welcome .... ${task.result}")
                                 startActivity(
                                     Intent(
                                         this,
-                                        MainActivity::class.java
-                                    ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        MainActivity::class.java,
+                                    ).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK),
                                 )
                             } else {
-
                                 isVisible(false)
-                                Callback(this).onToast("OTP is not valid!")
+                                Callback(this).onToast("Invalid OTP. Please try again.")
                             }
                         }
                 }
@@ -94,62 +118,65 @@ class OtpVerifyActivity : AppCompatActivity() {
         }
     }
 
-    private fun countDownTimer(){
-        countDownTimer = object : CountDownTimer(DELAY, INTERVAL) {
-            override fun onTick(millisUntilFinished: Long) {
-                binding.textView7.text =
-                    Callback(this@OtpVerifyActivity).elapsedCountDownTimer(
-                        millisUntilFinished.div(
-                            INTERVAL
+    private fun countDownTimer() {
+        countDownTimer =
+            object : CountDownTimer(DELAY, INTERVAL) {
+                override fun onTick(millisUntilFinished: Long) {
+                    binding.textView7.text =
+                        Callback(this@OtpVerifyActivity).elapsedCountDownTimer(
+                            millisUntilFinished.div(
+                                INTERVAL,
+                            ),
                         )
-                    )
-                binding.tvResendBtn.isVisible = false
-            }
+                    binding.tvResendBtn.isVisible = false
+                }
 
-            override fun onFinish() {
-                binding.textView7.text = "Don't get the OTP?"
-                binding.tvResendBtn.isVisible = true
-                binding.tvResendBtn.setTextColor(resources.getColor(R.color.red_400, theme))
-                binding.tvResendBtn.setOnClickListener {
-                    isVisible(true)
-                    forceResendingToken()
+                override fun onFinish() {
+                    binding.textView7.text = "Didn't receive the OTP?"
+                    binding.tvResendBtn.isVisible = true
+                    binding.tvResendBtn.setTextColor(resources.getColor(R.color.red_400, theme))
+                    binding.tvResendBtn.setOnClickListener {
+                        isVisible(true)
+                        forceResendingToken()
+                    }
                 }
             }
-        }
         countDownTimer.start()
     }
 
     private fun forceResendingToken() {
-        mCallbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                Log.d(TAG, "onVerificationCompleted: ${credential.smsCode}")
-            }
+        mCallbacks =
+            object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
+                override fun onVerificationCompleted(credential: PhoneAuthCredential) {
+                    Log.d(TAG, "onVerificationCompleted: ${credential.smsCode}")
+                }
 
-            override fun onVerificationFailed(e: FirebaseException) {
-                isVisible(false)
-                Callback(this@OtpVerifyActivity).onToast(e.localizedMessage!!)
-            }
+                override fun onVerificationFailed(e: FirebaseException) {
+                    isVisible(false)
+                    Callback(this@OtpVerifyActivity).onToast(e.localizedMessage!!)
+                }
 
-            override fun onCodeSent(
-                verificationId: String,
-                token: PhoneAuthProvider.ForceResendingToken
-            ) {
+                override fun onCodeSent(
+                    verificationId: String,
+                    token: PhoneAuthProvider.ForceResendingToken,
+                ) {
 //                super.onCodeSent(verificationId, token)
-                isVisible(false)
-                Callback(this@OtpVerifyActivity).onToast("OTP is successfully send.")
-                mResendingToken = token
-                mVerificationId = verificationId
+                    isVisible(false)
+//                Callback(this@OtpVerifyActivity).onToast("OTP is successfully send.")
+                    mResendingToken = token
+                    mVerificationId = verificationId
+                }
             }
-        }
 
         PhoneAuthProvider.verifyPhoneNumber(
-            PhoneAuthOptions.newBuilder(mAuth)
+            PhoneAuthOptions
+                .newBuilder(mAuth)
                 .setPhoneNumber(mPhoneNumber)
                 .setTimeout(60L, TimeUnit.SECONDS)
                 .setActivity(this)
                 .setCallbacks(mCallbacks)
                 .setForceResendingToken(mResendingToken)
-                .build()
+                .build(),
         )
     }
 
