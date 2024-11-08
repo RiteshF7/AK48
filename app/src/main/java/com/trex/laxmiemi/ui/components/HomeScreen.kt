@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -52,6 +53,10 @@ import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.ButtonActions
 import com.trex.laxmiemi.ui.components.GridButton
+import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
+import com.trex.laxmiemi.ui.devicescreen.DevicesActivity
+import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
+import com.trex.rexnetwork.utils.startMyActivity
 
 @Composable
 fun HomeScreen(homeScreenViewModel: MainActivityViewModel) {
@@ -137,6 +142,7 @@ installation video
 
 @Composable
 fun ButtonGrid() {
+    val context = LocalContext.current
     Column(
         modifier =
             Modifier
@@ -157,7 +163,7 @@ fun ButtonGrid() {
                             "QR Code",
                 ),
             ) {
-
+                context.startMyActivity(ScanQrActivity::class.java)
             }
             MenuItemCard(
                 GridButton(
@@ -168,6 +174,7 @@ fun ButtonGrid() {
                             "Devices",
                 ),
             ) {
+                context.startMyActivity(DevicesActivity::class.java)
             }
 
             MenuItemCard(
