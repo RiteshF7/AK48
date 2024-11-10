@@ -9,22 +9,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Info
@@ -34,10 +34,15 @@ import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.Message
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.PhoneAndroid
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.ScreenLockRotation
+import androidx.compose.material.icons.filled.SettingsSuggest
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,9 +51,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,33 +62,84 @@ import com.trex.laxmiemi.R
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
 
+/*
+
+*/
 @Composable
 fun DeviceDetails(
     device: NewDevice,
     onActionClick: (Actions) -> Unit,
 ) {
-    Column {
+    Column(Modifier.background(color = Color.Black.copy(alpha = 0.85f))) {
         DeviceDetailHeader(device)
-        Spacer(modifier = Modifier.height(20.dp))
-        DeviceActionRectButton(
-            DeviceActionData(
-                Icons.Default.Lock,
-                Actions.ACTION_LOCK_DEVICE,
-                "Lock",
-            ),
-            onActionClick,
-        )
-        Spacer(modifier = Modifier.height(10.dp))
-        DeviceActionRectButton(
-            DeviceActionData(
-                Icons.Default.Clear,
-                Actions.ACTION_UNLOCK_DEVICE,
-                "Unlock",
-            ),
-            onActionClick,
-        )
-
+        TextHeader("CONTROL PANEL")
         ActionsButtonGrid(list = deviceActionDataList as List<DeviceActionData>, onActionClick)
+    }
+}
+
+@Composable
+fun TextHeader(text: String) {
+    HorizontalDivider()
+    Row(
+        modifier = Modifier.padding(20.dp).fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Icon(
+            imageVector = Icons.Default.SettingsSuggest,
+            contentDescription = "",
+            tint = colorResource(R.color.primary),
+            modifier =
+                Modifier
+                    .height(25.dp)
+                    .width(25.dp),
+        )
+        Spacer(Modifier.width(10.dp))
+        Text(
+            text = text,
+            textAlign = TextAlign.Center,
+            modifier =
+                Modifier.padding(top = 2.dp),
+            style =
+                TextStyle(
+                    fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                    fontSize = 18.sp,
+                    color = colorResource(id = R.color.white),
+                ),
+        )
+    }
+
+    HorizontalDivider()
+}
+
+@Composable
+fun QuickActionsList() {
+    LazyRow {
+        items(listOf(1, 2, 3, 4, 5, 6, 7, 8)) {
+            QuickActionIItem()
+        }
+    }
+}
+
+@Composable
+fun QuickActionIItem() {
+    Card(
+        modifier = Modifier.padding(vertical = 20.dp, horizontal = 10.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color.White.copy(alpha = 0.1f),
+                contentColor = Color.White,
+            ),
+    ) {
+        Text(
+            modifier = Modifier.padding(10.dp),
+            text = "Lock device",
+            style =
+                TextStyle(
+                    fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                    fontSize = 16.sp,
+                    color = colorResource(id = R.color.white),
+                ),
+        )
     }
 }
 
@@ -90,16 +147,23 @@ fun DeviceDetails(
 private fun DeviceDetailHeader(device: NewDevice) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center,
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(color = colorResource(id = R.color.blue_900)),
+                .padding(vertical = 20.dp),
     ) {
-        Box {
+        Card(
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.1f),
+                    contentColor = Color.White,
+                ),
+        ) {
             Icon(
-                imageVector = Icons.Default.AccountCircle,
+                imageVector = Icons.Default.PhoneAndroid,
                 contentDescription = "",
-                tint = Color.White,
+                tint = colorResource(R.color.primary),
                 modifier =
                     Modifier
                         .padding(10.dp)
@@ -107,21 +171,36 @@ private fun DeviceDetailHeader(device: NewDevice) {
                         .width(100.dp),
             )
         }
-        Column {
+        Column(modifier = Modifier.padding(start = 20.dp)) {
             Text(
-                fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                text = "Device : ${device.modelNumber}",
-                modifier = Modifier.padding(bottom = 5.dp),
+                text = device.modelNumber,
+                style =
+                    TextStyle(
+                        fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                        fontSize = 26.sp,
+                        color = colorResource(id = R.color.white),
+                    ),
+            )
+
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = "Owner : ${device.costumerName}",
+                style =
+                    TextStyle(
+                        fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                        fontSize = 14.sp,
+                        color = colorResource(id = R.color.white),
+                    ),
             )
 
             Text(
-                fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                text = "Custumer : ${device.costumerName} ",
-                modifier = Modifier.padding(bottom = 5.dp),
+                text = "Phone : 9910000163",
+                style =
+                    TextStyle(
+                        fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                        fontSize = 14.sp,
+                        color = colorResource(id = R.color.white),
+                    ),
             )
         }
     }
@@ -133,9 +212,9 @@ fun ActionsButtonGrid(
     onActionClick: (Actions) -> Unit,
 ) {
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 100.dp),
+        columns = GridCells.Adaptive(minSize = 150.dp),
         contentPadding = PaddingValues(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         modifier = Modifier.fillMaxWidth(),
     ) {
@@ -169,76 +248,48 @@ fun DeviceActionButton(
                 .clickable { onActionClick(deviceActionData.action) }
                 .padding(4.dp),
     ) {
-        Box(
-            modifier =
-                Modifier
-                    .size(48.dp)
-                    .background(
-                        color = Color.Red,
-                        shape = RoundedCornerShape(50),
-                    ),
+        Card(
+            modifier = Modifier.fillMaxSize(),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.1f),
+                    contentColor = Color.Green,
+                ),
         ) {
-            Icon(
-                imageVector = deviceActionData.icon,
-                contentDescription = deviceActionData.actionName,
-                tint = Color.White,
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
                 modifier =
                     Modifier
-                        .size(24.dp)
-                        .align(Alignment.Center),
-            )
-        }
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            text = deviceActionData.actionName,
-            textAlign = TextAlign.Center,
-            fontSize = 12.sp,
-            maxLines = 2,
-            overflow = TextOverflow.Ellipsis,
-        )
-    }
-}
-
-@Composable
-fun DeviceActionRectButton(
-    deviceActionData: DeviceActionData,
-    onActionClick: (Actions) -> Unit,
-) {
-    Box(Modifier.clickable { onActionClick(deviceActionData.action) }) {
-        Column(
-            modifier =
-                Modifier
-                    .padding(horizontal = 10.dp),
-        ) {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = colorResource(id = R.color.red_400),
-                            shape = RoundedCornerShape(3.dp),
-                        ),
+                        .padding(10.dp)
+                        .fillMaxSize(),
             ) {
-                Row(
-                    modifier = Modifier.align(Alignment.Center),
-                    verticalAlignment = Alignment.CenterVertically,
+                Card(
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = Color.Green.copy(alpha = 0.1f),
+                            contentColor = Color.Green,
+                        ),
                 ) {
-                    Icon(
-                        tint = Color.White,
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "",
-                    )
-                    Text(
-                        fontSize = 22.sp,
-                        textAlign = TextAlign.Center,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        text = deviceActionData.actionName,
-                        modifier =
-                            Modifier
-                                .padding(10.dp),
-                    )
+                    Box(Modifier.padding(10.dp)) {
+                        Icon(
+                            imageVector = deviceActionData.icon,
+                            contentDescription = "",
+                            modifier = Modifier.size(35.dp),
+                        )
+                    }
                 }
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = deviceActionData.actionName,
+                    textAlign = TextAlign.Center,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontSize = 13.sp,
+                            color = colorResource(id = R.color.white),
+                        ),
+                )
             }
         }
     }
@@ -437,7 +488,6 @@ val deviceActionDataList =
                     action,
                     "Lock screen",
                 )
-
             }
         }
     }

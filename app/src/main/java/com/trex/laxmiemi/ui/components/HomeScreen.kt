@@ -1,12 +1,12 @@
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneIphone
 import androidx.compose.material.icons.filled.QrCode
@@ -33,12 +34,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
@@ -46,7 +44,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -76,7 +73,6 @@ fun HomeScreen(homeScreenViewModel: MainActivityViewModel) {
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Header()
-            Spacer(modifier = Modifier.height(25.dp))
             ButtonGrid()
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -89,7 +85,7 @@ fun Header() {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 60.dp),
+                .padding(vertical = 50.dp),
     ) {
         Row(
             modifier = Modifier.align(Alignment.Center),
@@ -141,90 +137,82 @@ call for assistance
 installation video
 
 */
+
+private val homeGridList =
+    listOf(
+        GridButton(
+            icon = Icons.Default.QrCode,
+            action = ButtonActions.SES20QR,
+            title = "Scan QR \nCode",
+        ),
+        GridButton(
+            icon = Icons.Default.List,
+            action = ButtonActions.TotalCustomer,
+            title = "All \nDevices",
+        ),
+        GridButton(
+            icon = Icons.Default.Videocam,
+            action = ButtonActions.InstallationVideo,
+            title = "Installation\nVideo",
+        ),
+        GridButton(
+            icon = Icons.Default.Call,
+            action = ButtonActions.CallForService,
+            title = "Call\nSupport",
+        ),
+        GridButton(
+            icon = Icons.Default.Person,
+            action = ButtonActions.UserProfile,
+            title = "User profile",
+        ),
+    )
+
 @Composable
 fun ButtonGrid() {
     val context = LocalContext.current
-    Column(
-        modifier =
-            Modifier
-                .padding(horizontal = 16.dp) // Changed to horizontal only since we handle vertical in Row
-                .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 150.dp),
+        contentPadding = PaddingValues(8.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxSize(),
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp), // Added fixed spacing
-        ) {
+        items(homeGridList) { item ->
             MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.QrCode,
-                    action = ButtonActions.AddCustomer,
-                    title = "Scan QR \nCode",
-                ),
-                modifier = Modifier.weight(1f), // Added weight to take equal space
-            ) {
-                context.startMyActivity(ScanQrActivity::class.java)
+                item,
+            ) { action ->
+                when (action) {
+                    ButtonActions.SES20QR -> {
+                        context.startMyActivity(ScanQrActivity::class.java)
+                    }
+
+                    ButtonActions.TotalCustomer -> {
+                        val intent = Intent(context, DevicesActivity::class.java)
+                        context.startActivity(intent)
+                    }
+
+                    ButtonActions.CallForService -> {
+                        val intent = Intent(Intent.ACTION_DIAL)
+                        intent.setData(Uri.parse("tel:9910000163"))
+                        context.startActivity(intent)
+                    }
+
+                    ButtonActions.InstallationVideo -> {
+                        val intent =
+                            Intent(context, VideoPlayerActivity::class.java)
+                        context.startActivity(intent)
+                    }
+
+                    ButtonActions.UserProfile -> {
+                        context.startActivity(
+                            Intent(context, ProfileActivity::class.java),
+                        )
+                    }
+
+                    else -> {}
+                }
             }
-            MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.PhoneIphone,
-                    action = ButtonActions.AddCustomer,
-                    title = "All \nDevices",
-                ),
-                modifier = Modifier.weight(1f), // Added weight to take equal space
-            ) {
-                val intent = Intent(context, DevicesActivity::class.java)
-                context.startActivity(intent)
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp), // Added fixed spacing
-        ) {
-            MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.Videocam,
-                    action = ButtonActions.AddCustomer,
-                    title = "Installation\nVideo",
-                ),
-                modifier = Modifier.weight(1f), // Added weight to take equal space
-            ) {
-                // Start video player
-                val intent =
-                    Intent(context, VideoPlayerActivity::class.java)
-                context.startActivity(intent)
-            }
-            MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.Call,
-                    action = ButtonActions.AddCustomer,
-                    title = "Call\nSupport",
-                ),
-                modifier = Modifier.weight(1f), // Added weight to take equal space
-            ) {
-                val intent = Intent(Intent.ACTION_DIAL)
-                intent.setData(Uri.parse("tel:9910000163"))
-                context.startActivity(intent)
-            }
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp), // Added fixed spacing
-        ) {
-            MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.Person,
-                    action = ButtonActions.AddCustomer,
-                    title = "User profile",
-                ),
-                modifier = Modifier.weight(1f), // Added weight to take equal space
-            ) {
-                context.startActivity(
-                    Intent(context, ProfileActivity::class.java),
-                )
-            }
-            // Added an invisible spacer to maintain consistent layout
-            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
@@ -233,58 +221,59 @@ fun ButtonGrid() {
 fun MenuItemCard(
     item: GridButton,
     modifier: Modifier = Modifier, // Added modifier parameter
-    onClick: () -> Unit,
+    onClick: (ButtonActions) -> Unit,
 ) {
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(if (isPressed) 0.95f else 1f)
-
-    Card(
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
         modifier =
-            modifier // Use the passed modifier instead of fixed width
-                .scale(scale)
-                .clickable(
-                    onClick = onClick,
-                    onClickLabel = item.title,
-                ),
-        shape = RoundedCornerShape(8.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = Color(0xFF2A2A2A),
-                contentColor = Color.White,
-            ),
+            modifier
+                .clickable { onClick(item.action) }
+                .padding(4.dp),
     ) {
-        Column(
-            modifier = Modifier.padding(horizontal = 50.dp, vertical = 26.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
+        Card(
+            modifier = Modifier.fillMaxSize().height(180.dp),
+            colors =
+                CardDefaults.cardColors(
+                    containerColor = Color.White.copy(alpha = 0.1f),
+                    contentColor = Color.Green,
+                ),
         ) {
-            Card(
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = Color.Green.copy(alpha = 0.1f),
-                        contentColor = Color.White,
-                    ),
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center,
+                modifier =
+                    Modifier
+                        .padding(10.dp)
+                        .fillMaxSize(),
             ) {
-                Icon(
-                    imageVector = item.icon,
-                    contentDescription = item.title,
-                    tint = Color(0xFF00C853),
-                    modifier =
-                        Modifier
-                            .size(42.dp)
-                            .padding(5.dp),
+                Card(
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = Color.Green.copy(alpha = 0.1f),
+                            contentColor = Color.Green,
+                        ),
+                ) {
+                    Box(Modifier.padding(10.dp)) {
+                        Icon(
+                            imageVector = item.icon,
+                            contentDescription = "",
+                            modifier = Modifier.size(35.dp),
+                        )
+                    }
+                }
+                Spacer(Modifier.height(10.dp))
+                Text(
+                    text = item.title,
+                    textAlign = TextAlign.Center,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                            fontSize = 13.sp,
+                            color = colorResource(id = R.color.white),
+                        ),
                 )
             }
-            Spacer(modifier = Modifier.height(18.dp))
-            Text(
-                textAlign = TextAlign.Center,
-                text = item.title,
-                style =
-                    TextStyle(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
-            )
         }
     }
 }
