@@ -3,6 +3,7 @@ package com.trex.laxmiemi
 import HomeScreen
 import android.content.Intent
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -22,8 +23,13 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
+        // In Activity's onCreate() for instance
+//        val w = window
+//        w.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//        )
         val mainActivityViewModel: MainActivityViewModel by viewModels()
         checkIsUserLoggedIn(mainActivityViewModel) {
             setContent {

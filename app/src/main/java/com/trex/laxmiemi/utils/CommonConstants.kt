@@ -11,8 +11,9 @@ object CommonConstants {
     fun initialize(context: Context) {
         applicationContext = context
         appName = context.getString(context.applicationInfo.labelRes)
-
     }
+
+    const val EXAMPLE_VIDEO_URI = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
     var shodId = "+919910000163"
 

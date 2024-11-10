@@ -1,3 +1,5 @@
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -18,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Key
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PhoneIphone
 import androidx.compose.material.icons.filled.QrCode
@@ -49,13 +50,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat.startActivity
 import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.ButtonActions
 import com.trex.laxmiemi.ui.components.GridButton
-import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
 import com.trex.laxmiemi.ui.devicescreen.DevicesActivity
+import com.trex.laxmiemi.ui.profilescreen.ProfileActivity
 import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
+import com.trex.laxmiemi.ui.videoplayerscreen.VideoPlayerActivity
 import com.trex.rexnetwork.utils.startMyActivity
 
 @Composable
@@ -73,10 +76,9 @@ fun HomeScreen(homeScreenViewModel: MainActivityViewModel) {
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Header()
+            Spacer(modifier = Modifier.height(25.dp))
             ButtonGrid()
             Spacer(modifier = Modifier.weight(1f))
-            RexActionButton("Logout") {
-            }
         }
     }
 }
@@ -139,29 +141,27 @@ call for assistance
 installation video
 
 */
-
 @Composable
 fun ButtonGrid() {
     val context = LocalContext.current
     Column(
         modifier =
             Modifier
-                .padding(16.dp)
+                .padding(horizontal = 16.dp) // Changed to horizontal only since we handle vertical in Row
                 .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.spacedBy(16.dp),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(10.dp), // Added fixed spacing
         ) {
             MenuItemCard(
                 GridButton(
                     icon = Icons.Default.QrCode,
                     action = ButtonActions.AddCustomer,
-                    title =
-                        "Scan \n" +
-                            "QR Code",
+                    title = "Scan QR \nCode",
                 ),
+                modifier = Modifier.weight(1f), // Added weight to take equal space
             ) {
                 context.startMyActivity(ScanQrActivity::class.java)
             }
@@ -169,70 +169,70 @@ fun ButtonGrid() {
                 GridButton(
                     icon = Icons.Default.PhoneIphone,
                     action = ButtonActions.AddCustomer,
-                    title =
-                        "All \n" +
-                            "Devices",
+                    title = "All \nDevices",
                 ),
+                modifier = Modifier.weight(1f), // Added weight to take equal space
             ) {
-                context.startMyActivity(DevicesActivity::class.java)
-            }
-
-            MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.Person,
-                    action = ButtonActions.AddCustomer,
-                    title =
-                        "User\n" +
-                            "profile",
-                ),
-            ) {
+                val intent = Intent(context, DevicesActivity::class.java)
+                context.startActivity(intent)
             }
         }
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
+            horizontalArrangement = Arrangement.spacedBy(10.dp), // Added fixed spacing
         ) {
-            MenuItemCard(
-                GridButton(
-                    icon = Icons.Default.Key,
-                    action = ButtonActions.AddCustomer,
-                    title =
-                        "Balance\n" +
-                            " Keys",
-                ),
-            ) {
-            }
-
             MenuItemCard(
                 GridButton(
                     icon = Icons.Default.Videocam,
                     action = ButtonActions.AddCustomer,
-                    title =
-                        "Installation\n Video",
+                    title = "Installation\nVideo",
                 ),
+                modifier = Modifier.weight(1f), // Added weight to take equal space
             ) {
+                // Start video player
+                val intent =
+                    Intent(context, VideoPlayerActivity::class.java)
+                context.startActivity(intent)
             }
-
             MenuItemCard(
                 GridButton(
                     icon = Icons.Default.Call,
                     action = ButtonActions.AddCustomer,
-                    title =
-                        "Call\nSupport",
+                    title = "Call\nSupport",
                 ),
+                modifier = Modifier.weight(1f), // Added weight to take equal space
             ) {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.setData(Uri.parse("tel:9910000163"))
+                context.startActivity(intent)
             }
+        }
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp), // Added fixed spacing
+        ) {
+            MenuItemCard(
+                GridButton(
+                    icon = Icons.Default.Person,
+                    action = ButtonActions.AddCustomer,
+                    title = "User profile",
+                ),
+                modifier = Modifier.weight(1f), // Added weight to take equal space
+            ) {
+                context.startActivity(
+                    Intent(context, ProfileActivity::class.java),
+                )
+            }
+            // Added an invisible spacer to maintain consistent layout
+            Spacer(modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-fun ActionButton(text: String) {
-}
-
-@Composable
 fun MenuItemCard(
     item: GridButton,
+    modifier: Modifier = Modifier, // Added modifier parameter
     onClick: () -> Unit,
 ) {
     var isPressed by remember { mutableStateOf(false) }
@@ -240,7 +240,7 @@ fun MenuItemCard(
 
     Card(
         modifier =
-            Modifier
+            modifier // Use the passed modifier instead of fixed width
                 .scale(scale)
                 .clickable(
                     onClick = onClick,
@@ -254,7 +254,7 @@ fun MenuItemCard(
             ),
     ) {
         Column(
-            modifier = Modifier.padding(26.dp),
+            modifier = Modifier.padding(horizontal = 50.dp, vertical = 26.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
@@ -269,7 +269,10 @@ fun MenuItemCard(
                     imageVector = item.icon,
                     contentDescription = item.title,
                     tint = Color(0xFF00C853),
-                    modifier = Modifier.size(42.dp).padding(5.dp),
+                    modifier =
+                        Modifier
+                            .size(42.dp)
+                            .padding(5.dp),
                 )
             }
             Spacer(modifier = Modifier.height(18.dp))

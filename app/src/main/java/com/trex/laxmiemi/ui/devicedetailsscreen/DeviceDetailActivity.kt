@@ -6,25 +6,24 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import com.trex.laxmiemi.handlers.ShopActionExecutor
-import com.trex.laxmiemi.utils.CommonConstants.SINGLE_DEVICE_DATA
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
 import com.trex.rexnetwork.utils.SharedPreferenceManager
+import com.trex.rexnetwork.utils.getExtraData
+import com.trex.rexnetwork.utils.startMyActivity
 
 class DeviceDetailActivity : ComponentActivity() {
     private lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        context = this;
+        context = this
         val vm by viewModels<DeviceScreenDetailViewModel>()
-        // todo use intent extension function instead
-        val device = intent.getParcelableExtra<NewDevice>(SINGLE_DEVICE_DATA)
+        val device = intent.getExtraData<NewDevice>()
         val fcmManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
         val mSharedPreferenceManager = SharedPreferenceManager(this)
-        // todo check why is shared pref needed as a func param if i am passing context in class constructor
         vm.refreshFcmBeforeAction(fcmManager, mSharedPreferenceManager)
 
         setContent {
@@ -35,6 +34,19 @@ class DeviceDetailActivity : ComponentActivity() {
                     ShopActionExecutor(context).sendActionToClient(message)
                 }
             }
+        }
+    }
+
+    companion object {
+        fun go(
+            context: Context,
+            device: NewDevice,
+        ) {
+            context.startMyActivity(
+                DeviceDetailActivity::class.java,
+                device,
+                false,
+            )
         }
     }
 }

@@ -44,6 +44,15 @@
         <activity
             android:name=".ui.devicedetailsscreen.DeviceDetailActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.profilescreen.ProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.videoplayerscreen.VideoPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light" />
@@ -91,10 +100,11 @@
             </intent-filter>
         </service>
         <service
-            android:name="com.trex.rexnetwork.domain.firebasecore.ForegroundService"
+            android:name="com.trex.rexnetwork.domain.firebasecore.fcm.ForegroundService"
             android:enabled="true"
             android:exported="true"
-            android:foregroundServiceType="dataSync" />
+            android:foregroundServiceType="dataSync"
+            tools:ignore="ForegroundServicePermission" />
     </application>
 
 </manifest>
