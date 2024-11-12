@@ -22,23 +22,25 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppBlocking
+import androidx.compose.material.icons.filled.Cached
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
 import androidx.compose.material.icons.filled.MapsHomeWork
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.PermDeviceInformation
+import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.ScreenLockRotation
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.icons.filled.Wallpaper
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -74,7 +76,18 @@ fun DeviceDetails(
         Column {
             DeviceDetailHeader(device)
             HorizontalDivider(Modifier.height(1.dp))
-            HeaderButtons()
+            Spacer(Modifier.height(10.dp))
+            Card(
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.1f),
+                        contentColor = Color.White,
+                    ),
+            ) {
+                Column(Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
+                    HeaderButtons()
+                }
+            }
         }
         Box(
             modifier =
@@ -111,7 +124,7 @@ fun DeviceDetails(
                     contentDescription = "",
                     modifier = Modifier.size(15.dp),
                 )
-                Spacer(Modifier.padding(2.dp))
+                Spacer(Modifier.padding(6.dp))
                 Text(
                     text = "REMOVE DEVICE",
                     color = Color.White,
@@ -126,32 +139,75 @@ fun DeviceDetails(
 @Composable
 fun HeaderButtons() {
     Row(modifier = Modifier.fillMaxWidth()) {
-        QuickActionButton("Unlock Code", Modifier.weight(1f)) { }
-        QuickActionButton("Phone Number", Modifier.weight(1f)) { }
+        QuickActionButton(
+            "Unlock Code",
+            Modifier
+                .weight(1f)
+                .padding(5.dp),
+            Icons.Default.Password,
+        ) { }
+        QuickActionButton(
+            "Phone Number",
+            Modifier
+                .weight(1f)
+                .padding(5.dp),
+            Icons.Default.Phone,
+        ) { }
     }
-    QuickActionButton("Create loan", Modifier.fillMaxWidth()) { }
-    QuickActionButton("Device Information", Modifier.fillMaxWidth()) { }
+    QuickActionButton(
+        "Create loan",
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp),
+        Icons.Default.Cached,
+    ) { }
+    QuickActionButton(
+        "Device Information",
+        Modifier
+            .fillMaxWidth()
+            .padding(5.dp),
+        Icons.Default.Insights,
+    ) { }
 }
 
 @Composable
 fun QuickActionButton(
     text: String,
     modifier: Modifier = Modifier,
+    icon: ImageVector,
     onClick: () -> Unit,
 ) {
-    Button(
-        onClick = onClick,
+    Box(
         modifier =
             modifier
-                .padding(10.dp)
-                .height(40.dp),
-        colors =
-            ButtonDefaults.buttonColors(
-                containerColor = colorResource(R.color.red_300),
-                contentColor = Color.White,
-            ),
+                .fillMaxWidth()
+                .height(45.dp)
+                .height(40.dp)
+                .clickable { onClick() }
+                .background(
+                    color = colorResource(R.color.primary).copy(alpha = 0.8f),
+                    shape = RoundedCornerShape(5.dp),
+                ),
+        contentAlignment = Alignment.Center,
     ) {
-        Text(text)
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = icon,
+                tint = Color.White,
+                contentDescription = "",
+                modifier = Modifier.size(15.dp),
+            )
+            Spacer(Modifier.padding(6.dp))
+            Text(
+                text = text,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
+        }
     }
 }
 
@@ -239,7 +295,11 @@ fun DeviceActionButton(
                 .padding(4.dp),
     ) {
         Card(
-            modifier = Modifier.fillMaxSize().heightIn(150.dp).widthIn(150.dp),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .heightIn(150.dp)
+                    .widthIn(150.dp),
             colors =
                 CardDefaults.cardColors(
                     containerColor = Color.White.copy(alpha = 0.1f),
