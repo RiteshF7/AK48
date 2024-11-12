@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.PhoneIphone
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Videocam
 import androidx.compose.material3.Button
@@ -172,7 +171,7 @@ fun ButtonGrid() {
     val context = LocalContext.current
 
     LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 150.dp),
+        columns = GridCells.Fixed(3),
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -232,7 +231,7 @@ fun MenuItemCard(
                 .padding(4.dp),
     ) {
         Card(
-            modifier = Modifier.fillMaxSize().height(180.dp),
+            modifier = Modifier.fillMaxSize(),
             colors =
                 CardDefaults.cardColors(
                     containerColor = Color.White.copy(alpha = 0.1f),

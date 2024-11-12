@@ -5,6 +5,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.trex.laxmiemi.handlers.ShopActionExecutor
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.NewDevice
@@ -28,10 +33,12 @@ class DeviceDetailActivity : ComponentActivity() {
 
         setContent {
             device?.let {
-                DeviceDetails(device) {
-                    // todo add payload in case of some lock list of apps type
-                    val message = ActionMessageDTO(device.fcmToken, it)
-                    ShopActionExecutor(context).sendActionToClient(message)
+                Box(modifier = Modifier.background(color = Color.Black.copy(alpha = 0.85f)).fillMaxSize()) {
+                    DeviceDetails(device) {
+                        // todo add payload in case of some lock list of apps type
+                        val message = ActionMessageDTO(device.fcmToken, it)
+                        ShopActionExecutor(context).sendActionToClient(message)
+                    }
                 }
             }
         }
