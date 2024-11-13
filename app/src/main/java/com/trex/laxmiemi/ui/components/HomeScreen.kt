@@ -1,5 +1,6 @@
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -54,6 +55,8 @@ import com.trex.laxmiemi.ui.profilescreen.ProfileActivity
 import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
 import com.trex.laxmiemi.ui.tokenbalancescreen.TokenBalanceActivity
 import com.trex.laxmiemi.ui.videoplayerscreen.VideoPlayerActivity
+import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
+import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.startMyActivity
 
 @Composable
@@ -191,7 +194,20 @@ fun ButtonGrid() {
                     }
 
                     ButtonActions.SES20QR -> {
-                        context.startMyActivity(ScanQrActivity::class.java)
+                        SharedPreferenceManager(context).getShopId()?.let { shopId ->
+                            ShopFirestore().getTokenBalanceList(shopId) { tokenBalanceList ->
+                                if (tokenBalanceList.isEmpty()) {
+                                    context.startMyActivity(TokenBalanceActivity::class.java)
+                                    Toast.makeText(
+                                        context,
+                                        "Low token balance!\n PLease buy token to proceed!",
+                                        Toast.LENGTH_LONG,
+                                    )
+                                } else {
+                                    context.startMyActivity(ScanQrActivity::class.java)
+                                }
+                            }
+                        }
                     }
 
                     ButtonActions.TotalCustomer -> {

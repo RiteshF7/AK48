@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.ui.theme.LaxmiEmiTheme
 import com.trex.laxmiemi.utils.QrUtils
+import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 class ScanQrActivity : ComponentActivity() {
