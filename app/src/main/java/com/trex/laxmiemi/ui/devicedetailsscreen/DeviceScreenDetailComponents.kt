@@ -22,12 +22,10 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AppBlocking
-import androidx.compose.material.icons.filled.Cached
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Contacts
-import androidx.compose.material.icons.filled.Insights
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
@@ -35,7 +33,6 @@ import androidx.compose.material.icons.filled.MapsHomeWork
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.PermDeviceInformation
-import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.ScreenLockRotation
@@ -47,10 +44,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -63,6 +62,7 @@ import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 /*
 
@@ -70,14 +70,15 @@ import com.trex.rexnetwork.data.NewDevice
 @Composable
 fun DeviceDetails(
     device: NewDevice,
+    vm: DeviceScreenDetailViewModel,
     onActionClick: (Actions) -> Unit,
 ) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
             DeviceDetailHeader(device)
             HorizontalDivider(Modifier.height(1.dp))
-            Spacer(Modifier.height(10.dp))
             Card(
+                shape = RoundedCornerShape(0.dp),
                 colors =
                     CardDefaults.cardColors(
                         containerColor = Color.White.copy(alpha = 0.1f),
@@ -85,7 +86,7 @@ fun DeviceDetails(
                     ),
             ) {
                 Column(Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
-                    HeaderButtons()
+                    HeaderButtons(vm, device.imeiOne)
                 }
             }
         }
@@ -137,37 +138,22 @@ fun DeviceDetails(
 }
 
 @Composable
-fun HeaderButtons() {
-    Row(modifier = Modifier.fillMaxWidth()) {
-        QuickActionButton(
-            "Unlock Code",
-            Modifier
-                .weight(1f)
-                .padding(5.dp),
-            Icons.Default.Password,
-        ) { }
-        QuickActionButton(
-            "Phone Number",
-            Modifier
-                .weight(1f)
-                .padding(5.dp),
-            Icons.Default.Phone,
-        ) { }
+fun HeaderButtons(
+    vm: DeviceScreenDetailViewModel,
+    imeiOne: String,
+) {
+    val context = LocalContext.current
+    val codeText by vm.unlockCode
+    QuickActionButton(
+        codeText,
+        Modifier
+            .padding(5.dp),
+        Icons.Default.Password,
+    ) {
+        SharedPreferenceManager(context).getShopId()?.let { shopId ->
+            vm.generateUnlockCode(shopId, deviceId = imeiOne)
+        }
     }
-    QuickActionButton(
-        "Create loan",
-        Modifier
-            .fillMaxWidth()
-            .padding(5.dp),
-        Icons.Default.Cached,
-    ) { }
-    QuickActionButton(
-        "Device Information",
-        Modifier
-            .fillMaxWidth()
-            .padding(5.dp),
-        Icons.Default.Insights,
-    ) { }
 }
 
 @Composable

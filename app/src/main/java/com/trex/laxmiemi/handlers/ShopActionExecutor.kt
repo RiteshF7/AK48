@@ -57,6 +57,7 @@ class ShopActionExecutor(
                 action == ACTION_GET_LOCATION -> {
                     handleMapResponse(response, context)
                 }
+
             }
         } else {
             context.startMyActivity(FcmResultActivity::class.java, response)

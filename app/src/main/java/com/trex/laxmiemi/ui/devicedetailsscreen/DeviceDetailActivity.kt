@@ -33,8 +33,13 @@ class DeviceDetailActivity : ComponentActivity() {
 
         setContent {
             device?.let {
-                Box(modifier = Modifier.background(color = Color.Black.copy(alpha = 0.85f)).fillMaxSize()) {
-                    DeviceDetails(device) {
+                Box(
+                    modifier =
+                        Modifier
+                            .background(color = Color.Black.copy(alpha = 0.85f))
+                            .fillMaxSize(),
+                ) {
+                    DeviceDetails(device,vm) {
                         // todo add payload in case of some lock list of apps type
                         val message = ActionMessageDTO(device.fcmToken, it)
                         ShopActionExecutor(context).sendActionToClient(message)
