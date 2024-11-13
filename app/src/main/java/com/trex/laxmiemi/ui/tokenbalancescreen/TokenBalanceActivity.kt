@@ -3,6 +3,7 @@ package com.trex.laxmiemi.ui.tokenbalancescreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,6 +26,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +44,7 @@ import com.trex.laxmiemi.R
 class TokenBalanceActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val vm: TokenBalanceViewModel by viewModels()
         setContent {
             Scaffold { padding ->
                 Box(
@@ -50,14 +53,15 @@ class TokenBalanceActivity : ComponentActivity() {
                         .padding(padding)
                         .background(color = Color.Black.copy(alpha = 0.85f)),
                 ) {
-                    TokenBalanceScreen()
+                    TokenBalanceScreen(vm)
                 }
             }
         }
     }
 
     @Composable
-    fun TokenBalanceScreen() {
+    fun TokenBalanceScreen(vm: TokenBalanceViewModel) {
+        val uiState by vm.uiState
         Column(
             modifier =
                 Modifier
@@ -88,7 +92,7 @@ class TokenBalanceActivity : ComponentActivity() {
                 ) {
                     Text(
                         modifier = Modifier.padding(50.dp),
-                        text = "22",
+                        text = uiState.balance,
                         style =
                             TextStyle(
                                 fontWeight = FontWeight.Bold,
@@ -116,9 +120,8 @@ class TokenBalanceActivity : ComponentActivity() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                TokenCountCard("22", "Total\nToken", colorResource(R.color.primary))
-                TokenCountCard("22", "Remaining\nToken", colorResource(R.color.primary))
-                TokenCountCard("90", "Used\nToken", colorResource(R.color.red_300))
+                TokenCountCard(uiState.balance, "Remaining\nToken", colorResource(R.color.primary))
+                TokenCountCard(uiState.usedToken, "Used\nToken", colorResource(R.color.red_300))
             }
 
             AddToken(text = "Add Token", icon = Icons.Default.Add) { }
@@ -131,37 +134,39 @@ class TokenBalanceActivity : ComponentActivity() {
         title: String,
         color: Color,
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Card(
-                shape = RoundedCornerShape(100.dp),
-                colors =
-                    CardDefaults.cardColors(
-                        containerColor = color.copy(alpha = 0.1f),
-                        contentColor = colorResource(R.color.primary),
-                    ),
-            ) {
+        if (!count.equals("")) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Card(
+                    shape = RoundedCornerShape(100.dp),
+                    colors =
+                        CardDefaults.cardColors(
+                            containerColor = color.copy(alpha = 0.1f),
+                            contentColor = colorResource(R.color.primary),
+                        ),
+                ) {
+                    Text(
+                        modifier = Modifier.padding(20.dp),
+                        text = if (count.isBlank()) "0" else count,
+                        style =
+                            TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 22.sp,
+                                color = color,
+                            ),
+                    )
+                }
                 Text(
-                    modifier = Modifier.padding(20.dp),
-                    text = count,
+                    modifier = Modifier.padding(10.dp),
+                    text = title,
+                    textAlign = TextAlign.Center,
                     style =
                         TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 22.sp,
-                            color = color,
+                            fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                            fontSize = 16.sp,
+                            color = colorResource(id = R.color.white),
                         ),
                 )
             }
-            Text(
-                modifier = Modifier.padding(10.dp),
-                text = title,
-                textAlign = TextAlign.Center,
-                style =
-                    TextStyle(
-                        fontFamily = FontFamily(Font(R.font.opensans_medium)),
-                        fontSize = 16.sp,
-                        color = colorResource(id = R.color.white),
-                    ),
-            )
         }
     }
 
