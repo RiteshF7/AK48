@@ -33,8 +33,9 @@ import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.DeviceInfo
 import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
+import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import com.trex.rexnetwork.domain.repositories.RegisterDeviceRepo
-import com.trex.rexnetwork.domain.repositories.SendActionMessageRepository
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.getExtraData
 import kotlinx.parcelize.Parcelize
@@ -55,7 +56,10 @@ class CreateDeviceActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferenceManager
     private lateinit var newDevice: NewDevice
     private val deviceRepo = RegisterDeviceRepo()
+    private val shopRepo = ShopFirestore()
     private lateinit var messageDTO: ActionMessageDTO
+    private var consumableToken = ""
+    private var consumableTokenList = mutableListOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +74,11 @@ class CreateDeviceActivity : ComponentActivity() {
         sharedPreferences = SharedPreferenceManager(this)
         newDevice = NewDevice()
         sharedPreferences.getShopId()?.let { shopId ->
+            shopRepo.getTokenBalanceList(shopId) {
+                consumableTokenList = it.toMutableList()
+                consumableToken = it.first()
+                newDevice.deviceId = consumableToken
+            }
             newDevice.shopId = shopId
             newDevice.fcmToken = deviceInfo.fcmToken
         }
@@ -99,8 +108,22 @@ class CreateDeviceActivity : ComponentActivity() {
         context: Context,
     ) {
         deviceRepo.registerNewDevice(newDevice) { isSuccess ->
+            if (isSuccess) {
+                removeTokenFromBalance()
+            }
             sendResponseAndFinish(isSuccess, fcmToken, context)
         }
+    }
+
+    private fun removeTokenFromBalance() {
+        consumableTokenList.remove(consumableToken)
+        shopRepo.updateSingleField(
+            newDevice.shopId,
+            Shop::tokenBalance.name,
+            consumableTokenList,
+            {},
+            {},
+        )
     }
 
     private fun sendResponseAndFinish(
@@ -109,10 +132,8 @@ class CreateDeviceActivity : ComponentActivity() {
         context: Context,
     ) {
         val status = getStatus(isSuccess)
-
         val response = buildResponse(fcmToken, status)
 
-        // todo show success ui in this activity after sending and finish on button press!!
         ShopActionExecutor(context).sendResponse(response)
         finish()
     }

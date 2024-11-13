@@ -28,13 +28,12 @@ class TokenBalanceViewModel : ViewModel() {
 
     fun getTotalToken() {
         db.getShopId()?.let { shopId ->
-            shopRepo.getSingleField(shopId, Shop::tokenBalance.name, { tokenList ->
+            shopRepo.getTokenBalanceList(shopId, { tokenList ->
                 val count = (tokenList as List<String>).size.toString()
                 _uiState.value =
                     _uiState.value.copy(
                         balance = count,
                     )
-            }, {
             })
         }
     }
