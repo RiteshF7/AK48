@@ -57,6 +57,9 @@
             android:name=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
+            android:name=".ui.tokenbalancescreen.TokenBalanceActivity"
+            android:theme="@style/Theme.AppCompat.Light" />
+        <activity
             android:name=".ui.actionresultscreen.ResponseMapDetailsActivity"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity

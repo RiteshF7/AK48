@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -45,7 +44,7 @@ enum class ButtonActions {
     AddCustomer,
     SES20QR,
     TotalCustomer,
-    BalanceKeys,
+    tokenBalance,
     CallForService,
     InstallationVideo,
     OldQR,
@@ -66,7 +65,6 @@ fun ButtonGrid(onClick: (action: ButtonActions) -> Unit) {
             GridButton(Icons.Default.Add, ButtonActions.AddCustomer, "Register new customer"),
             GridButton(Icons.Default.QrCode, ButtonActions.SES20QR, "Generate QR code"),
             GridButton(Icons.Default.Group, ButtonActions.TotalCustomer, "View all customers"),
-            GridButton(Icons.Default.VpnKey, ButtonActions.BalanceKeys, "Manage keys"),
             GridButton(Icons.Default.Call, ButtonActions.CallForService, "Get support"),
             GridButton(Icons.Default.PlayArrow, ButtonActions.InstallationVideo, "Watch guide"),
             GridButton(Icons.Default.QrCodeScanner, ButtonActions.OldQR, "Legacy QR codes"),

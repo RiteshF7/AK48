@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material.icons.filled.Videocam
+import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -32,8 +33,6 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -46,7 +45,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.ButtonActions
@@ -54,6 +52,7 @@ import com.trex.laxmiemi.ui.components.GridButton
 import com.trex.laxmiemi.ui.devicescreen.DevicesActivity
 import com.trex.laxmiemi.ui.profilescreen.ProfileActivity
 import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
+import com.trex.laxmiemi.ui.tokenbalancescreen.TokenBalanceActivity
 import com.trex.laxmiemi.ui.videoplayerscreen.VideoPlayerActivity
 import com.trex.rexnetwork.utils.startMyActivity
 
@@ -142,22 +141,27 @@ private val homeGridList =
         GridButton(
             icon = Icons.Default.QrCode,
             action = ButtonActions.SES20QR,
-            title = "Scan QR \nCode",
+            title = "Scan QR Code",
         ),
         GridButton(
             icon = Icons.Default.List,
             action = ButtonActions.TotalCustomer,
-            title = "All \nDevices",
+            title = "All Devices",
+        ),
+        GridButton(
+            icon = Icons.Default.VpnKey,
+            action = ButtonActions.tokenBalance,
+            title = "Token balance",
         ),
         GridButton(
             icon = Icons.Default.Videocam,
             action = ButtonActions.InstallationVideo,
-            title = "Installation\nVideo",
+            title = "Video Tutorial",
         ),
         GridButton(
             icon = Icons.Default.Call,
             action = ButtonActions.CallForService,
-            title = "Call\nSupport",
+            title = "Call Support",
         ),
         GridButton(
             icon = Icons.Default.Person,
@@ -182,6 +186,10 @@ fun ButtonGrid() {
                 item,
             ) { action ->
                 when (action) {
+                    ButtonActions.tokenBalance -> {
+                        context.startMyActivity(TokenBalanceActivity::class.java)
+                    }
+
                     ButtonActions.SES20QR -> {
                         context.startMyActivity(ScanQrActivity::class.java)
                     }

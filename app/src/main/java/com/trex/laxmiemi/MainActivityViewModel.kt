@@ -15,7 +15,6 @@ import com.trex.rexnetwork.domain.firebasecore.firesstore.FireStoreExeptions
 import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
 import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import com.trex.rexnetwork.utils.SharedPreferenceManager
-import kotlin.random.Random
 
 class MainActivityViewModel : ViewModel() {
     private val _firebaseUser = MutableLiveData<FirebaseUser?>()
@@ -33,7 +32,7 @@ class MainActivityViewModel : ViewModel() {
     private fun getDealerCode() {
         shopFirestore.getSingleField(
             CommonConstants.shodId,
-            Shop::dealerCode.name,
+            Shop::shopCode.name,
             onSuccess = {
                 _dealerCode.value = it.toString()
             },
@@ -85,9 +84,10 @@ class MainActivityViewModel : ViewModel() {
         mshardPref: SharedPreferenceManager,
         onComplete: () -> Unit,
     ) {
+        // Todo make shop screen
         shopFirestore.createOrUpdateShop(
             userPhoneNumber,
-            Shop(dealerCode = Random.nextInt(1, 100000).toString(), fcmToken = ""),
+            Shop(),
             {
                 Log.i("", "createNewShop: ShopCreatedSuccessfully !")
                 mshardPref.saveShopId(userPhoneNumber)

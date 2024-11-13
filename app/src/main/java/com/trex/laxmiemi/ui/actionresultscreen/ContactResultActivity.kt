@@ -29,7 +29,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.trex.laxmiemi.ui.actionresultscreen.ui.theme.LaxmiEmiTheme
 import com.trex.laxmiemi.utils.GoogleMapUtils
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
@@ -45,25 +44,23 @@ class ContactResultActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            LaxmiEmiTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(modifier = Modifier.padding(innerPadding)) {
-                        actionPayload?.let { payloadString ->
-                            when {
-                                actionKey == Actions.ACTION_GET_CONTACTS.name -> {
-                                    val contactsMap = convertToMap(payloadString)
-                                    ContactsList(contactsMap) {
-                                        shareContacts(this@ContactResultActivity, contactsMap)
-                                    }
+            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    actionPayload?.let { payloadString ->
+                        when {
+                            actionKey == Actions.ACTION_GET_CONTACTS.name -> {
+                                val contactsMap = convertToMap(payloadString)
+                                ContactsList(contactsMap) {
+                                    shareContacts(this@ContactResultActivity, contactsMap)
                                 }
+                            }
 
-                                actionKey == Actions.ACTION_GET_LOCATION.name -> {
-                                    GoogleMapUtils.openGoogleMapUrl(
-                                        this@ContactResultActivity,
-                                        payloadString,
-                                    )
-                                    finish()
-                                }
+                            actionKey == Actions.ACTION_GET_LOCATION.name -> {
+                                GoogleMapUtils.openGoogleMapUrl(
+                                    this@ContactResultActivity,
+                                    payloadString,
+                                )
+                                finish()
                             }
                         }
                     }

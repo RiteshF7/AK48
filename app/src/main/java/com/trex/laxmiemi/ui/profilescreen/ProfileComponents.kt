@@ -97,11 +97,11 @@ private fun ProfileDetails(shop: Shop) {
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        TextInfo("Shop ID:", shop.dealerCode)
-        TextInfo("Token Balance:", shop.tokenBalance.toString())
-        TextInfo("Token Balance:", shop.tokenBalance.toString())
-        TextInfo("Token Balance:", shop.tokenBalance.toString())
-        TextInfo("Token Balance:", shop.tokenBalance.toString())
+        TextInfo("Shop ID:", shop.shopCode)
+        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
+        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
+        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
+        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
         Spacer(Modifier.weight(1f))
         HorizontalDivider(Modifier.height(2.dp))
         RexActionButton("Logout") {

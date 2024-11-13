@@ -99,7 +99,7 @@ class DummyDatabaseScript {
         // Create a new shop
         shopFirestore.createOrUpdateShop(
             null,
-            Shop( shopName = "Doe's Electronics", tokenBalance = 100),
+            Shop( shopName = "Doe's Electronics", tokenBalance = listOf()),
             {
                 Log.d("Firestore", "Shop added or updated successfully!")
             },
