@@ -138,7 +138,7 @@ fun DeviceListItem(device: NewDevice) {
                     verticalArrangement = Arrangement.Top,
                 ) {
                     Text(
-                        text = "Rahul yadav",
+                        text = device.costumerName,
                         textAlign = TextAlign.Center,
                         style =
                             TextStyle(

@@ -3,6 +3,7 @@ package com.trex.laxmiemi.ui.createdevicescreen
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
@@ -33,9 +34,9 @@ import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.DeviceInfo
 import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
 import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
 import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
-import com.trex.rexnetwork.domain.repositories.RegisterDeviceRepo
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.getExtraData
 import kotlinx.parcelize.Parcelize
@@ -55,7 +56,6 @@ data class FormData(
 class CreateDeviceActivity : ComponentActivity() {
     private lateinit var sharedPreferences: SharedPreferenceManager
     private lateinit var newDevice: NewDevice
-    private val deviceRepo = RegisterDeviceRepo()
     private val shopRepo = ShopFirestore()
     private lateinit var messageDTO: ActionMessageDTO
     private var consumableToken = ""
@@ -107,12 +107,13 @@ class CreateDeviceActivity : ComponentActivity() {
         fcmToken: String,
         context: Context,
     ) {
-        deviceRepo.registerNewDevice(newDevice) { isSuccess ->
-            if (isSuccess) {
-                removeTokenFromBalance()
-            }
-            sendResponseAndFinish(isSuccess, fcmToken, context)
-        }
+        val deviceRepo = DeviceFirestore(newDevice.shopId)
+        deviceRepo.createOrUpdateDevice(newDevice.deviceId, newDevice, {
+            removeTokenFromBalance()
+            sendResponseAndFinish(true, fcmToken, context)
+        }, {
+            sendResponseAndFinish(false, fcmToken, context)
+        })
     }
 
     private fun removeTokenFromBalance() {
@@ -121,8 +122,12 @@ class CreateDeviceActivity : ComponentActivity() {
             newDevice.shopId,
             Shop::tokenBalance.name,
             consumableTokenList,
-            {},
-            {},
+            {
+                Log.i("some", "removeTokenFromBalance: Token consumed!!")
+            },
+            {
+                Log.e("TAG", "removeTokenFromBalance: error consuming token!! $it")
+            },
         )
     }
 
@@ -176,15 +181,15 @@ fun DeviceFormScreen(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
     ) {
         LazyColumn(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+            Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Customer Name field
@@ -334,9 +339,9 @@ fun DeviceFormScreen(
         // Submit button
         Button(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             onClick = {
                 if (validateForm(formState, requiredFields)) {
                     onFormSubmit(formState)
