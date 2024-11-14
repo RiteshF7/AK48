@@ -29,6 +29,7 @@ class ShopActionExecutor(
         context.startMyActivity(
             FcmRequestActivity::class.java,
             action,
+            true
         )
     }
 
@@ -40,7 +41,7 @@ class ShopActionExecutor(
                 }
 
                 action == ACTION_GET_CONTACTS -> {
-                    context.startMyActivity(ContactResultActivity::class.java, response)
+                    context.startMyActivity(ContactResultActivity::class.java, response,true)
                 }
 
                 action == ACTION_GET_DEVICE_INFO -> {
@@ -50,6 +51,7 @@ class ShopActionExecutor(
                         context.startMyActivity(
                             ResponseMapDetailsActivity::class.java,
                             ResponseMap(payloadMap),
+                            true
                         )
                     }
                 }
@@ -60,7 +62,7 @@ class ShopActionExecutor(
 
             }
         } else {
-            context.startMyActivity(FcmResultActivity::class.java, response)
+            context.startMyActivity(FcmResultActivity::class.java, response,true)
         }
     }
 
@@ -80,7 +82,7 @@ class ShopActionExecutor(
     fun receiveAction(message: ActionMessageDTO) {
         when {
             message.action == ACTION_REG_DEVICE -> {
-                context.startMyActivity(CreateDeviceActivity::class.java, message)
+                context.startMyActivity(CreateDeviceActivity::class.java, message,true)
             }
         }
     }

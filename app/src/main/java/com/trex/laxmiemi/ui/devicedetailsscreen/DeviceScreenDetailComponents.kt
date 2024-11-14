@@ -86,7 +86,7 @@ fun DeviceDetails(
                     ),
             ) {
                 Column(Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
-                    HeaderButtons(vm, device.imeiOne)
+                    HeaderButtons(vm, device.deviceId)
                 }
             }
         }
@@ -140,7 +140,7 @@ fun DeviceDetails(
 @Composable
 fun HeaderButtons(
     vm: DeviceScreenDetailViewModel,
-    imeiOne: String,
+    deviceId: String,
 ) {
     val context = LocalContext.current
     val codeText by vm.unlockCode
@@ -151,7 +151,7 @@ fun HeaderButtons(
         Icons.Default.Password,
     ) {
         SharedPreferenceManager(context).getShopId()?.let { shopId ->
-            vm.generateUnlockCode(shopId, deviceId = imeiOne)
+            vm.generateUnlockCode(shopId, deviceId = deviceId)
         }
     }
 }

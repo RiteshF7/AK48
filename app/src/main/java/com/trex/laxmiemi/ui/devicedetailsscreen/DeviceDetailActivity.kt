@@ -57,7 +57,6 @@ class DeviceDetailActivity : ComponentActivity() {
             context.startMyActivity(
                 DeviceDetailActivity::class.java,
                 device,
-                false,
             )
         }
     }
