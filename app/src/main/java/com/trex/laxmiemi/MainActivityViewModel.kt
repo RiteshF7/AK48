@@ -62,10 +62,10 @@ class MainActivityViewModel : ViewModel() {
             userPhoneNumber.toString(),
             { shop ->
                 mshardPref.saveShopId(userPhoneNumber)
-                fcmTokenFirestore.getFcmToken(userPhoneNumber) {
-                    fcmTokenManager.refreshToken(it)
+                fcmTokenManager.refreshToken {
+                    onComplete()
                 }
-                onComplete()
+
                 getDealerCode()
             },
             { error ->
@@ -91,7 +91,7 @@ class MainActivityViewModel : ViewModel() {
             {
                 Log.i("", "createNewShop: ShopCreatedSuccessfully !")
                 mshardPref.saveShopId(userPhoneNumber)
-                fcmTokenManager.refreshToken("")
+                fcmTokenManager.refreshToken {}
                 onComplete()
             },
             {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Laxmi emi</string>
+    <string name="app_name">E-Shield</string>
     <string name="title_activity_scan_qr">ScanQrActivity</string>
     <string name="title_activity_action_result">ActionResultActivity</string>
     <string name="title_activity_create_device">CreateDeviceActivity</string>

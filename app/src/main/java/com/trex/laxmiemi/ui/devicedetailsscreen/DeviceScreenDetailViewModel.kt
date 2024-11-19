@@ -20,11 +20,7 @@ class DeviceScreenDetailViewModel : ViewModel() {
         fcmTokenManager: FCMTokenManager,
         mSharedPreferenceManager: SharedPreferenceManager,
     ) {
-        mSharedPreferenceManager.getShopId()?.let { shopId ->
-            fcmFirestore.getFcmToken(shopId) { token ->
-                fcmTokenManager.refreshToken(token)
-            }
-        }
+        fcmTokenManager.refreshToken {}
     }
 
     fun generateUnlockCode(
