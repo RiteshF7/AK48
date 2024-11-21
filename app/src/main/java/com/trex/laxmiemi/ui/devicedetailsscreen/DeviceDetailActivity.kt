@@ -32,16 +32,16 @@ class DeviceDetailActivity : ComponentActivity() {
         vm.refreshFcmBeforeAction(fcmManager, mSharedPreferenceManager)
 
         setContent {
-            device?.let {
+            device.let {
                 Box(
                     modifier =
                         Modifier
                             .background(color = Color.Black.copy(alpha = 0.85f))
                             .fillMaxSize(),
                 ) {
-                    DeviceDetails(device, vm) {
+                    DeviceDetails(device, vm) { action ->
                         // todo add payload in case of some lock list of apps type
-                        val message = ActionMessageDTO(device.fcmToken, it)
+                        val message = ActionMessageDTO(device.fcmToken, action)
                         ShopActionExecutor(context).sendActionToClient(message)
                     }
                 }

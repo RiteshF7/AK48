@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Contacts
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
@@ -109,6 +110,7 @@ fun DeviceDetails(
                     .fillMaxWidth()
                     .height(45.dp)
                     .height(40.dp)
+                    .clickable { onActionClick(Actions.ACTION_REMOVE_DEVICE) }
                     .background(
                         color = colorResource(R.color.red_300),
                         shape = RoundedCornerShape(5.dp),
@@ -120,7 +122,7 @@ fun DeviceDetails(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
-                    imageVector = Icons.Default.RemoveCircle,
+                    imageVector = Icons.Default.Delete,
                     tint = Color.White,
                     contentDescription = "",
                     modifier = Modifier.size(15.dp),

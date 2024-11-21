@@ -153,6 +153,7 @@ class CreateDeviceActivity : ComponentActivity() {
             mapOf(
                 Constants.KEY_RESPOSE_RESULT_STATUS to status,
                 Actions.ACTION_REG_DEVICE.name to "Device created successfully!!",
+                NewDevice::deviceId.name to "${newDevice.deviceId}",
             ),
         requestId = messageDTO.requestId,
     )
@@ -181,15 +182,15 @@ fun DeviceFormScreen(
 
     Column(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(16.dp),
     ) {
         LazyColumn(
             modifier =
-            Modifier
-                .weight(1f)
-                .fillMaxWidth(),
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Customer Name field
@@ -339,9 +340,9 @@ fun DeviceFormScreen(
         // Submit button
         Button(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
             onClick = {
                 if (validateForm(formState, requiredFields)) {
                     onFormSubmit(formState)
