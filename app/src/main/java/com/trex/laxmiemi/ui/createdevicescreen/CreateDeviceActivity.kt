@@ -76,6 +76,10 @@ class CreateDeviceActivity : ComponentActivity() {
         sharedPreferences.getShopId()?.let { shopId ->
             shopRepo.getTokenBalanceList(shopId) {
                 consumableTokenList = it.toMutableList()
+                if (it.isEmpty()) {
+                    Log.e("0 TOKEN BALANCE", "onCreate: ", )
+                    finish()
+                }
                 consumableToken = it.first()
                 newDevice.deviceId = consumableToken
             }
@@ -182,15 +186,15 @@ fun DeviceFormScreen(
 
     Column(
         modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+        Modifier
+            .fillMaxSize()
+            .padding(16.dp),
     ) {
         LazyColumn(
             modifier =
-                Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
+            Modifier
+                .weight(1f)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Customer Name field
@@ -340,9 +344,9 @@ fun DeviceFormScreen(
         // Submit button
         Button(
             modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 16.dp),
             onClick = {
                 if (validateForm(formState, requiredFields)) {
                     onFormSubmit(formState)
