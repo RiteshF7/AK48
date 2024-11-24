@@ -10,8 +10,9 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class QrUtils {
-    private val apkUrl = "${Constants.BASE_URL}/file"
-    private val apkChecksum = "fdFfqZfGKABOiXg5R0RqOS6pMfCTZ2IT9KtJLKx-ItU"
+    //    private val apkUrl = "${Constants.BASE_URL}/file"
+    private val apkUrl = "https://tmpfiles.org/dl/16237425/app-debug.apk"
+    private val apkChecksum = "ICLZ4euu328IyILyzBDkcMi-qwKfRz8RmAeVg_fKo9s"
 
     fun getQrBitmap(shopId: String): Bitmap {
         val qrJson = getQrJson(shopId)
