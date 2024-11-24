@@ -17,6 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.RexActionButton
-import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
 
 @Preview
 @Composable
@@ -39,22 +39,24 @@ fun some() {
 }
 
 @Composable
-fun ProfileScreen(shop: Shop) {
+fun ProfileScreen(vm: ProfileViewModel) {
+    val uiState by vm.profileState
+
     Column(
         modifier =
-        Modifier
-            .background(color = Color.Black.copy(alpha = 0.85f)),
+            Modifier
+                .background(color = Color.Black.copy(alpha = 0.85f)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
-        ProfileHeader()
+        ProfileHeader(uiState)
         HorizontalDivider(thickness = 2.dp)
-        ProfileDetails(shop)
+        ProfileDetails(uiState)
     }
 }
 
 @Composable
-private fun ProfileHeader() {
+private fun ProfileHeader(uiState: ProfileState) {
     Column(
         modifier = Modifier.padding(36.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -62,46 +64,47 @@ private fun ProfileHeader() {
     ) {
         Card(
             colors =
-            CardDefaults.cardColors(
-                containerColor = Color.Green.copy(alpha = 0.1f),
-                contentColor = Color.White,
-            ),
+                CardDefaults.cardColors(
+                    containerColor = Color.Green.copy(alpha = 0.1f),
+                    contentColor = Color.White,
+                ),
         ) {
             Icon(
                 imageVector = Icons.Default.Person,
                 contentDescription = "",
                 tint = Color(0xFF00C853),
                 modifier =
-                Modifier
-                    .size(92.dp)
-                    .padding(5.dp),
+                    Modifier
+                        .size(92.dp)
+                        .padding(5.dp),
             )
         }
         Spacer(modifier = Modifier.height(18.dp))
         Text(
             textAlign = TextAlign.Center,
-            text = "Bala Ji Telecom",
+            text = uiState.shopName,
             style =
-            TextStyle(
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White,
-            ),
+                TextStyle(
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = Color.White,
+                ),
         )
     }
 }
 
 @Composable
-private fun ProfileDetails(shop: Shop) {
+private fun ProfileDetails(shop: ProfileState) {
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
-        TextInfo("Shop ID:", shop.shopCode)
-        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
-        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
-        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
-        TextInfo("Token Balance:", shop.tokenBalance.size.toString())
+        TextInfo("Shop ID:", shop.shopId)
+        TextInfo("Shop name:", shop.shopName)
+        TextInfo("Token Balance:", shop.tokenBalance)
+        TextInfo("Active devices:", shop.activeDevice)
+        TextInfo("DeActivated devices:", shop.deactivatedDevices)
+
         Spacer(Modifier.weight(1f))
         HorizontalDivider(Modifier.height(2.dp))
         RexActionButton("Logout") {
@@ -119,22 +122,22 @@ private fun TextInfo(
             Text(
                 text = key,
                 style =
-                TextStyle(
-                    fontFamily = FontFamily(Font(R.font.opensans_regular)),
-                    fontSize = 16.sp,
-                    color = Color.White,
-                ),
+                    TextStyle(
+                        fontFamily = FontFamily(Font(R.font.opensans_regular)),
+                        fontSize = 16.sp,
+                        color = Color.White,
+                    ),
             )
             Spacer(Modifier.weight(1f))
 
             Text(
                 text = value,
                 style =
-                TextStyle(
-                    fontFamily = FontFamily(Font(R.font.opensans_bold)),
-                    fontSize = 16.sp,
-                    color = colorResource(R.color.primary),
-                ),
+                    TextStyle(
+                        fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                        fontSize = 16.sp,
+                        color = colorResource(R.color.primary),
+                    ),
             )
         }
         HorizontalDivider(thickness = 2.dp)
@@ -152,21 +155,21 @@ private fun DeviceCountItem(
         Text(
             text = title,
             style =
-            TextStyle(
-                fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                fontSize = 14.sp,
-                color = colorResource(id = R.color.primary),
-            ),
+                TextStyle(
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontSize = 14.sp,
+                    color = colorResource(id = R.color.primary),
+                ),
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
             text = count.toString(),
             style =
-            TextStyle(
-                fontFamily = FontFamily(Font(R.font.opensans_bold)),
-                fontSize = 18.sp,
-                color = colorResource(id = R.color.primary),
-            ),
+                TextStyle(
+                    fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                    fontSize = 18.sp,
+                    color = colorResource(id = R.color.primary),
+                ),
         )
     }
 }

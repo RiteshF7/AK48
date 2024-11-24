@@ -15,7 +15,7 @@ object CommonConstants {
 
     const val EXAMPLE_VIDEO_URI = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
 
-    var shodId = "+919910000163"
+    var shodId = ""
 
     val MaxScreenWidth = 250.dp
     val SINGLE_DEVICE_DATA = "single_device_data"

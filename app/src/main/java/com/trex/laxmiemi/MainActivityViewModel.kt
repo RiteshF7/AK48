@@ -62,6 +62,7 @@ class MainActivityViewModel : ViewModel() {
             userPhoneNumber.toString(),
             { shop ->
                 mshardPref.saveShopId(userPhoneNumber)
+                CommonConstants.shodId = userPhoneNumber
                 fcmTokenManager.refreshToken {
                     onComplete()
                 }

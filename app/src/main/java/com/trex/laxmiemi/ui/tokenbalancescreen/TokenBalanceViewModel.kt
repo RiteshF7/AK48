@@ -4,8 +4,8 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.trex.laxmiemi.utils.CommonConstants
-import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
 import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
+import com.trex.rexnetwork.domain.repositories.DeleteDeviceRepo
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 // UI State
@@ -20,10 +20,11 @@ class TokenBalanceViewModel : ViewModel() {
 
     private val shopRepo = ShopFirestore()
     private val db = SharedPreferenceManager(CommonConstants.applicationContext)
+    private val deletedDeviceFirebase = DeleteDeviceRepo(CommonConstants.shodId)
 
     init {
         getTotalToken()
-//        getUsedToken()
+        getUsedToken()
     }
 
     fun getTotalToken() {
@@ -39,15 +40,11 @@ class TokenBalanceViewModel : ViewModel() {
     }
 
     fun getUsedToken() {
-        db.getShopId()?.let { shopId ->
-            shopRepo.getSingleField(shopId, Shop::deletedDevices.name, { tokenList ->
-                val count = (tokenList as List<String>).size.toString()
-                _uiState.value =
-                    _uiState.value.copy(
-                        usedToken = count,
-                    )
-            }, {
-            })
+        deletedDeviceFirebase.getDeletedDeviceCount {
+            _uiState.value =
+                _uiState.value.copy(
+                    usedToken = it,
+                )
         }
     }
 }
