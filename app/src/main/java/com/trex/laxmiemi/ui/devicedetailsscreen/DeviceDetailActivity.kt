@@ -8,9 +8,12 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.trex.laxmiemi.MainActivity
 import com.trex.laxmiemi.handlers.ShopActionExecutor
+import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
@@ -32,6 +35,10 @@ class DeviceDetailActivity : ComponentActivity() {
         vm.refreshFcmBeforeAction(fcmManager, mSharedPreferenceManager)
 
         setContent {
+            val deleteDevice by vm.deleteDevice
+            if (deleteDevice) {
+                this.startMyActivity(OtpSendActivity::class.java)
+            }
             device.let {
                 Box(
                     modifier =

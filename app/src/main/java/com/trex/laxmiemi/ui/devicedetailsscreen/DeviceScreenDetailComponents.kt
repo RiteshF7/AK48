@@ -34,18 +34,24 @@ import androidx.compose.material.icons.filled.MapsHomeWork
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.PermDeviceInformation
-import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.RestartAlt
 import androidx.compose.material.icons.filled.ScreenLockRotation
 import androidx.compose.material.icons.filled.VpnKey
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -103,39 +109,7 @@ fun DeviceDetails(
         Spacer(Modifier.padding(bottom = 10.dp, top = 0.dp))
         HorizontalDivider()
 
-        Box(
-            modifier =
-                Modifier
-                    .padding(16.dp) // Add some padding around the bottom box
-                    .fillMaxWidth()
-                    .height(45.dp)
-                    .height(40.dp)
-                    .clickable { onActionClick(Actions.ACTION_REMOVE_DEVICE) }
-                    .background(
-                        color = colorResource(R.color.red_300),
-                        shape = RoundedCornerShape(5.dp),
-                    ),
-            contentAlignment = Alignment.Center,
-        ) {
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Delete,
-                    tint = Color.White,
-                    contentDescription = "",
-                    modifier = Modifier.size(15.dp),
-                )
-                Spacer(Modifier.padding(6.dp))
-                Text(
-                    text = "REMOVE DEVICE",
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                )
-            }
-        }
+        DeleteDeviceButton(device, vm, onActionClick)
     }
 }
 
@@ -155,6 +129,95 @@ fun HeaderButtons(
         SharedPreferenceManager(context).getShopId()?.let { shopId ->
             vm.generateUnlockCode(shopId, deviceId = deviceId)
         }
+    }
+}
+
+@Composable
+fun DeleteDeviceButton(
+    device: NewDevice,
+    vm: DeviceScreenDetailViewModel,
+    onActionClick: (Actions) -> Unit,
+) {
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
+    Box(
+        modifier =
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .height(45.dp)
+                .height(40.dp)
+                .clickable { showConfirmationDialog = true }
+                .background(
+                    color = colorResource(R.color.red_300),
+                    shape = RoundedCornerShape(5.dp),
+                ),
+        contentAlignment = Alignment.Center,
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                tint = Color.White,
+                contentDescription = "Delete device",
+                modifier = Modifier.size(15.dp),
+            )
+            Spacer(Modifier.padding(6.dp))
+            Text(
+                text = "REMOVE DEVICE",
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+    }
+
+    if (showConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog = false },
+            title = {
+                Text(
+                    "Confirm Device Removal",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+            },
+            text = {
+                Text(
+                    "Are you sure you want to remove this device? This action cannot be undone.",
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        vm.deleteDevice(device, onActionClick)
+                        showConfirmationDialog = false
+                    },
+                    colors =
+                        ButtonDefaults.textButtonColors(
+                            contentColor = colorResource(R.color.red_300),
+                        ),
+                ) {
+                    Text(
+                        "Remove",
+                        fontWeight = FontWeight.Bold,
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(
+                    onClick = { showConfirmationDialog = false },
+                ) {
+                    Text("Cancel")
+                }
+            },
+            shape = RoundedCornerShape(8.dp),
+            containerColor = Color.White,
+            tonalElevation = 8.dp,
+        )
     }
 }
 

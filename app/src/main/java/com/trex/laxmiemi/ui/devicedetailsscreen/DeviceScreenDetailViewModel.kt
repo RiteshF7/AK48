@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.trex.laxmiemi.utils.CommonConstants
+import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
 import com.trex.rexnetwork.domain.firebasecore.firesstore.FCMTokenFirestore
+import com.trex.rexnetwork.domain.repositories.DeleteDeviceRepo
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import kotlin.random.Random
 
@@ -15,6 +18,9 @@ class DeviceScreenDetailViewModel : ViewModel() {
     private val fcmFirestore = FCMTokenFirestore()
     private val _unlockCodeState = mutableStateOf("Get unlock code")
     val unlockCode: State<String> = _unlockCodeState
+    private val _deleteDevice = mutableStateOf(false)
+    val deleteDevice: State<Boolean> = _deleteDevice
+    val deleteDeviceRepo = DeleteDeviceRepo(CommonConstants.shodId)
 
     fun refreshFcmBeforeAction(
         fcmTokenManager: FCMTokenManager,
@@ -34,5 +40,17 @@ class DeviceScreenDetailViewModel : ViewModel() {
         }, { error ->
             Log.i("", "update failed :: $error")
         })
+    }
+
+    fun deleteDevice(
+        device: NewDevice,
+        onActionClick: (Actions) -> Unit,
+    ) {
+        deleteDeviceRepo.deleteDevice(device) {
+            if (it) {
+                onActionClick(Actions.ACTION_REMOVE_DEVICE)
+            }
+            _deleteDevice.value = it
+        }
     }
 }
