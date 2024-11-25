@@ -92,7 +92,7 @@ class TokenBalanceActivity : ComponentActivity() {
                 ) {
                     Text(
                         modifier = Modifier.padding(50.dp),
-                        text = uiState.balance,
+                        text = if (uiState.balance == "") "0" else uiState.balance,
                         style =
                             TextStyle(
                                 fontWeight = FontWeight.Bold,

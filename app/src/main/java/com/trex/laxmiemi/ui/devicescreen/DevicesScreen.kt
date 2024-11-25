@@ -1,6 +1,7 @@
 package com.trex.laxmiemi.ui.devicescreen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,8 +49,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
+import com.trex.laxmiemi.handlers.ShopActionExecutor
 import com.trex.laxmiemi.ui.components.TitleText
 import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
+import com.trex.rexnetwork.data.ActionMessageDTO
+import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
 
 data class DeviceListState(
@@ -201,7 +205,11 @@ fun DeviceListItem(device: NewDevice) {
                         Modifier
                             .height(50.dp)
                             .weight(1f)
-                            .background(color = colorResource(R.color.primary)),
+                            .clickable {
+                                ShopActionExecutor(context).sendActionToClient(
+                                    ActionMessageDTO(device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
+                                )
+                            }.background(color = colorResource(R.color.primary)),
                     contentAlignment = Alignment.Center, // Centers content inside the Box
                 ) {
                     Row(
@@ -216,7 +224,7 @@ fun DeviceListItem(device: NewDevice) {
                         )
                         Spacer(modifier = Modifier.width(4.dp)) // Space between icon and text
                         Text(
-                            text = "EMI Paid",
+                            text = "Unlock device",
                             textAlign = TextAlign.Center,
                             style =
                                 TextStyle(
@@ -232,7 +240,11 @@ fun DeviceListItem(device: NewDevice) {
                         Modifier
                             .height(50.dp)
                             .weight(1f)
-                            .background(color = colorResource(R.color.red_300)),
+                            .clickable {
+                                ShopActionExecutor(context).sendActionToClient(
+                                    ActionMessageDTO(device.fcmToken, Actions.ACTION_LOCK_DEVICE),
+                                )
+                            }.background(color = colorResource(R.color.red_300)),
                     contentAlignment = Alignment.Center, // Centers content inside the Box
                 ) {
                     Row(

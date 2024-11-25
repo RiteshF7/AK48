@@ -2,19 +2,23 @@ package com.trex.laxmiemi.utils
 
 import android.app.admin.DevicePolicyManager
 import android.graphics.Bitmap
+import android.util.Log
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
 import com.trex.rexnetwork.Constants
+import com.trex.rexnetwork.domain.firebasecore.firesstore.FirestoreExtraData
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
-class QrUtils {
-    //    private val apkUrl = "${Constants.BASE_URL}/file"
-    private val apkUrl = "https://tmpfiles.org/dl/16237425/app-debug.apk"
-    private val apkChecksum = "ICLZ4euu328IyILyzBDkcMi-qwKfRz8RmAeVg_fKo9s"
+class QrUtils(
+    extraData: FirestoreExtraData,
+) {
+    private val apkUrl = extraData.url
+    private val apkChecksum = extraData.checksum
 
     fun getQrBitmap(shopId: String): Bitmap {
+        Log.i("Current url and checksum", "getQrBitmap: $apkChecksum :: $apkUrl")
         val qrJson = getQrJson(shopId)
         return generateQRCodeBitmap(qrJson.toString())
     }
