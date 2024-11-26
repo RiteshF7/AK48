@@ -21,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -30,6 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.RexActionButton
 
@@ -39,7 +42,10 @@ fun some() {
 }
 
 @Composable
-fun ProfileScreen(vm: ProfileViewModel) {
+fun ProfileScreen(
+    vm: ProfileViewModel,
+    onFinish: () -> Unit,
+) {
     val uiState by vm.profileState
 
     Column(
@@ -51,7 +57,7 @@ fun ProfileScreen(vm: ProfileViewModel) {
     ) {
         ProfileHeader(uiState)
         HorizontalDivider(thickness = 2.dp)
-        ProfileDetails(uiState)
+        ProfileDetails(uiState, onFinish)
     }
 }
 
@@ -94,7 +100,11 @@ private fun ProfileHeader(uiState: ProfileState) {
 }
 
 @Composable
-private fun ProfileDetails(shop: ProfileState) {
+private fun ProfileDetails(
+    shop: ProfileState,
+    onFinish: () -> Unit,
+) {
+    val context = LocalContext.current
     Column(
         modifier = Modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -108,6 +118,8 @@ private fun ProfileDetails(shop: ProfileState) {
         Spacer(Modifier.weight(1f))
         HorizontalDivider(Modifier.height(2.dp))
         RexActionButton("Logout") {
+            Firebase.auth.signOut()
+            onFinish()
         }
     }
 }
