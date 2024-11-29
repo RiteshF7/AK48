@@ -12,6 +12,7 @@ import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 data class ProfileState(
     val shopId: String = "",
     val shopName: String = "",
+    val ownerName: String = "",
     val tokenBalance: String = "",
     val activeDevice: String = "",
     val deactivatedDevices: String = "",
@@ -28,13 +29,14 @@ class ProfileViewModel : ViewModel() {
         getShopById()
     }
 
-    fun getShopById() {
+    private fun getShopById() {
         shopFirebase.getShopById(CommonConstants.shodId, { shop ->
             val tokenBalance =
                 if (shop.tokenBalance.isNullOrEmpty()) "0" else shop.tokenBalance.size.toString()
             _profileUiState.value =
                 _profileUiState.value.copy(
                     shopId = shop.shopCode,
+                    ownerName = shop.ownerName,
                     shopName = shop.shopName,
                     tokenBalance = tokenBalance,
                 )
@@ -76,6 +78,28 @@ class ProfileViewModel : ViewModel() {
                         deactivatedDevices = list.size.toString(),
                     )
             }
+        }, {
+            Log.e("", "getShopById error: ${it.message}")
+        })
+    }
+
+    fun updateProfile(
+        ownerName: String,
+        shopName: String,
+    ) {
+        shopFirebase.getShopById(CommonConstants.shodId, { shop ->
+            val updatedShop =
+                shop.copy(
+                    ownerName = if (ownerName.isBlank()) _profileUiState.value.ownerName else ownerName,
+                    shopName = if (shopName.isBlank()) _profileUiState.value.shopName else shopName,
+                )
+            shopFirebase.createOrUpdateShop(CommonConstants.shodId, updatedShop, {
+                _profileUiState.value =
+                    _profileUiState.value.copy(
+                        ownerName = ownerName,
+                        shopName = shopName,
+                    )
+            }, {})
         }, {
             Log.e("", "getShopById error: ${it.message}")
         })

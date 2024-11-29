@@ -2,18 +2,24 @@ package com.trex.laxmiemi
 
 import android.app.Application
 import android.content.IntentFilter
-import com.google.firebase.FirebaseApp
+import android.util.Log
 import com.trex.laxmiemi.ui.PayloadReceiver
 import com.trex.laxmiemi.utils.CommonConstants
 import com.trex.rexnetwork.Constants
-import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
-import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
+import com.trex.rexnetwork.utils.FirebaseInstallationManager
 
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         CommonConstants.initialize(applicationContext)
-        FirebaseApp.initializeApp(this)
+        val installationManager = FirebaseInstallationManager()
+        installationManager.initializeFirebase(applicationContext) { success ->
+            if (success) {
+                Log.i("Firebase", "onCreate: Firebase initilized successfully!")
+            } else {
+                Log.e("Firebase error", "onCreate: Error in initilizing firebase!")
+            }
+        }
         initPayloadReceiver()
     }
 
