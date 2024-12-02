@@ -95,7 +95,7 @@ class OtpSendActivity : AppCompatActivity() {
                 ) {
 //                super.onCodeSent(verificationId, token)
                     isVisible(false)
-//                    Callback(this@OtpSendActivity).onToast("OTP is successfully send.")
+                    Callback(this@OtpSendActivity).onToast("OTP is successfully send.")
                     mResendingToken = token
                     mVerificationId = verificationId
 
