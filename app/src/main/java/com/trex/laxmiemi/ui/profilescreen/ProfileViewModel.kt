@@ -13,6 +13,7 @@ data class ProfileState(
     val shopId: String = "",
     val shopName: String = "",
     val ownerName: String = "",
+    val ownerNumber: String = "",
     val tokenBalance: String = "",
     val activeDevice: String = "",
     val deactivatedDevices: String = "",
@@ -37,6 +38,7 @@ class ProfileViewModel : ViewModel() {
                 _profileUiState.value.copy(
                     shopId = shop.shopCode,
                     ownerName = shop.ownerName,
+                    ownerNumber = shop.shopPhoneNumber,
                     shopName = shop.shopName,
                     tokenBalance = tokenBalance,
                 )

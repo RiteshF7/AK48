@@ -19,7 +19,6 @@ class ProfileActivity : ComponentActivity() {
         val vm: ProfileViewModel by viewModels()
 
         setContent {
-
             ProfileScreen(vm) {
                 val intent =
                     Intent(this, OtpSendActivity::class.java).apply {

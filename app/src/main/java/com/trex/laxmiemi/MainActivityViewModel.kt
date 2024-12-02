@@ -88,7 +88,7 @@ class MainActivityViewModel : ViewModel() {
         // Todo make shop screen
         shopFirestore.createOrUpdateShop(
             userPhoneNumber,
-            Shop(),
+            Shop(shopPhoneNumber = userPhoneNumber),
             {
                 Log.i("", "createNewShop: ShopCreatedSuccessfully !")
                 mshardPref.saveShopId(userPhoneNumber)

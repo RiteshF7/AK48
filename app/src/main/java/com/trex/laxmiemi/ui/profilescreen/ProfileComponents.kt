@@ -181,6 +181,7 @@ private fun ProfileDetails(
             editable = isEditing,
             onValueChange = onOwnerNameChange,
         )
+        TextInfo("Owner number :", shop.ownerNumber, editable = false)
         TextInfo("Token Balance:", shop.tokenBalance, editable = false)
         TextInfo("Active devices:", shop.activeDevice, editable = false)
         TextInfo("DeActivated devices:", shop.deactivatedDevices, editable = false)
