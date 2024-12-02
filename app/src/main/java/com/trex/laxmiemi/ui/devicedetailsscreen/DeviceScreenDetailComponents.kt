@@ -25,6 +25,7 @@ import androidx.compose.material.icons.filled.AppBlocking
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.CastConnected
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.LocationOn
@@ -467,6 +468,11 @@ val deviceActionDataList =
             Icons.Default.VpnKey,
             Actions.ACTION_RESET_PASSWORD,
             "Reset Password",
+        ),
+        DeviceActionData(
+            Icons.Default.CastConnected,
+            Actions.ACTION_TEST_MESSAGE,
+            "Test connection",
         ),
     )
 
