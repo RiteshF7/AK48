@@ -2,11 +2,9 @@
 ../keystore.properties
 *.jks
 gradle.properties
-../keystore.properties
 
 # Keystore files
 /keystore.properties
-*.jks
 /app/keystore/
 /keystore/
 
