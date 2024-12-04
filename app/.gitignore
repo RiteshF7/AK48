@@ -3,3 +3,15 @@
 *.jks
 gradle.properties
 ../keystore.properties
+
+# Keystore files
+/keystore.properties
+*.jks
+/app/keystore/
+/keystore/
+
+# Additional security-related files
+*.keystore
+*.p12
+*.der
+*.pem
