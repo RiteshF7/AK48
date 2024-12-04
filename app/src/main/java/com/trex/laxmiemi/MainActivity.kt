@@ -12,7 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.trex.laxmiemi.databinding.ActivityMainBinding
-import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
+import com.trex.laxmiemi.ui.loginscreen.LoginWithEmailActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
 import com.trex.rexnetwork.utils.SharedPreferenceManager
@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
                     onSuccess,
                 )
             } else {
-                val sendOtpActivity = Intent(this, OtpSendActivity::class.java)
+                val sendOtpActivity = Intent(this, LoginWithEmailActivity::class.java)
                 startActivity(sendOtpActivity)
                 finish()
             }

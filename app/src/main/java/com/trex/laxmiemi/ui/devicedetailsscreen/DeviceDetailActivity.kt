@@ -11,9 +11,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.trex.laxmiemi.MainActivity
 import com.trex.laxmiemi.handlers.ShopActionExecutor
-import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
+import com.trex.laxmiemi.ui.loginscreen.LoginWithEmailActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
@@ -37,7 +36,7 @@ class DeviceDetailActivity : ComponentActivity() {
         setContent {
             val deleteDevice by vm.deleteDevice
             if (deleteDevice) {
-                this.startMyActivity(OtpSendActivity::class.java)
+                this.startMyActivity(LoginWithEmailActivity::class.java)
             }
             device.let {
                 Box(

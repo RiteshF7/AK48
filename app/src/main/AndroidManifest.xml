@@ -89,15 +89,6 @@
         <activity
             android:name="com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity"
             android:theme="@style/Theme.AppCompat.Light" />
-        <activity
-            android:name=".ui.loginscreen.OtpVerifyActivity"
-            android:theme="@style/Theme.AppCompat.Light" />
-        <activity
-            android:name=".ui.loginscreen.OtpSendActivity"
-            android:exported="true"
-            android:theme="@style/Theme.AppCompat.Light">
-
-        </activity>
 
         <receiver
             android:name=".ui.PayloadReceiver"
