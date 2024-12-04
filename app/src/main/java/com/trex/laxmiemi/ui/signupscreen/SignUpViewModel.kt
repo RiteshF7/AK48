@@ -100,16 +100,17 @@ class SignUpViewModel : ViewModel() {
         shopFirestore.createOrUpdateShop(
             shopId,
             shop,
-            onSuccess = ::handleShopCreated,
+            onSuccess = { handleShopCreated(shopId) },
             onFailure = { handleError("Failed to create shop. Please try again.") },
         )
     }
 
-    private fun handleShopCreated() {
+    private fun handleShopCreated(shopId: String) {
         _uiState.update {
             it.copy(
                 isLoading = false,
                 signUpSuccess = true,
+                shopId = shopId,
                 showSuccessLogo = true,
             )
         }
@@ -135,6 +136,7 @@ data class SignUpUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val signUpSuccess: Boolean = false,
+    val shopId: String = "",
     val showSuccessLogo: Boolean = false,
     val shouldFinish: Boolean = false,
 )

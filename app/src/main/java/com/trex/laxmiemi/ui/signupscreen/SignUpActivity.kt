@@ -9,9 +9,10 @@ class SignUpActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         actionBar?.hide()
-        val vm by viewModels<SignUpViewModel>()
         setContent {
-            SignUpScreen()
+            SignUpScreen {
+                finish()
+            }
         }
     }
 }

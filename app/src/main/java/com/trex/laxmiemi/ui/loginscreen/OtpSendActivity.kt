@@ -38,7 +38,7 @@ class OtpSendActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOtpSendBinding.inflate(layoutInflater)
-        startActivity(Intent(this,SignUpActivity::class.java))
+        startActivity(Intent(this,LoginWithEmailActivity::class.java))
         // In Activity's onCreate() for instance
 //        val w = window
 //        w.setFlags(

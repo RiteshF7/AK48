@@ -12,23 +12,19 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.trex.laxmiemi.databinding.ActivityMainBinding
-import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 
 class MainActivity : ComponentActivity() {
-    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val mainActivityViewModel: MainActivityViewModel by viewModels()
-        checkIsUserLoggedIn(mainActivityViewModel) {
-            setContent {
-                MyApp(mainActivityViewModel)
-            }
+        setContent {
+            MyApp(mainActivityViewModel)
         }
     }
 

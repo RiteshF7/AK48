@@ -28,14 +28,18 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trex.laxmiemi.R
+import com.trex.rexnetwork.domain.firebasecore.firesstore.User
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = viewModel(),
     onSignUpClick: () -> Unit,
+    onLoginSuccess: (User) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
+    if (uiState.loginSuccess) {
+        onLoginSuccess(uiState.user)
+    }
     Column(
         modifier =
             Modifier

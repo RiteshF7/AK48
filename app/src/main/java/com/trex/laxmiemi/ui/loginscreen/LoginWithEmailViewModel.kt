@@ -1,6 +1,7 @@
 package com.trex.laxmiemi.ui.loginscreen
 
 import androidx.lifecycle.ViewModel
+import com.trex.rexnetwork.domain.firebasecore.firesstore.User
 import com.trex.rexnetwork.domain.firebasecore.firesstore.UserFirestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,14 +25,11 @@ class LoginViewModel : ViewModel() {
         _uiState.update { it.copy(isLoading = true) }
         userFirestore.getUserIfExists(_uiState.value.email, { user ->
             if (user.password == _uiState.value.password) {
-                val shopId = user.shopId
-                // Store shopId in SharedPreferences
-                saveShopIdToPrefs(shopId)
-
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         loginSuccess = true,
+                        user = user,
                         error = null,
                     )
                 }
@@ -52,16 +50,13 @@ class LoginViewModel : ViewModel() {
             }
         })
     }
-
-    private fun saveShopIdToPrefs(shopId: String) {
-        // Implement SharedPreferences storage
-    }
 }
 
 data class LoginUiState(
     val email: String = "",
     val password: String = "",
     val isLoading: Boolean = false,
+    val user: User = User(),
     val error: String? = null,
     val loginSuccess: Boolean = false,
 )

@@ -28,9 +28,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trex.laxmiemi.R
+import com.trex.laxmiemi.ui.components.RexActionButton
 
 @Composable
-fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
+fun SignUpScreen(
+    viewModel: SignUpViewModel = viewModel(),
+    onFinish: () -> Unit,
+) {
     val uiState by viewModel.uiState.collectAsState()
 
     Column(
@@ -56,6 +60,7 @@ fun SignUpScreen(viewModel: SignUpViewModel = viewModel()) {
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
+            RexActionButton("Sign in") { onFinish() }
         } else {
             Image(
                 painter = painterResource(id = R.drawable.shield),
