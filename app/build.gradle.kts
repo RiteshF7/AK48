@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.de.undercouch.gradle.tasks.download.org.apache.commons.logging.LogFactory.release
+
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -22,11 +25,15 @@ android {
         }
     }
 
+
+
     buildTypes {
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
+
+
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

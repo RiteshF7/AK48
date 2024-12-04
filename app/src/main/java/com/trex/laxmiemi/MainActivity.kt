@@ -12,6 +12,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.trex.laxmiemi.databinding.ActivityMainBinding
+import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
 import com.trex.laxmiemi.ui.loginscreen.OtpSendActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
@@ -23,12 +24,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // In Activity's onCreate() for instance
-//        val w = window
-//        w.setFlags(
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-//        )
         val mainActivityViewModel: MainActivityViewModel by viewModels()
         checkIsUserLoggedIn(mainActivityViewModel) {
             setContent {
