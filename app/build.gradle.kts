@@ -32,20 +32,42 @@ android {
         }
     }
 
+    // Add this to read password from file
+    fun readPasswordFromFile(filename: String): String =
+        try {
+            File(filename).readText().trim()
+        } catch (e: Exception) {
+            throw GradleException("Failed to read password from file: $filename", e)
+        }
+
     signingConfigs {
         create("release") {
-            keyAlias = keystoreProperties["keyAlias"] as String
-            keyPassword = keystoreProperties["keyPassword"] as String
+            keyAlias = readPasswordFromFile(keystoreProperties["keyAlias"] as String)
+            keyPassword = readPasswordFromFile(keystoreProperties["keyPassword"] as String)
             storeFile = file(keystoreProperties["storeFile"] as String)
-            storePassword = keystoreProperties["storePassword"] as String
+            storePassword = readPasswordFromFile(keystoreProperties["storePassword"] as String)
         }
     }
     buildTypes {
+
+//        debug {
+//            isMinifyEnabled = true
+//            isShrinkResources = true
+//            isDebuggable = false
+//            proguardFiles(
+//                getDefaultProguardFile("proguard-android-optimize.txt"),
+//                "proguard-rules.pro",
+//            )
+//        }
+
         release {
-            isMinifyEnabled = true
-            isShrinkResources = true
+
+            isMinifyEnabled = false
+            isShrinkResources = false
             isDebuggable = false
-            signingConfig = signingConfigs.getByName("release") // Add this line
+            signingConfig = signingConfigs.getByName("release")
+
+            manifestPlaceholders.put("enablePlayIntegrity", "false")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),

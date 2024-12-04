@@ -3,7 +3,8 @@ package com.trex.laxmiemi.ui.loginscreen
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.WindowManager
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.FirebaseException
@@ -11,10 +12,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthCredential
 import com.google.firebase.auth.PhoneAuthOptions
 import com.google.firebase.auth.PhoneAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.trex.laxmiemi.MainActivity
 import com.trex.laxmiemi.databinding.ActivityOtpSendBinding
+import com.trex.laxmiemi.ui.signupscreen.SignUpActivity
 import java.util.concurrent.TimeUnit
 
 class OtpSendActivity : AppCompatActivity() {
@@ -30,37 +29,36 @@ class OtpSendActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        if (mAuth.currentUser != null) {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
+//        if (mAuth.currentUser != null) {
+//            startActivity(Intent(this, MainActivity::class.java))
+//            finish()
+//        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityOtpSendBinding.inflate(layoutInflater)
-        supportActionBar?.hide()
-
+        startActivity(Intent(this,SignUpActivity::class.java))
         // In Activity's onCreate() for instance
-        val w = window
-        w.setFlags(
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-        )
-        setContentView(binding.root)
-
-        mAuth = Firebase.auth
-
-        binding.btnSend.setOnClickListener {
-            val number =
-                binding.etPhone.text
-                    .toString()
-                    .trim()
-            val countryCode = binding.ccp.selectedCountryCodeWithPlus
-            val phoneNumber = getPhoneNumber(number)
-
-            otpSend("$countryCode$phoneNumber")
-        }
+//        val w = window
+//        w.setFlags(
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//            WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
+//        )
+//        setContentView(binding.root)
+//
+//        mAuth = Firebase.auth
+//
+//        binding.btnSend.setOnClickListener {
+//            val number =
+//                binding.etPhone.text
+//                    .toString()
+//                    .trim()
+//            val countryCode = binding.ccp.selectedCountryCodeWithPlus
+//            val phoneNumber = getPhoneNumber(number)
+//
+//            otpSend("$countryCode$phoneNumber")
+//        }
     }
 
     private fun getPhoneNumber(phone: String): String? {
