@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.utils
 
+import NewDeviceIds
 import android.app.admin.DevicePolicyManager
 import android.graphics.Bitmap
 import android.util.Log
@@ -18,14 +19,24 @@ class QrUtils(
     private val apkChecksum = extraData.checksum
     private val apkUrl = "${Constants.BASE_URL}/api/apk/url?version=v1"
 
-    fun getQrBitmap(shopId: String): Bitmap {
+    fun getQrBitmap(deviceIds: NewDeviceIds): Bitmap {
         Log.i("Current url and checksum", "getQrBitmap: $apkChecksum :: $apkUrl")
-        val qrJson = getQrJson(shopId)
+        val qrJson = getQrJson(deviceIds)
         return generateQRCodeBitmap(qrJson.toString())
     }
 
-    private fun getQrJson(shopId: String): JsonObject {
+    private fun getQrJson(newDeviceIds: NewDeviceIds): JsonObject {
         val clientPackageName = "com.trex.rexandroidsecureclient"
+        // First, create and verify admin extras bundle
+        val adminExtrasBundle =
+            buildJsonObject {
+                put(Constants.ADMIN_SHOP_ID, newDeviceIds.shopId)
+                put(Constants.ADMIN_DEVICE_ID, newDeviceIds.deviceId)
+            }
+
+        // Debug log to verify admin extras content
+        Log.d("QRDebug", "Admin Extras Bundle: $adminExtrasBundle")
+
         val qrJson =
             buildJsonObject {
                 put(
@@ -40,13 +51,13 @@ class QrUtils(
                     DevicePolicyManager.EXTRA_PROVISIONING_DEVICE_ADMIN_PACKAGE_DOWNLOAD_LOCATION,
                     apkUrl,
                 )
+
                 put(
                     DevicePolicyManager.EXTRA_PROVISIONING_ADMIN_EXTRAS_BUNDLE,
-                    buildJsonObject {
-                        put(Constants.ADMIN_SHOP_ID, shopId)
-                    },
+                    adminExtrasBundle,
                 )
             }
+        Log.i("TAG", "getQrJson: $$qrJson")
         return qrJson
     }
 

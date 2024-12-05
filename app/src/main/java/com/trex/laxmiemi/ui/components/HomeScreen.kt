@@ -1,5 +1,6 @@
 import android.content.Intent
 import android.net.Uri
+import android.os.Parcelable
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -58,6 +59,7 @@ import com.trex.laxmiemi.ui.videoplayerscreen.VideoPlayerActivity
 import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.startMyActivity
+import kotlinx.parcelize.Parcelize
 
 @Composable
 fun HomeScreen(homeScreenViewModel: MainActivityViewModel) {
@@ -139,6 +141,12 @@ installation video
 
 */
 
+@Parcelize
+data class NewDeviceIds(
+    val shopId: String,
+    val deviceId: String,
+) : Parcelable
+
 private val homeGridList =
     listOf(
         GridButton(
@@ -204,7 +212,13 @@ fun ButtonGrid() {
                                         Toast.LENGTH_LONG,
                                     )
                                 } else {
-                                    context.startMyActivity(ScanQrActivity::class.java)
+                                    val newDeviceIds =
+                                        NewDeviceIds(shopId, tokenBalanceList.first())
+                                    context.startMyActivity<NewDeviceIds>(
+                                        ScanQrActivity::class.java,
+                                        newDeviceIds,
+                                        false,
+                                    )
                                 }
                             }
                         }

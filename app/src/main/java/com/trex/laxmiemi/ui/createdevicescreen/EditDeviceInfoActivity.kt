@@ -3,7 +3,6 @@ package com.trex.laxmiemi.ui.createdevicescreen
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -37,18 +36,11 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.google.gson.Gson
-import com.trex.laxmiemi.handlers.ShopActionExecutor
-import com.trex.rexnetwork.Constants
-import com.trex.rexnetwork.data.ActionMessageDTO
-import com.trex.rexnetwork.data.Actions
-import com.trex.rexnetwork.data.DeviceInfo
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
-import com.trex.rexnetwork.domain.firebasecore.firesstore.Shop
-import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.getExtraData
+import com.trex.rexnetwork.utils.startMyActivity
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -63,121 +55,65 @@ data class FormData(
     val deviceModel: String = "",
 ) : Parcelable
 
-class CreateDeviceActivity : ComponentActivity() {
+class EditDeviceInfoActivity : ComponentActivity() {
+    companion object {
+        fun go(
+            context: Context,
+            deviceId: String,
+        ) {
+            SharedPreferenceManager(context).getShopId()?.let { shopId ->
+                DeviceFirestore(shopId).getSingleDevice(deviceId, { device ->
+                    context.startMyActivity(EditDeviceInfoActivity::class.java, device, true)
+                }, {})
+            }
+        }
+    }
+
     private lateinit var sharedPreferences: SharedPreferenceManager
     private lateinit var newDevice: NewDevice
-    private val shopRepo = ShopFirestore()
-    private lateinit var messageDTO: ActionMessageDTO
-    private var consumableToken = ""
-    private var consumableTokenList = mutableListOf("")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        messageDTO = intent.getExtraData<ActionMessageDTO>()
+        newDevice = intent.getExtraData<NewDevice>()
 
-        val deviceInfoPayload = messageDTO.payload[Actions.ACTION_REG_DEVICE.name]
-
-        val deviceInfo = Gson().fromJson(deviceInfoPayload, DeviceInfo::class.java)
-
-        val formData = FormData(deviceModel = deviceInfo.deviceModel)
+        val formData =
+            FormData(
+                costumerName = newDevice.costumerName,
+                costumerPhone = newDevice.costumerPhone,
+                emiPerMonth = newDevice.emiPerMonth,
+                dueDate = newDevice.dueDate,
+                durationInMonths = newDevice.durationInMonths,
+                imeiOne = newDevice.imeiOne,
+                deviceModel = newDevice.modelNumber,
+            )
 
         sharedPreferences = SharedPreferenceManager(this)
-        newDevice = NewDevice()
-        sharedPreferences.getShopId()?.let { shopId ->
-            shopRepo.getTokenBalanceList(shopId) {
-                consumableTokenList = it.toMutableList()
-                if (it.isEmpty()) {
-                    Log.e("0 TOKEN BALANCE", "onCreate: ")
-                    finish()
-                }
-                consumableToken = it.first()
-                newDevice.deviceId = consumableToken
-            }
-            newDevice.shopId = shopId
-            newDevice.fcmToken = deviceInfo.fcmToken
-        }
         setContent {
             MaterialTheme {
                 DeviceFormScreen(
                     initialFormState = formData,
                     onFormSubmit = { data ->
-                        newDevice.imeiOne = data.imeiOne
-                        newDevice.imeiTwo = data.imeiTwo
                         newDevice.costumerName = data.costumerName
                         newDevice.costumerPhone = data.costumerPhone
                         newDevice.emiPerMonth = data.emiPerMonth
                         newDevice.dueDate = data.dueDate
                         newDevice.durationInMonths = data.durationInMonths
                         newDevice.modelNumber = data.deviceModel
-
-                        handleFormSubmission(deviceInfo.fcmToken, this)
+                        handleFormSubmission()
                     },
                 )
             }
         }
     }
 
-    private fun handleFormSubmission(
-        fcmToken: String,
-        context: Context,
-    ) {
+    private fun handleFormSubmission() {
         val deviceRepo = DeviceFirestore(newDevice.shopId)
         deviceRepo.createOrUpdateDevice(newDevice.deviceId, newDevice, {
-            removeTokenFromBalance()
-            sendResponseAndFinish(true, fcmToken, context)
+            finish()
         }, {
-            sendResponseAndFinish(false, fcmToken, context)
+            finish()
         })
     }
-
-    private fun removeTokenFromBalance() {
-        consumableTokenList.remove(consumableToken)
-        shopRepo.updateSingleField(
-            newDevice.shopId,
-            Shop::tokenBalance.name,
-            consumableTokenList,
-            {
-                Log.i("some", "removeTokenFromBalance: Token consumed!!")
-            },
-            {
-                Log.e("TAG", "removeTokenFromBalance: error consuming token!! $it")
-            },
-        )
-    }
-
-    private fun sendResponseAndFinish(
-        isSuccess: Boolean,
-        fcmToken: String,
-        context: Context,
-    ) {
-        val status = getStatus(isSuccess)
-        val response = buildResponse(fcmToken, status)
-
-        ShopActionExecutor(context).sendResponse(response)
-        finish()
-    }
-
-    private fun buildResponse(
-        fcmToken: String,
-        status: String,
-    ) = ActionMessageDTO(
-        fcmToken = fcmToken,
-        action = Actions.ACTION_REG_DEVICE,
-        payload =
-            mapOf(
-                Constants.KEY_RESPOSE_RESULT_STATUS to status,
-                Actions.ACTION_REG_DEVICE.name to "Device created successfully!!",
-                NewDevice::deviceId.name to "${newDevice.deviceId}",
-            ),
-        requestId = messageDTO.requestId,
-    )
-
-    private fun getStatus(isSuccess: Boolean) =
-        if (isSuccess) {
-            Constants.RESPONSE_RESULT_SUCCESS
-        } else {
-            Constants.RESPONSE_RESULT_FAILED
-        }
 }
 
 @Preview
@@ -191,7 +127,7 @@ fun DeviceFormScreen(
     initialFormState: FormData,
     onFormSubmit: (FormData) -> Unit,
 ) {
-    val requiredFields = setOf("costumerName", "imeiOne", "deviceModel")
+    val requiredFields = setOf("costumerName", "deviceModel")
 
     var formState by remember {
         mutableStateOf(
@@ -238,6 +174,23 @@ fun DeviceFormScreen(
                         KeyboardOptions(
                             imeAction = ImeAction.Next,
                             capitalization = KeyboardCapitalization.Words,
+                        ),
+                )
+            }
+
+            item {
+                FormField(
+                    label = "Device Model*",
+                    value = formState.deviceModel,
+                    error = errors["deviceModel"],
+                    onValueChange = {
+                        formState = formState.copy(deviceModel = it)
+                        errors = errors - "deviceModel"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Done,
                         ),
                 )
             }
@@ -313,59 +266,7 @@ fun DeviceFormScreen(
                 )
             }
 
-            // IMEI One field
-            item {
-                FormField(
-                    label = "IMEI 1*",
-                    value = formState.imeiOne,
-                    error = errors["imeiOne"],
-                    onValueChange = {
-                        formState = formState.copy(imeiOne = it)
-                        errors = errors - "imeiOne"
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-            }
-
-            // IMEI Two field
-            item {
-                FormField(
-                    label = "IMEI 2",
-                    value = formState.imeiTwo,
-                    error = errors["imeiTwo"],
-                    onValueChange = {
-                        formState = formState.copy(imeiTwo = it)
-                        errors = errors - "imeiTwo"
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-            }
-
             // Device Model field
-            item {
-                FormField(
-                    label = "Device Model*",
-                    value = formState.deviceModel,
-                    error = errors["deviceModel"],
-                    onValueChange = {
-                        formState = formState.copy(deviceModel = it)
-                        errors = errors - "deviceModel"
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Done,
-                        ),
-                )
-            }
         }
 
         // Submit button

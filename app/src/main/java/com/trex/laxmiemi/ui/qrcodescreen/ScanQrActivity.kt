@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.qrcodescreen
 
+import NewDeviceIds
 import android.graphics.Bitmap
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.ui.theme.LaxmiEmiTheme
 import com.trex.rexnetwork.R
 import com.trex.rexnetwork.utils.SharedPreferenceManager
+import com.trex.rexnetwork.utils.getExtraData
 
 class ScanQrActivity : ComponentActivity() {
     private lateinit var mSharefPref: SharedPreferenceManager
@@ -35,11 +37,9 @@ class ScanQrActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mSharefPref = SharedPreferenceManager(this)
-        val shopId = mSharefPref.getShopId()
+        val deviceIds = intent.getExtraData<NewDeviceIds>()
         val vm: ScanQrViewmodel by viewModels()
-        shopId?.let { id ->
-            vm.getQrBitMap(id)
-        } ?: { finish() }
+        vm.getQrBitMap(deviceIds)
 
         enableEdgeToEdge()
         setContent {

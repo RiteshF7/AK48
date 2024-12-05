@@ -1,5 +1,7 @@
 package com.trex.laxmiemi.ui.loginscreen
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -24,6 +26,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +46,7 @@ fun LoginScreen(
     onLoginSuccess: (User) -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
+    val context = LocalContext.current
     if (uiState.loginSuccess) {
         onLoginSuccess(uiState.user)
     }
@@ -143,6 +146,21 @@ fun LoginScreen(
         ) {
             Text(
                 text = "Sign Up",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+            )
+        }
+
+        TextButton(
+            onClick = {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.data = Uri.parse("tel:9910000163")
+                context.startActivity(intent)
+            },
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                text = "Contact our support for assistance",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
             )

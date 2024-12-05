@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.qrcodescreen
 
+import NewDeviceIds
 import android.graphics.Bitmap
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
@@ -28,11 +29,12 @@ class ScanQrViewmodel : ViewModel() {
     val scanQrUiState: State<ScanQrUiState> = _scanQrUiState
     private val dataFirestore = DataFirestore()
 
-    fun getQrBitMap(shopId: String) {
+    fun getQrBitMap(deviceIds:NewDeviceIds) {
+
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 dataFirestore.getExtraData({ extraData ->
-                    val bitmap = QrUtils(extraData).getQrBitmap(shopId)
+                    val bitmap = QrUtils(extraData).getQrBitmap(deviceIds)
                     _scanQrUiState.value = ScanQrUiState.Success(bitmap)
                 }, { error ->
                     _scanQrUiState.value = ScanQrUiState.Failed(error)

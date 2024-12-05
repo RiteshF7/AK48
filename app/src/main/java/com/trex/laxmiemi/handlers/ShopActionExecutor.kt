@@ -6,14 +6,16 @@ import com.google.gson.reflect.TypeToken
 import com.trex.laxmiemi.ui.actionresultscreen.ContactResultActivity
 import com.trex.laxmiemi.ui.actionresultscreen.ResponseMap
 import com.trex.laxmiemi.ui.actionresultscreen.ResponseMapDetailsActivity
-import com.trex.laxmiemi.ui.createdevicescreen.CreateDeviceActivity
+import com.trex.laxmiemi.ui.createdevicescreen.EditDeviceInfoActivity
 import com.trex.laxmiemi.utils.GoogleMapUtils
 import com.trex.rexnetwork.data.ActionMessageDTO
+import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.Actions.ACTION_GET_CONTACTS
 import com.trex.rexnetwork.data.Actions.ACTION_GET_DEVICE_INFO
 import com.trex.rexnetwork.data.Actions.ACTION_GET_LOCATION
 import com.trex.rexnetwork.data.Actions.ACTION_GET_PHONE_NUMBER
 import com.trex.rexnetwork.data.Actions.ACTION_REG_DEVICE
+import com.trex.rexnetwork.data.DeviceInfo
 import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmRequestActivity
 import com.trex.rexnetwork.domain.firebasecore.fcm.fcmrequestscreen.FcmResultActivity
 import com.trex.rexnetwork.domain.repositories.SendActionMessageRepository
@@ -81,7 +83,9 @@ class ShopActionExecutor(
     fun receiveAction(message: ActionMessageDTO) {
         when {
             message.action == ACTION_REG_DEVICE -> {
-                context.startMyActivity(CreateDeviceActivity::class.java, message, true)
+                val deviceInfoPayload = message.payload[Actions.ACTION_REG_DEVICE.name]
+                val deviceInfo = Gson().fromJson(deviceInfoPayload, DeviceInfo::class.java)
+                EditDeviceInfoActivity.go(context, deviceInfo.deviceId)
             }
         }
     }

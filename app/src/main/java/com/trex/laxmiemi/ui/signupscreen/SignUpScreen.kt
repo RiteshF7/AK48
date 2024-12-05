@@ -83,12 +83,14 @@ fun SignUpScreen(
                     )
                 }
             }
+
             Text(
                 text = "Sign-Up Successful!",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.padding(bottom = 16.dp),
             )
+
             RexActionButton("Sign in") { onFinish() }
         } else {
             Image(

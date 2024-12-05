@@ -34,7 +34,7 @@
 
 
         <activity
-            android:name=".ui.createdevicescreen.CreateDeviceActivity"
+            android:name=".ui.createdevicescreen.EditDeviceInfoActivity"
             android:exported="false"
             android:label="@string/title_activity_create_device"
             android:theme="@style/Theme.LaxmiEmi" />

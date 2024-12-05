@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CastConnected
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
@@ -68,6 +69,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.trex.laxmiemi.R
+import com.trex.laxmiemi.ui.createdevicescreen.EditDeviceInfoActivity
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.utils.SharedPreferenceManager
@@ -81,6 +83,7 @@ fun DeviceDetails(
     vm: DeviceScreenDetailViewModel,
     onActionClick: (Actions) -> Unit,
 ) {
+    val context = LocalContext.current
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
         Column {
             DeviceDetailHeader(device)
@@ -95,6 +98,14 @@ fun DeviceDetails(
             ) {
                 Column(Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
                     HeaderButtons(vm, device.deviceId)
+                    QuickActionButton(
+                        "Edit device info",
+                        Modifier
+                            .padding(5.dp),
+                        Icons.Default.Edit,
+                    ){
+                        EditDeviceInfoActivity.go(context,device.deviceId)
+                    }
                 }
             }
         }
