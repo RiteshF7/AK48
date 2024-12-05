@@ -92,3 +92,15 @@
 -keepclassmembers class * {
     @com.google.gson.annotations.SerializedName <fields>;
 }
+
+# Keep all classes and methods for BouncyCastle
+-keep class org.bouncycastle.** { *; }
+
+# Keep all classes and methods for Conscrypt
+-keep class org.conscrypt.** { *; }
+
+# Keep all classes and methods for OpenJSSE
+-keep class org.openjsse.** { *; }
+
+# Prevent stripping of SSLSocket-related classes used by OkHttp
+-keep class okhttp3.internal.platform.** { *; }
