@@ -3,10 +3,6 @@ package com.trex.laxmiemi.ui.createdevicescreen
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.compose.material.ButtonDefaults
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.TextFieldDefaults
-import androidx.compose.ui.draw.shadow
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -17,11 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Card
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.TextField
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,8 +29,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -40,7 +38,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.google.gson.Gson
-import com.trex.laxmiemi.R
 import com.trex.laxmiemi.handlers.ShopActionExecutor
 import com.trex.rexnetwork.Constants
 import com.trex.rexnetwork.data.ActionMessageDTO
@@ -204,25 +201,27 @@ fun DeviceFormScreen(
     var errors by remember { mutableStateOf(mapOf<String, String>()) }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.85f))
-            .padding(16.dp),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.85f))
+                .padding(16.dp),
     ) {
         Text(
             text = "Add Device",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
-            modifier = Modifier.padding(bottom = 14.dp)
+            modifier = Modifier.padding(bottom = 14.dp),
         )
 
         HorizontalDivider(Modifier.padding(bottom = 14.dp))
 
         LazyColumn(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth(),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             // Customer Name field
@@ -235,10 +234,11 @@ fun DeviceFormScreen(
                         formState = formState.copy(costumerName = it)
                         errors = errors - "costumerName"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                        capitalization = KeyboardCapitalization.Words,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Words,
+                        ),
                 )
             }
 
@@ -252,10 +252,11 @@ fun DeviceFormScreen(
                         formState = formState.copy(costumerPhone = it)
                         errors = errors - "costumerPhone"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Phone,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
 
@@ -269,10 +270,11 @@ fun DeviceFormScreen(
                         formState = formState.copy(emiPerMonth = it)
                         errors = errors - "emiPerMonth"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
 
@@ -286,9 +288,10 @@ fun DeviceFormScreen(
                         formState = formState.copy(dueDate = it)
                         errors = errors - "dueDate"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
 
@@ -302,10 +305,11 @@ fun DeviceFormScreen(
                         formState = formState.copy(durationInMonths = it)
                         errors = errors - "durationInMonths"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
 
@@ -319,10 +323,11 @@ fun DeviceFormScreen(
                         formState = formState.copy(imeiOne = it)
                         errors = errors - "imeiOne"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
 
@@ -336,10 +341,11 @@ fun DeviceFormScreen(
                         formState = formState.copy(imeiTwo = it)
                         errors = errors - "imeiTwo"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                 )
             }
 
@@ -353,19 +359,21 @@ fun DeviceFormScreen(
                         formState = formState.copy(deviceModel = it)
                         errors = errors - "deviceModel"
                     },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Done,
-                    ),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Words,
+                            imeAction = ImeAction.Done,
+                        ),
                 )
             }
         }
 
         // Submit button
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp),
             onClick = {
                 if (validateForm(formState, requiredFields)) {
                     onFormSubmit(formState)
@@ -374,16 +382,17 @@ fun DeviceFormScreen(
                 }
             },
             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
-            shape = RoundedCornerShape(16.dp)
+            shape = RoundedCornerShape(16.dp),
         ) {
             Text(
                 "Submit",
                 color = Color.White,
-                style = MaterialTheme.typography.bodyLarge
+                style = MaterialTheme.typography.bodyLarge,
             )
         }
     }
 }
+
 @Composable
 fun FormField(
     label: String,
@@ -395,15 +404,16 @@ fun FormField(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Card(
-            modifier = Modifier
-                .fillMaxWidth()
-                .shadow(
-                    elevation = 4.dp,
-                    shape = RoundedCornerShape(12.dp),
-                    ambientColor = Color.White.copy(alpha = 0.1f)
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(12.dp),
+                        ambientColor = Color.White.copy(alpha = 0.1f),
+                    ),
             backgroundColor = Color(0xFF1E1E1E), // Dark gray background
-            shape = RoundedCornerShape(12.dp)
+            shape = RoundedCornerShape(12.dp),
         ) {
             TextField(
                 value = value,
@@ -412,25 +422,28 @@ fun FormField(
                     Text(
                         label,
                         color = Color.White.copy(alpha = 0.7f),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 },
                 isError = error != null,
                 keyboardOptions = keyboardOptions,
-                modifier = Modifier
-                    .fillMaxWidth(),
-                colors = TextFieldDefaults.textFieldColors(
-                    textColor = Color.White,
-                    backgroundColor = Color.Transparent,
-                    cursorColor = Color.White,
-                    focusedLabelColor = Color.White,
-                    unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                textStyle = MaterialTheme.typography.bodyLarge.copy(
-                    color = Color.White
-                ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth(),
+                colors =
+                    TextFieldDefaults.textFieldColors(
+                        textColor = Color.White,
+                        backgroundColor = Color.Transparent,
+                        cursorColor = Color.White,
+                        focusedLabelColor = Color.White,
+                        unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                    ),
+                textStyle =
+                    MaterialTheme.typography.bodyLarge.copy(
+                        color = Color.White,
+                    ),
                 singleLine = true,
             )
         }
@@ -445,6 +458,7 @@ fun FormField(
         }
     }
 }
+
 private fun validateForm(
     data: FormData,
     requiredFields: Set<String>,

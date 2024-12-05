@@ -21,7 +21,16 @@ class LoginViewModel : ViewModel() {
         _uiState.update { it.copy(password = password) }
     }
 
+    private fun validateInputs(): Boolean {
+        val state = uiState.value
+        return (state.email.isNotBlank() && state.password.isNotBlank())
+    }
+
     fun onLoginClick() {
+        if (!validateInputs()) {
+            _uiState.update { it.copy(error = "Email and passowrd are required!") }
+            return
+        }
         _uiState.update { it.copy(isLoading = true) }
         userFirestore.getUserIfExists(_uiState.value.email, { user ->
             if (user.password == _uiState.value.password) {
