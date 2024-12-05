@@ -60,8 +60,15 @@ fun LoginScreen(
             contentDescription = "App Logo",
             modifier =
                 Modifier
-                    .size(150.dp)
-                    .padding(bottom = 32.dp),
+                    .size(120.dp),
+        )
+
+        Text(
+            text = "EMI Shield",
+            fontWeight = FontWeight.Bold,
+            color = Color.White,
+            fontSize = 32.sp,
+            modifier = Modifier.padding(bottom = 20.dp, top = 20.dp),
         )
 
         uiState.error?.let { error ->

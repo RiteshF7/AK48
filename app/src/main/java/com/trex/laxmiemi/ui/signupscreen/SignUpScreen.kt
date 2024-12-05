@@ -3,6 +3,7 @@ package com.trex.laxmiemi.ui.signupscreen
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,9 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,13 +25,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.RexActionButton
+import com.trex.laxmiemi.ui.createdevicescreen.FormField
 
 @Composable
 fun SignUpScreen(
@@ -41,9 +48,8 @@ fun SignUpScreen(
         modifier =
             Modifier
                 .fillMaxSize()
-                .padding(16.dp),
+                .padding(vertical = 50.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         if (uiState.showSuccessLogo) {
             Image(
@@ -54,6 +60,29 @@ fun SignUpScreen(
                         .size(120.dp)
                         .padding(bottom = 16.dp),
             )
+
+            uiState.error?.let { error ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(bottom = 20.dp),
+                ) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        imageVector = Icons.Filled.Error,
+                        contentDescription = "",
+                        tint = colorResource(R.color.red_300),
+                    )
+                    Spacer(Modifier.padding(end = 5.dp))
+                    Text(
+                        text = error,
+                        fontSize = 18.sp,
+                        textAlign = TextAlign.Center,
+                        fontWeight = FontWeight.SemiBold,
+                        color = colorResource(R.color.red_300),
+                    )
+                }
+            }
             Text(
                 text = "Sign-Up Successful!",
                 style = MaterialTheme.typography.labelLarge,
@@ -67,55 +96,78 @@ fun SignUpScreen(
                 contentDescription = "App Logo",
                 modifier =
                     Modifier
-                        .size(120.dp)
-                        .padding(bottom = 32.dp),
+                        .size(120.dp),
             )
 
-            OutlinedTextField(
-                value = uiState.shopName,
-                onValueChange = viewModel::onShopNameChange,
-                label = { Text("Shop Name") },
-                modifier = Modifier.fillMaxWidth(),
+            Text(
+                text = "EMI Shield",
+                fontWeight = FontWeight.Bold,
+                color = Color.White,
+                fontSize = 32.sp,
+                modifier = Modifier.padding(bottom = 20.dp, top = 20.dp),
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = uiState.ownerName,
-                onValueChange = viewModel::onOwnerNameChange,
-                label = { Text("Owner Name") },
-                modifier = Modifier.fillMaxWidth(),
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = uiState.ownerPhone,
-                onValueChange = viewModel::onPhoneChange,
-                label = { Text("Phone Number") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            FormField(
+                "Shop name",
+                uiState.shopName,
+                null,
+                viewModel::onShopNameChange,
+                KeyboardOptions(keyboardType = KeyboardType.Text),
+                Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = uiState.email,
-                onValueChange = viewModel::onEmailChange,
-                label = { Text("Email") },
-                modifier = Modifier.fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            FormField(
+                "Owner name",
+                uiState.ownerName,
+                null,
+                viewModel::onOwnerNameChange,
+                KeyboardOptions(keyboardType = KeyboardType.Text),
+                Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                value = uiState.password,
-                onValueChange = viewModel::onPasswordChange,
-                label = { Text("Password") },
-                modifier = Modifier.fillMaxWidth(),
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            FormField(
+                "Phone number",
+                uiState.ownerPhone,
+                null,
+                viewModel::onPhoneChange,
+                KeyboardOptions(keyboardType = KeyboardType.Phone),
+                Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+            FormField(
+                "Email",
+                uiState.email,
+                null,
+                viewModel::onEmailChange,
+                KeyboardOptions(keyboardType = KeyboardType.Email),
+                Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FormField(
+                "Password",
+                uiState.password,
+                null,
+                viewModel::onPasswordChange,
+                KeyboardOptions(keyboardType = KeyboardType.Text),
+                Modifier.fillMaxWidth(),
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            FormField(
+                "Re enter password",
+                uiState.reEnterPassword,
+                null,
+                viewModel::onReEnterPasswordChange,
+                KeyboardOptions(keyboardType = KeyboardType.Text),
+                Modifier.fillMaxWidth(),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -126,7 +178,7 @@ fun SignUpScreen(
                 enabled = !uiState.isLoading,
                 colors =
                     ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF4CAF50),
+                        backgroundColor = colorResource(R.color.primary),
                     ),
             ) {
                 if (uiState.isLoading) {
@@ -137,14 +189,6 @@ fun SignUpScreen(
                 } else {
                     Text("Sign Up", color = Color.White)
                 }
-            }
-
-            uiState.error?.let { error ->
-                Text(
-                    text = error,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 8.dp),
-                )
             }
         }
     }

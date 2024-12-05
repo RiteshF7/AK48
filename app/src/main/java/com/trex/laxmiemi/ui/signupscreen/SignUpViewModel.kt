@@ -32,6 +32,10 @@ class SignUpViewModel : ViewModel() {
         _uiState.update { it.copy(email = email) }
     }
 
+    fun onReEnterPasswordChange(email: String) {
+        _uiState.update { it.copy(email = email) }
+    }
+
     fun onPasswordChange(password: String) {
         _uiState.update { it.copy(password = password) }
     }
@@ -44,17 +48,21 @@ class SignUpViewModel : ViewModel() {
 
     private fun validateInputs(): Boolean {
         val state = uiState.value
-        return if (state.shopName.isBlank() ||
+        if (state.shopName.isBlank() ||
             state.ownerName.isBlank() ||
             state.ownerPhone.isBlank() ||
             state.email.isBlank() ||
             state.password.isBlank()
         ) {
             _uiState.update { it.copy(error = "All fields are required") }
-            false
+            return false
         } else {
-            true
+            if (state.password != state.reEnterPassword) {
+                _uiState.update { it.copy(error = "Both password should be same!") }
+                return false
+            }
         }
+        return true
     }
 
     private fun setLoadingState(isLoading: Boolean) {
@@ -133,6 +141,7 @@ data class SignUpUiState(
     val ownerPhone: String = "",
     val email: String = "",
     val password: String = "",
+    val reEnterPassword: String = "",
     val isLoading: Boolean = false,
     val error: String? = null,
     val signUpSuccess: Boolean = false,
