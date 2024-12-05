@@ -1,6 +1,7 @@
 package com.trex.laxmiemi
 
 import HomeScreen
+import android.bluetooth.BluetoothClass.Device
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent

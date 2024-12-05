@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.CastConnected
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Devices
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
@@ -99,10 +100,10 @@ fun DeviceDetails(
                 Column(Modifier.padding(vertical = 10.dp, horizontal = 10.dp)) {
                     HeaderButtons(vm, device.deviceId)
                     QuickActionButton(
-                        "Edit device info",
+                        "Get device info",
                         Modifier
                             .padding(5.dp),
-                        Icons.Default.Edit,
+                        Icons.Default.Devices,
                     ){
                         EditDeviceInfoActivity.go(context,device.deviceId)
                     }

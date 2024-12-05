@@ -144,7 +144,7 @@ fun DeviceFormScreen(
                 .padding(16.dp),
     ) {
         Text(
-            text = "Add Device",
+            text = "Update Details",
             fontWeight = FontWeight.Bold,
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
