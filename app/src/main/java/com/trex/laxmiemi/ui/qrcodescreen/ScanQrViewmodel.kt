@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.trex.laxmiemi.utils.QrUtils
 import com.trex.rexnetwork.domain.firebasecore.firesstore.DataFirestore
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,13 +30,16 @@ class ScanQrViewmodel : ViewModel() {
     val scanQrUiState: State<ScanQrUiState> = _scanQrUiState
     private val dataFirestore = DataFirestore()
 
-    fun getQrBitMap(deviceIds:NewDeviceIds) {
-
+    fun getQrBitMap(deviceIds: NewDeviceIds) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
                 dataFirestore.getExtraData({ extraData ->
-                    val bitmap = QrUtils(extraData).getQrBitmap(deviceIds)
-                    _scanQrUiState.value = ScanQrUiState.Success(bitmap)
+                    CoroutineScope(Dispatchers.Main).launch {
+                        val bitmap = QrUtils(extraData).getQrBitmap(deviceIds)
+                        bitmap?.let {
+                            _scanQrUiState.value = ScanQrUiState.Success(bitmap)
+                        }
+                    }
                 }, { error ->
                     _scanQrUiState.value = ScanQrUiState.Failed(error)
                 })
