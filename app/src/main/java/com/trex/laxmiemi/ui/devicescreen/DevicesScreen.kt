@@ -1,20 +1,11 @@
 package com.trex.laxmiemi.ui.devicescreen
 
+import NewDeviceIds
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,12 +16,7 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
@@ -52,9 +38,14 @@ import com.trex.laxmiemi.R
 import com.trex.laxmiemi.handlers.ShopActionExecutor
 import com.trex.laxmiemi.ui.components.TitleText
 import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
+import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
+import com.trex.laxmiemi.ui.tokenbalancescreen.TokenBalanceActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
+import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
+import com.trex.rexnetwork.utils.SharedPreferenceManager
+import com.trex.rexnetwork.utils.startMyActivity
 
 data class DeviceListState(
     val devices: NewDevice,
@@ -77,6 +68,10 @@ fun DeviceList(devices: List<NewDevice>) {
             .fillMaxHeight()
             .background(Color.Black.copy(alpha = 0.85f)),
     ) {
+        if (devices.isEmpty()) {
+            NoDevicesScreen()
+            return
+        }
         LazyColumn(
             modifier =
                 Modifier
@@ -86,6 +81,91 @@ fun DeviceList(devices: List<NewDevice>) {
         ) {
             items(devices) { device ->
                 DeviceListItem(device)
+            }
+        }
+    }
+}
+
+@Composable
+fun NoDevicesScreen() {
+    val context = LocalContext.current
+    Scaffold { paddingValues ->
+        Column(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(color = Color.Black.copy(alpha = 0.85f))
+                    .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            // Logo
+            Image(
+                painter = painterResource(id = R.drawable.not_found), // Add your logo resource
+                contentDescription = "Shop Logo",
+                modifier =
+                    Modifier
+                        .size(120.dp)
+                        .padding(bottom = 24.dp),
+            )
+
+            // No devices text
+            Text(
+                text = "No Devices Added",
+                fontSize = 24.sp,
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+
+            Text(
+                text = "Please add devices to get started",
+                fontSize = 16.sp,
+                color = Color.White,
+                modifier = Modifier.padding(bottom = 32.dp),
+            )
+
+            // Add device button
+            Button(
+                onClick = {
+                    SharedPreferenceManager(context).getShopId()?.let { shopId ->
+                        ShopFirestore().getTokenBalanceList(shopId) { tokenBalanceList ->
+                            if (tokenBalanceList.isEmpty()) {
+                                context.startMyActivity(TokenBalanceActivity::class.java)
+                                Toast.makeText(
+                                    context,
+                                    "Low token balance!\n PLease buy token to proceed!",
+                                    Toast.LENGTH_LONG,
+                                ).show()
+                            } else {
+                                val newDeviceIds =
+                                    NewDeviceIds(shopId, tokenBalanceList.first())
+                                context.startMyActivity<NewDeviceIds>(
+                                    ScanQrActivity::class.java,
+                                    newDeviceIds,
+                                    false,
+                                )
+                            }
+                        }
+                    }
+                },
+                colors =
+                    ButtonDefaults.buttonColors(
+                        containerColor = colorResource(R.color.primary),
+                    ),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                        .padding(horizontal = 32.dp),
+            ) {
+                Text(
+                    text = "Add Device",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                )
             }
         }
     }

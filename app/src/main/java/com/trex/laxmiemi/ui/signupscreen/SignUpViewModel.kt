@@ -33,7 +33,7 @@ class SignUpViewModel : ViewModel() {
     }
 
     fun onReEnterPasswordChange(email: String) {
-        _uiState.update { it.copy(email = email) }
+        _uiState.update { it.copy(reEnterPassword = email) }
     }
 
     fun onPasswordChange(password: String) {

@@ -1,3 +1,4 @@
+import com.trex.laxmiemi.utils.UploadReleaseApkTask
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -13,6 +14,13 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.gms.google-services")
     id("kotlin-parcelize")
+}
+
+// Register the task
+tasks.register<UploadReleaseApkTask>("uploadReleaseApk") {
+    description = "Uploads the release APK to remote server"
+    group = "upload"
+    dependsOn("assembleRelease")
 }
 
 android {
@@ -120,6 +128,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
 
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")

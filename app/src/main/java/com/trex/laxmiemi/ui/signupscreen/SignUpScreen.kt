@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.icons.Icons
@@ -34,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.trex.laxmiemi.R
-import com.trex.laxmiemi.ui.components.RexActionButton
 import com.trex.laxmiemi.ui.createdevicescreen.FormField
 
 @Composable
@@ -48,24 +49,59 @@ fun SignUpScreen(
         modifier =
             Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(vertical = 50.dp, horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         if (uiState.showSuccessLogo) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.shield),
+                    contentDescription = "Success Logo",
+                    modifier =
+                        Modifier
+                            .size(120.dp)
+                            .padding(bottom = 16.dp),
+                )
+
+                Text(
+                    text = "Sign-Up Successful!",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.White,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 16.dp),
+                )
+
+                Button(
+                    onClick = { onFinish() },
+                    modifier = Modifier.fillMaxWidth(),
+                    enabled = !uiState.isLoading,
+                    colors =
+                        ButtonDefaults.buttonColors(
+                            backgroundColor = colorResource(R.color.primary),
+                        ),
+                ) {
+                    Text("Sign in", color = Color.White)
+                }
+            }
+        } else {
             Image(
                 painter = painterResource(id = R.drawable.shield),
-                contentDescription = "Success Logo",
+                contentDescription = "App Logo",
                 modifier =
                     Modifier
-                        .size(120.dp)
-                        .padding(bottom = 16.dp),
+                        .size(120.dp),
             )
-
             uiState.error?.let { error ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
-                    modifier = Modifier.padding(bottom = 20.dp),
+                    modifier = Modifier.padding(bottom = 20.dp, top = 20.dp),
                 ) {
                     Icon(
                         modifier = Modifier.size(20.dp),
@@ -83,24 +119,6 @@ fun SignUpScreen(
                     )
                 }
             }
-
-            Text(
-                text = "Sign-Up Successful!",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 16.dp),
-            )
-
-            RexActionButton("Sign in") { onFinish() }
-        } else {
-            Image(
-                painter = painterResource(id = R.drawable.shield),
-                contentDescription = "App Logo",
-                modifier =
-                    Modifier
-                        .size(120.dp),
-            )
-
             Text(
                 text = "EMI Shield",
                 fontWeight = FontWeight.Bold,

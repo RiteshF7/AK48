@@ -15,9 +15,9 @@ import kotlinx.serialization.json.put
 class QrUtils(
     extraData: FirestoreExtraData,
 ) {
-    //    private val apkUrl = extraData.url
+    private val apkUrl = extraData.url
     private val apkChecksum = extraData.checksum
-    private val apkUrl = "${Constants.BASE_URL}/api/apk/url?version=v1"
+//    private val apkUrl = "${Constants.BASE_URL}/api/apk/url?version=v1"
 
     fun getQrBitmap(deviceIds: NewDeviceIds): Bitmap {
         Log.i("Current url and checksum", "getQrBitmap: $apkChecksum :: $apkUrl")
@@ -27,7 +27,6 @@ class QrUtils(
 
     private fun getQrJson(newDeviceIds: NewDeviceIds): JsonObject {
         val clientPackageName = "com.trex.rexandroidsecureclient"
-        // First, create and verify admin extras bundle
         val adminExtrasBundle =
             buildJsonObject {
                 put(Constants.ADMIN_SHOP_ID, newDeviceIds.shopId)

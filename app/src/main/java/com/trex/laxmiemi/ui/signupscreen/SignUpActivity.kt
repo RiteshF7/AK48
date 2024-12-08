@@ -20,6 +20,7 @@ class SignUpActivity : ComponentActivity() {
                         .fillMaxSize()
                         .background(color = Color.Black.copy(alpha = 0.85f)),
             ) {
+
                 SignUpScreen {
                     finish()
                 }

@@ -1,5 +1,7 @@
 package com.trex.laxmiemi.ui.tokenbalancescreen
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -31,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -62,6 +65,7 @@ class TokenBalanceActivity : ComponentActivity() {
     @Composable
     fun TokenBalanceScreen(vm: TokenBalanceViewModel) {
         val uiState by vm.uiState
+        val context = LocalContext.current
         Column(
             modifier =
                 Modifier
@@ -75,7 +79,7 @@ class TokenBalanceActivity : ComponentActivity() {
                 fontSize = 28.sp,
                 fontWeight = FontWeight.SemiBold,
             )
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(20.dp))
             HorizontalDivider()
             Column(
                 modifier = Modifier.padding(top = 50.dp),
@@ -124,7 +128,12 @@ class TokenBalanceActivity : ComponentActivity() {
                 TokenCountCard(uiState.usedToken, "Used\nToken", colorResource(R.color.red_300))
             }
 
-            AddToken(text = "Add Token", icon = Icons.Default.Add) { }
+            AddToken(text = "Add Token", icon = Icons.Default.Add) {
+                val intent = Intent(Intent.ACTION_DIAL)
+                intent.setData(Uri.parse("tel:9910000163"))
+                context.startActivity(intent)
+            }
+            Spacer(Modifier.padding(10.dp))
         }
     }
 
