@@ -1,7 +1,6 @@
 package com.trex.laxmiemi
 
 import HomeScreen
-import android.bluetooth.BluetoothClass.Device
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,8 +10,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.trex.rexnetwork.data.ActionMessageDTO
+import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.domain.firebasecore.fcm.FCMTokenManager
 import com.trex.rexnetwork.domain.firebasecore.fcm.ShopFcmTokenUpdater
+import com.trex.rexnetwork.domain.repositories.SendActionMessageRepository
 
 class MainActivity : ComponentActivity() {
     private lateinit var tokenManager: FCMTokenManager
