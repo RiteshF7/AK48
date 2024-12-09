@@ -84,37 +84,16 @@ class QrUtils(
     private fun generateQRCodeBitmap(content: String): Bitmap {
         val writer = QRCodeWriter()
         val bitMatrix = writer.encode(content, BarcodeFormat.QR_CODE, 512, 512)
+        val width = bitMatrix.width
+        val height = bitMatrix.height
+        val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565)
 
-        // Find the bounding box of the QR code within the bit matrix
-        var minX = bitMatrix.width
-        var minY = bitMatrix.height
-        var maxX = 0
-        var maxY = 0
-
-        for (x in 0 until bitMatrix.width) {
-            for (y in 0 until bitMatrix.height) {
-                if (bitMatrix[x, y]) {
-                    if (x < minX) minX = x
-                    if (x > maxX) maxX = x
-                    if (y < minY) minY = y
-                    if (y > maxY) maxY = y
-                }
-            }
-        }
-
-        // Calculate the dimensions of the QR code
-        val qrWidth = maxX - minX + 1
-        val qrHeight = maxY - minY + 1
-
-        // Create the bitmap with the dimensions of the QR code
-        val bitmap = Bitmap.createBitmap(qrWidth, qrHeight, Bitmap.Config.RGB_565)
-
-        for (x in 0 until qrWidth) {
-            for (y in 0 until qrHeight) {
+        for (x in 0 until width) {
+            for (y in 0 until height) {
                 bitmap.setPixel(
                     x,
                     y,
-                    if (bitMatrix[x + minX, y + minY]) android.graphics.Color.BLACK else android.graphics.Color.WHITE,
+                    if (bitMatrix[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE,
                 )
             }
         }
