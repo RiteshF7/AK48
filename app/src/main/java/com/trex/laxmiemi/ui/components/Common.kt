@@ -40,7 +40,7 @@ fun RexActionButton(
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE57373)),
+        colors = ButtonDefaults.buttonColors(containerColor = colorResource(R.color.red_300)),
     ) {
         Text(
             text,

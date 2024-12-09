@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -40,8 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.RexActionButton
 
@@ -58,12 +57,12 @@ fun ProfileScreen(
     Column(
         modifier =
             Modifier
+                .fillMaxSize()
                 .background(color = Color.Black.copy(alpha = 0.85f))
                 .verticalScroll(
                     rememberScrollState(),
                 ),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
     ) {
         ProfileHeader(
             uiState = uiState,
@@ -76,7 +75,8 @@ fun ProfileScreen(
                 isEditing = false
             },
         )
-        HorizontalDivider(thickness = 2.dp)
+        HorizontalDivider(thickness = 1.dp)
+        Spacer(Modifier.padding(10.dp))
         ProfileDetails(
             shop = uiState,
             isEditing = isEditing,
@@ -84,6 +84,14 @@ fun ProfileScreen(
             onOwnerNameChange = { editedOwnerName = it },
             onFinish = onFinish,
         )
+
+        Spacer(Modifier.weight(1f))
+        HorizontalDivider(Modifier.height(1.dp))
+        if (!isEditing) {
+            RexActionButton("Logout") {
+                onFinish()
+            }
+        }
     }
 }
 
@@ -97,7 +105,7 @@ private fun ProfileHeader(
     onSaveClick: () -> Unit,
 ) {
     Column(
-        modifier = Modifier.padding(36.dp),
+        modifier = Modifier.padding(top = 10.dp, bottom = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
@@ -177,30 +185,24 @@ private fun ProfileDetails(
 ) {
     val context = LocalContext.current
     Column(
-        modifier = Modifier.fillMaxWidth(),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
     ) {
-        TextInfo("Shop ID:", shop.shopId, editable = false)
+        TextInfo("Shop ID", shop.shopId, editable = false)
 
         TextInfo(
-            key = "Owner name:",
+            key = "Owner name",
             value = if (isEditing) editedOwnerName else (shop.ownerName ?: ""),
             editable = isEditing,
             onValueChange = onOwnerNameChange,
         )
-        TextInfo("Owner number :", shop.ownerNumber, editable = false)
-        TextInfo("Token Balance:", shop.tokenBalance, editable = false)
-        TextInfo("Active devices:", shop.activeDevice, editable = false)
-        TextInfo("DeActivated devices:", shop.deactivatedDevices, editable = false)
+        TextInfo("Owner number ", shop.ownerNumber, editable = false)
+        TextInfo("Token Balance", shop.tokenBalance, editable = false)
+        TextInfo("Active devices", shop.activeDevice, editable = false)
+        TextInfo("DeActivated devices", shop.deactivatedDevices, editable = false)
 
         Spacer(Modifier.weight(1f))
-        HorizontalDivider(Modifier.height(2.dp))
-        if (!isEditing) {
-            RexActionButton("Logout") {
-                Firebase.auth.signOut()
-                onFinish()
-            }
-        }
     }
 }
 
@@ -212,12 +214,12 @@ private fun TextInfo(
     onValueChange: (String) -> Unit = {},
 ) {
     Column {
-        Row(Modifier.padding(20.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
             Text(
                 text = key,
                 style =
                     TextStyle(
-                        fontFamily = FontFamily(Font(R.font.opensans_regular)),
+                        fontFamily = FontFamily(Font(R.font.opensans_bold)),
                         fontSize = 16.sp,
                         color = Color.White,
                     ),
@@ -243,16 +245,17 @@ private fun TextInfo(
                 )
             } else {
                 Text(
-                    text = value,
+                    modifier = Modifier.padding(horizontal = 10.dp),
+                    text = if (value.isBlank()) "0" else value,
+                    textAlign = TextAlign.Left,
                     style =
                         TextStyle(
                             fontFamily = FontFamily(Font(R.font.opensans_bold)),
                             fontSize = 16.sp,
-                            color = colorResource(R.color.primary),
+                            color = Color.White,
                         ),
                 )
             }
         }
-        HorizontalDivider(thickness = 2.dp)
     }
 }
