@@ -11,7 +11,7 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 // Create custom task type
-abstract class UploadReleaseApkTask : DefaultTask() {
+abstract class UploadDebugReleaseApkTask : DefaultTask() {
     @TaskAction
     fun uploadApk() {
         val client =
@@ -45,7 +45,7 @@ abstract class UploadReleaseApkTask : DefaultTask() {
             val request =
                 Request
                     .Builder()
-                    .url("https://shieldserver-00on.onrender.com/api/uploadshop")
+                    .url("https://shieldserver-00on.onrender.com/api/debug/uploadshop")
                     .post(requestBody)
                     .build()
 

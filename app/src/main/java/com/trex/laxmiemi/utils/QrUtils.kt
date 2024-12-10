@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.util.Log
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.qrcode.QRCodeWriter
+import com.trex.laxmiemi.BuildConfig
 import com.trex.rexnetwork.Constants
 import com.trex.rexnetwork.domain.firebasecore.firesstore.FirestoreExtraData
 import com.trex.rexnetwork.domain.repositories.FileRepository
@@ -18,13 +19,16 @@ import kotlinx.serialization.json.put
 class QrUtils(
     extraData: FirestoreExtraData,
 ) {
-    private val checksum = extraData.checksum
+    private val checksum = if (BuildConfig.DEBUG) extraData.debug_checksum else extraData.checksum
 
     suspend fun getQrBitmap(deviceIds: NewDeviceIds): Bitmap? {
         // Retrieve the latest APK URL
         val updatedApkUrl =
             withContext(Dispatchers.IO) {
-                val result = FileRepository().getRascFileUrl()
+                val fileRepository = FileRepository()
+
+                val result =
+                    if (BuildConfig.DEBUG) fileRepository.getDebugRascFileUrl() else fileRepository.getRascFileUrl()
                 if (result.isSuccessful) {
                     result.body()?.url ?: return@withContext null
                 } else {
@@ -34,7 +38,6 @@ class QrUtils(
             }
 
         return if (updatedApkUrl != null) {
-            // Generate QR JSON and QR Code Bitmap
             val qrJson =
                 withContext(Dispatchers.Default) {
                     getQrJson(deviceIds, updatedApkUrl)

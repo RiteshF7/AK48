@@ -127,7 +127,7 @@ fun DeviceFormScreen(
     initialFormState: FormData,
     onFormSubmit: (FormData) -> Unit,
 ) {
-    val requiredFields = setOf("costumerName", "deviceModel")
+    val requiredFields = setOf("costumerName", "deviceModel","costumerPhone")
 
     var formState by remember {
         mutableStateOf(
@@ -382,6 +382,7 @@ private fun getFormErrors(
         !android.util.Patterns.PHONE
             .matcher(data.costumerPhone)
             .matches()
+
     ) {
         errors["costumerPhone"] = "Invalid phone format"
     }
@@ -394,11 +395,6 @@ private fun getFormErrors(
         errors["durationInMonths"] = "Duration must be a valid number"
     }
 
-    if (requiredFields.contains("imeiOne") && data.imeiOne.isBlank()) {
-        errors["imeiOne"] = "IMEI 1 is required"
-    } else if (data.imeiOne.isNotBlank() && !data.imeiOne.matches(Regex("^[0-9]{15}$"))) {
-        errors["imeiOne"] = "Invalid IMEI format (should be 15 digits)"
-    }
 
     if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
         errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"

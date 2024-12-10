@@ -46,7 +46,6 @@ class DeviceDetailActivity : ComponentActivity() {
                             .fillMaxSize(),
                 ) {
                     DeviceDetails(device, vm) { action ->
-                        // todo add payload in case of some lock list of apps type
                         val message = ActionMessageDTO(device.fcmToken, action)
                         ShopActionExecutor(context).sendActionToClient(message)
                     }

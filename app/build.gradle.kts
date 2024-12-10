@@ -1,3 +1,4 @@
+import com.trex.laxmiemi.utils.UploadDebugReleaseApkTask
 import com.trex.laxmiemi.utils.UploadReleaseApkTask
 import java.io.FileInputStream
 import java.util.Properties
@@ -18,6 +19,12 @@ plugins {
 
 // Register the task
 tasks.register<UploadReleaseApkTask>("uploadReleaseApk") {
+    description = "Uploads the release APK to remote server"
+    group = "upload"
+    dependsOn("assembleRelease")
+}
+// Register the task
+tasks.register<UploadDebugReleaseApkTask>("uploadDebugReleaseApk") {
     description = "Uploads the release APK to remote server"
     group = "upload"
     dependsOn("assembleRelease")
@@ -58,15 +65,18 @@ android {
     }
     buildTypes {
 
-//        debug {
-//            isMinifyEnabled = true
-//            isShrinkResources = true
-//            isDebuggable = false
-//            proguardFiles(
-//                getDefaultProguardFile("proguard-android-optimize.txt"),
-//                "proguard-rules.pro",
-//            )
-//        }
+        debug {
+            isMinifyEnabled = false
+            isShrinkResources = false
+            isDebuggable = true
+            val baseUrl = "https://shieldserver-00on.onrender.com"
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "CLIENT_APK_URL", "\"$baseUrl/api/apk/debug/url\"")
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+        }
 
         release {
 
@@ -74,8 +84,11 @@ android {
             isShrinkResources = true
             isDebuggable = false
             signingConfig = signingConfigs.getByName("release")
-
             manifestPlaceholders.put("enablePlayIntegrity", "false")
+
+            val baseUrl = "https://shieldserver-00on.onrender.com"
+            buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+            buildConfigField("String", "CLIENT_APK_URL", "\"$baseUrl/api/apk/url\"")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -93,6 +106,7 @@ android {
     buildFeatures {
         compose = true
         dataBinding = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.13"
@@ -129,7 +143,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-
     implementation(platform("com.google.firebase:firebase-bom:33.3.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.hbb20:ccp:2.7.3")
@@ -160,5 +173,4 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.0")
-
 }
