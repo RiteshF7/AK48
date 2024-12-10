@@ -127,7 +127,7 @@ fun DeviceFormScreen(
     initialFormState: FormData,
     onFormSubmit: (FormData) -> Unit,
 ) {
-    val requiredFields = setOf("costumerName", "deviceModel","costumerPhone")
+    val requiredFields = setOf("costumerName", "deviceModel", "costumerPhone")
 
     var formState by remember {
         mutableStateOf(
@@ -394,7 +394,6 @@ private fun getFormErrors(
     if (data.durationInMonths.isNotBlank() && data.durationInMonths.toIntOrNull() == null) {
         errors["durationInMonths"] = "Duration must be a valid number"
     }
-
 
     if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
         errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"

@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.devicedetailsscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -112,9 +113,9 @@ fun DeviceDetails(
         }
         Box(
             modifier =
-                Modifier
-                    .weight(1f) // Takes available space while respecting other elements
-                    .fillMaxWidth(),
+            Modifier
+                .weight(1f) // Takes available space while respecting other elements
+                .fillMaxWidth(),
         ) {
             ActionsButtonGrid(list = deviceActionDataList, onActionClick)
         }
@@ -151,20 +152,21 @@ fun DeleteDeviceButton(
     vm: DeviceScreenDetailViewModel,
     onActionClick: (Actions) -> Unit,
 ) {
+    val context = LocalContext.current
     var showConfirmationDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier =
-            Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
-                .height(45.dp)
-                .height(40.dp)
-                .clickable { showConfirmationDialog = true }
-                .background(
-                    color = colorResource(R.color.red_300),
-                    shape = RoundedCornerShape(5.dp),
-                ),
+        Modifier
+            .padding(16.dp)
+            .fillMaxWidth()
+            .height(45.dp)
+            .height(40.dp)
+            .clickable { showConfirmationDialog = true }
+            .background(
+                color = colorResource(R.color.red_300),
+                shape = RoundedCornerShape(5.dp),
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -206,6 +208,7 @@ fun DeleteDeviceButton(
             confirmButton = {
                 TextButton(
                     onClick = {
+                        Toast.makeText(context, "Device will be deleted soon!", Toast.LENGTH_SHORT).show()
                         vm.deleteDevice(device, onActionClick)
                         showConfirmationDialog = false
                     },
@@ -243,15 +246,15 @@ fun QuickActionButton(
 ) {
     Box(
         modifier =
-            modifier
-                .fillMaxWidth()
-                .height(45.dp)
-                .height(40.dp)
-                .clickable { onClick() }
-                .background(
-                    color = colorResource(R.color.primary).copy(alpha = 0.8f),
-                    shape = RoundedCornerShape(5.dp),
-                ),
+        modifier
+            .fillMaxWidth()
+            .height(45.dp)
+            .height(40.dp)
+            .clickable { onClick() }
+            .background(
+                color = colorResource(R.color.primary).copy(alpha = 0.8f),
+                shape = RoundedCornerShape(5.dp),
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Row(

@@ -46,11 +46,8 @@ class DeviceScreenDetailViewModel : ViewModel() {
         device: NewDevice,
         onActionClick: (Actions) -> Unit,
     ) {
-        deleteDeviceRepo.deleteDevice(device) {
-            if (it) {
-                onActionClick(Actions.ACTION_REMOVE_DEVICE)
-            }
-            _deleteDevice.value = it
-        }
+        onActionClick(Actions.ACTION_REMOVE_DEVICE)
+        _deleteDevice.value = true
+
     }
 }
