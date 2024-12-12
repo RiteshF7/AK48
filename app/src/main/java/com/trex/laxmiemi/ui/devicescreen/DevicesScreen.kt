@@ -1,6 +1,7 @@
 package com.trex.laxmiemi.ui.devicescreen
 
 import NewDeviceIds
+import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -269,7 +270,9 @@ fun DeviceItemLayout(myDevice: DeviceWithEMIStatus) {
                 colors =
                     CardDefaults.cardColors(
                         containerColor =
-                            if (myDevice.emiStatus.isDelayed) {
+                            if (myDevice.emiStatus.isCompleted) {
+                                colorResource(R.color.primary)
+                            } else if (myDevice.emiStatus.isDelayed) {
                                 colorResource(R.color.red_300)
                             } else {
                                 colorResource(
@@ -323,77 +326,120 @@ fun DeviceItemLayout(myDevice: DeviceWithEMIStatus) {
                 EmiDetailsText(myDevice)
             }
         }
+        DeviceFooter(myDevice, context)
+    }
+}
 
-        Row {
-            Box(
-                modifier =
-                    Modifier
-                        .height(50.dp)
-                        .weight(1f)
-                        .clickable {
-                            ShopActionExecutor(context).sendActionToClient(
-                                ActionMessageDTO(device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
-                            )
-                        }.background(color = colorResource(R.color.primary)),
-                contentAlignment = Alignment.Center, // Centers content inside the Box
+@Composable
+fun DeviceFooter(
+    device: DeviceWithEMIStatus,
+    context: Context,
+) {
+    if (device.emiStatus.isCompleted) {
+        Box(
+            modifier =
+                Modifier
+                    .clickable {
+                        ShopActionExecutor(context).sendActionToClient(
+                            ActionMessageDTO(device.device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
+                        )
+                    }.background(color = colorResource(R.color.primary)),
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth().height(50.dp),
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.shield), // Replace with your icon resource
-                        contentDescription = "Paid Icon",
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp), // Adjust icon size as needed
-                    )
-                    Spacer(modifier = Modifier.width(4.dp)) // Space between icon and text
-                    Text(
-                        text = "Unlock device",
-                        textAlign = TextAlign.Center,
-                        style =
-                            TextStyle(
-                                fontFamily = FontFamily(Font(R.font.opensans_medium)),
-                                fontSize = 16.sp,
-                                color = Color.White,
-                            ),
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.close), // Replace with your icon resource
+                    contentDescription = "Paid Icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp), // Adjust icon size as needed
+                )
+                Spacer(modifier = Modifier.width(10.dp)) // Space between icon and text
+                Text(
+                    text = "Remove device",
+                    fontWeight = FontWeight.Bold,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                            fontSize = 20.sp,
+                            color = Color.White,
+                        ),
+                )
             }
-            Box(
-                modifier =
-                    Modifier
-                        .height(50.dp)
-                        .weight(1f)
-                        .clickable {
-                            ShopActionExecutor(context).sendActionToClient(
-                                ActionMessageDTO(device.fcmToken, Actions.ACTION_LOCK_DEVICE),
-                            )
-                        }.background(color = colorResource(R.color.red_300)),
-                contentAlignment = Alignment.Center, // Centers content inside the Box
+        }
+        return
+    }
+    Row {
+        Box(
+            modifier =
+                Modifier
+                    .height(50.dp)
+                    .weight(1f)
+                    .clickable {
+                        ShopActionExecutor(context).sendActionToClient(
+                            ActionMessageDTO(device.device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
+                        )
+                    }.background(color = colorResource(R.color.primary)),
+            contentAlignment = Alignment.Center, // Centers content inside the Box
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.Lock,
-                        contentDescription = "Paid Icon",
-                        tint = Color.White,
-                        modifier = Modifier.size(16.dp),
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "Lock Device",
-                        textAlign = TextAlign.Center,
-                        style =
-                            TextStyle(
-                                fontFamily = FontFamily(Font(R.font.opensans_medium)),
-                                fontSize = 16.sp,
-                                color = Color.White,
-                            ),
-                    )
-                }
+                Icon(
+                    painter = painterResource(id = R.drawable.shield), // Replace with your icon resource
+                    contentDescription = "Paid Icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp), // Adjust icon size as needed
+                )
+                Spacer(modifier = Modifier.width(4.dp)) // Space between icon and text
+                Text(
+                    text = if (device.emiStatus.isDelayed) "Mark as Paid" else "Unlock device",
+                    textAlign = TextAlign.Center,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                            fontSize = 16.sp,
+                            color = Color.White,
+                        ),
+                )
+            }
+        }
+        Box(
+            modifier =
+                Modifier
+                    .height(50.dp)
+                    .weight(1f)
+                    .clickable {
+                        ShopActionExecutor(context).sendActionToClient(
+                            ActionMessageDTO(device.device.fcmToken, Actions.ACTION_LOCK_DEVICE),
+                        )
+                    }.background(color = colorResource(R.color.red_300)),
+            contentAlignment = Alignment.Center, // Centers content inside the Box
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Lock,
+                    contentDescription = "Paid Icon",
+                    tint = Color.White,
+                    modifier = Modifier.size(16.dp),
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "Lock Device",
+                    textAlign = TextAlign.Center,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                            fontSize = 16.sp,
+                            color = Color.White,
+                        ),
+                )
             }
         }
     }
