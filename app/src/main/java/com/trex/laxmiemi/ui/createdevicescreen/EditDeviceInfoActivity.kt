@@ -30,18 +30,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.trex.laxmiemi.R
 import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.getExtraData
 import com.trex.rexnetwork.utils.startMyActivity
 import kotlinx.parcelize.Parcelize
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Parcelize
 data class FormData(
@@ -127,7 +131,7 @@ fun DeviceFormScreen(
     initialFormState: FormData,
     onFormSubmit: (FormData) -> Unit,
 ) {
-    val requiredFields = setOf("costumerName", "deviceModel", "costumerPhone")
+    val requiredFields = setOf("costumerName", "deviceModel", "costumerPhone", "dueDate")
 
     var formState by remember {
         mutableStateOf(
@@ -163,7 +167,7 @@ fun DeviceFormScreen(
             // Customer Name field
             item {
                 FormField(
-                    label = "Customer Name*",
+                    label = "Customer Name",
                     value = formState.costumerName,
                     error = errors["costumerName"],
                     onValueChange = {
@@ -180,7 +184,7 @@ fun DeviceFormScreen(
 
             item {
                 FormField(
-                    label = "Device Model*",
+                    label = "Device Model",
                     value = formState.deviceModel,
                     error = errors["deviceModel"],
                     onValueChange = {
@@ -213,10 +217,9 @@ fun DeviceFormScreen(
                 )
             }
 
-            // EMI Per Month field
             item {
                 FormField(
-                    label = "EMI Per Month",
+                    label = "EMI Per Month in ₹",
                     value = formState.emiPerMonth,
                     error = errors["emiPerMonth"],
                     onValueChange = {
@@ -231,10 +234,9 @@ fun DeviceFormScreen(
                 )
             }
 
-            // Due Date field
             item {
                 FormField(
-                    label = "Due Date",
+                    label = "Enter Date (dd-mm-yyyy)",
                     value = formState.dueDate,
                     error = errors["dueDate"],
                     onValueChange = {
@@ -243,12 +245,12 @@ fun DeviceFormScreen(
                     },
                     keyboardOptions =
                         KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Next,
                         ),
                 )
             }
 
-            // Duration in Months field
             item {
                 FormField(
                     label = "Duration (Months)",
@@ -265,8 +267,6 @@ fun DeviceFormScreen(
                         ),
                 )
             }
-
-            // Device Model field
         }
 
         // Submit button
@@ -282,7 +282,7 @@ fun DeviceFormScreen(
                     errors = getFormErrors(formState, requiredFields)
                 }
             },
-            colors = ButtonDefaults.buttonColors(backgroundColor = Color.Green),
+            colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(R.color.primary)),
             shape = RoundedCornerShape(16.dp),
         ) {
             Text(
@@ -313,7 +313,7 @@ fun FormField(
                         shape = RoundedCornerShape(12.dp),
                         ambientColor = Color.White.copy(alpha = 0.1f),
                     ),
-            backgroundColor = Color(0xFF1E1E1E), // Dark gray background
+            backgroundColor = Color(0xFF1E1E1E),
             shape = RoundedCornerShape(12.dp),
         ) {
             TextField(
@@ -360,6 +360,21 @@ fun FormField(
     }
 }
 
+fun isValidDate(date: String): Boolean {
+    val regex = """\d{2}-\d{2}-\d{4}""".toRegex()
+    if (!regex.matches(date)) {
+        return false
+    }
+    return try {
+        val sdf = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        sdf.isLenient = false
+        sdf.parse(date)
+        true
+    } catch (e: Exception) {
+        false
+    }
+}
+
 private fun validateForm(
     data: FormData,
     requiredFields: Set<String>,
@@ -372,11 +387,11 @@ private fun getFormErrors(
     val errors = mutableMapOf<String, String>()
 
     // Required field validation
-    if (requiredFields.contains("costumerName") && data.costumerName.isBlank()) {
+    if (data.costumerName.isBlank()) {
         errors["costumerName"] = "Customer name is required"
     }
 
-    if (requiredFields.contains("costumerPhone") && data.costumerPhone.isBlank()) {
+    if (data.costumerPhone.isBlank()) {
         errors["costumerPhone"] = "Customer phone is required"
     } else if (data.costumerPhone.isNotBlank() &&
         !android.util.Patterns.PHONE
@@ -395,11 +410,17 @@ private fun getFormErrors(
         errors["durationInMonths"] = "Duration must be a valid number"
     }
 
+    if (data.dueDate.isBlank()) {
+        errors["dueDate"] = "Due date is required"
+    } else if (!isValidDate(data.dueDate)) {
+        errors["dueDate"] = "Invalid date format. Please use dd-mm-yyyy."
+    }
+
     if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
         errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"
     }
 
-    if (requiredFields.contains("deviceModel") && data.deviceModel.isBlank()) {
+    if (data.deviceModel.isBlank()) {
         errors["deviceModel"] = "Device model is required"
     }
 

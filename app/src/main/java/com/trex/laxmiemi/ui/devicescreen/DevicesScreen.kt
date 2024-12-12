@@ -5,19 +5,39 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Divider
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,47 +62,107 @@ import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
 import com.trex.laxmiemi.ui.tokenbalancescreen.TokenBalanceActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
-import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.firesstore.ShopFirestore
 import com.trex.rexnetwork.utils.SharedPreferenceManager
 import com.trex.rexnetwork.utils.startMyActivity
 
-data class DeviceListState(
-    val devices: NewDevice,
-    val isDeviceLocked: Boolean,
-    val isEmiDelay: Boolean,
-    val delayInDays: Int,
-)
-
 @Composable
-fun DeviceScreen(vm: DevicesViewModel) {
-    val devices = vm.devices.observeAsState(emptyList())
-    DeviceList(devices.value)
+fun DeviceScreen(viewModel: DevicesViewModel) {
+    val viewState by viewModel.viewState.observeAsState(initial = DevicesViewState.Loading)
+
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.85f)),
+    ) {
+        when (viewState) {
+            is DevicesViewState.Loading -> {
+                LoadingScreen()
+            }
+
+            is DevicesViewState.Success -> {
+                val devices = (viewState as DevicesViewState.Success).devices
+                DeviceList(devices)
+            }
+
+            is DevicesViewState.Error -> {
+                val message = (viewState as DevicesViewState.Error).message
+                ErrorScreen(message)
+            }
+        }
+    }
 }
 
 @Composable
-fun DeviceList(devices: List<NewDevice>) {
+fun LoadingScreen() {
     Box(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-            .background(Color.Black.copy(alpha = 0.85f)),
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
     ) {
-        if (devices.isEmpty()) {
-            NoDevicesScreen()
-            return
-        }
+        Text(
+            text = "Loading...",
+            color = Color.White,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+        )
+    }
+}
+
+@Composable
+fun ErrorScreen(message: String) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = message,
+            color = Color.Red,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+@Composable
+fun DeviceList(devices: List<DeviceWithEMIStatus>) {
+    if (devices.isEmpty()) {
+        NoDevicesScreen()
+    } else {
         LazyColumn(
             modifier =
                 Modifier
                     .padding(top = 10.dp)
-                    .widthIn(max = 500.dp)
-                    .align(Alignment.TopCenter),
+                    .widthIn(max = 500.dp),
         ) {
-            items(devices) { device ->
-                DeviceListItem(device)
+            items(devices) { deviceWithEMIStatus ->
+                DeviceListItem(deviceWithEMIStatus)
             }
         }
+    }
+}
+
+@Composable
+fun DeviceListItem(deviceWithEMIStatus: DeviceWithEMIStatus) {
+    val context = LocalContext.current
+    val device = deviceWithEMIStatus.device
+
+    Card(
+        onClick = {
+            DeviceDetailActivity.go(context, device)
+        },
+        modifier =
+            Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 10.dp),
+        colors =
+            CardDefaults.cardColors(
+                containerColor = Color.White.copy(alpha = 0.1f),
+                contentColor = Color.White,
+            ),
+    ) {
+        DeviceItemLayout(myDevice = deviceWithEMIStatus)
     }
 }
 
@@ -133,11 +213,12 @@ fun NoDevicesScreen() {
                         ShopFirestore().getTokenBalanceList(shopId) { tokenBalanceList ->
                             if (tokenBalanceList.isEmpty()) {
                                 context.startMyActivity(TokenBalanceActivity::class.java)
-                                Toast.makeText(
-                                    context,
-                                    "Low token balance!\n PLease buy token to proceed!",
-                                    Toast.LENGTH_LONG,
-                                ).show()
+                                Toast
+                                    .makeText(
+                                        context,
+                                        "Low token balance!\n PLease buy token to proceed!",
+                                        Toast.LENGTH_LONG,
+                                    ).show()
                             } else {
                                 val newDeviceIds =
                                     NewDeviceIds(shopId, tokenBalanceList.first())
@@ -172,186 +253,221 @@ fun NoDevicesScreen() {
 }
 
 @Composable
-fun DeviceListItem(device: NewDevice) {
+fun DeviceItemLayout(myDevice: DeviceWithEMIStatus) {
     val context = LocalContext.current
+    val device = myDevice.device
 
-    Card(
-        onClick = {
-            DeviceDetailActivity.go(context, device)
-        },
-        modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 10.dp),
-        colors =
-            CardDefaults.cardColors(
-                containerColor = Color.White.copy(alpha = 0.1f),
-                contentColor = Color.White,
-            ),
-    ) {
-        Column {
-            Row(
+    Column {
+        Row(
+            modifier =
+                Modifier
+                    .padding(horizontal = 10.dp, vertical = 30.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Card(
+                shape = RoundedCornerShape(80.dp),
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor =
+                            if (myDevice.emiStatus.isDelayed) {
+                                colorResource(R.color.red_300)
+                            } else {
+                                colorResource(
+                                    R.color.primary,
+                                )
+                            },
+                        contentColor = Color.White,
+                    ),
+            ) {
+                Box(Modifier.padding(10.dp)) {
+                    Icon(
+                        imageVector = Icons.Default.Person,
+                        contentDescription = "",
+                        tint = Color.White,
+                        modifier =
+                            Modifier
+                                .size(40.dp)
+                                .padding(5.dp),
+                    )
+                }
+            }
+
+            Column(
+                modifier = Modifier.padding(start = 20.dp, top = 6.dp),
+                verticalArrangement = Arrangement.Top,
+            ) {
+                Text(
+                    text = device.costumerName,
+                    textAlign = TextAlign.Center,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                            fontSize = 20.sp,
+                            color = Color.White,
+                        ),
+                )
+                Spacer(Modifier.height(5.dp))
+
+                Text(
+                    text = device.modelNumber,
+                    textAlign = TextAlign.Center,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_regular)),
+                            fontSize = 12.sp,
+                            color = Color.White,
+                        ),
+                )
+
+                Spacer(Modifier.height(5.dp))
+                EmiDetailsText(myDevice)
+            }
+        }
+
+        Row {
+            Box(
                 modifier =
                     Modifier
-                        .padding(horizontal = 10.dp, vertical = 30.dp),
-                verticalAlignment = Alignment.CenterVertically,
+                        .height(50.dp)
+                        .weight(1f)
+                        .clickable {
+                            ShopActionExecutor(context).sendActionToClient(
+                                ActionMessageDTO(device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
+                            )
+                        }.background(color = colorResource(R.color.primary)),
+                contentAlignment = Alignment.Center, // Centers content inside the Box
             ) {
-                Card(
-                    shape = RoundedCornerShape(80.dp),
-                    colors =
-                        CardDefaults.cardColors(
-                            containerColor = Color.Red.copy(alpha = 0.1f),
-                            contentColor = Color.White,
-                        ),
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
                 ) {
-                    Box(Modifier.padding(10.dp)) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "",
-                            tint = colorResource(R.color.red_300),
-                            modifier =
-                                Modifier
-                                    .size(40.dp)
-                                    .padding(5.dp),
-                        )
-                    }
-                }
-
-                Column(
-                    modifier = Modifier.padding(start = 20.dp, top = 6.dp),
-                    verticalArrangement = Arrangement.Top,
-                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.shield), // Replace with your icon resource
+                        contentDescription = "Paid Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp), // Adjust icon size as needed
+                    )
+                    Spacer(modifier = Modifier.width(4.dp)) // Space between icon and text
                     Text(
-                        text = device.costumerName,
+                        text = "Unlock device",
                         textAlign = TextAlign.Center,
                         style =
                             TextStyle(
                                 fontFamily = FontFamily(Font(R.font.opensans_medium)),
-                                fontSize = 20.sp,
+                                fontSize = 16.sp,
                                 color = Color.White,
                             ),
                     )
-                    Spacer(Modifier.height(5.dp))
-
+                }
+            }
+            Box(
+                modifier =
+                    Modifier
+                        .height(50.dp)
+                        .weight(1f)
+                        .clickable {
+                            ShopActionExecutor(context).sendActionToClient(
+                                ActionMessageDTO(device.fcmToken, Actions.ACTION_LOCK_DEVICE),
+                            )
+                        }.background(color = colorResource(R.color.red_300)),
+                contentAlignment = Alignment.Center, // Centers content inside the Box
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Lock,
+                        contentDescription = "Paid Icon",
+                        tint = Color.White,
+                        modifier = Modifier.size(16.dp),
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = device.modelNumber,
+                        text = "Lock Device",
                         textAlign = TextAlign.Center,
                         style =
                             TextStyle(
-                                fontFamily = FontFamily(Font(R.font.opensans_regular)),
-                                fontSize = 12.sp,
+                                fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                                fontSize = 16.sp,
                                 color = Color.White,
                             ),
                     )
-
-                    Spacer(Modifier.height(5.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Filled.CalendarMonth,
-                            contentDescription = "",
-                            tint = colorResource(R.color.red_300),
-                            modifier =
-                                Modifier
-                                    .height(15.dp)
-                                    .width(15.dp),
-                        )
-                        Text(
-                            text = "12/12/2024 ( Delay by 4 days )",
-                            textAlign = TextAlign.Center,
-                            style =
-                                TextStyle(
-                                    fontFamily = FontFamily(Font(R.font.opensans_bold)),
-                                    fontSize = 12.sp,
-                                    color = colorResource(R.color.red_300),
-                                ),
-                        )
-                        Spacer(Modifier.width(5.dp))
-                        Icon(
-                            imageVector = Icons.Filled.Error,
-                            contentDescription = "",
-                            tint = colorResource(R.color.red_300),
-                            modifier =
-                                Modifier
-                                    .height(20.dp)
-                                    .width(20.dp),
-                        )
-                    }
-                }
-            }
-
-            Row {
-                Box(
-                    modifier =
-                        Modifier
-                            .height(50.dp)
-                            .weight(1f)
-                            .clickable {
-                                ShopActionExecutor(context).sendActionToClient(
-                                    ActionMessageDTO(device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
-                                )
-                            }.background(color = colorResource(R.color.primary)),
-                    contentAlignment = Alignment.Center, // Centers content inside the Box
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.shield), // Replace with your icon resource
-                            contentDescription = "Paid Icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp), // Adjust icon size as needed
-                        )
-                        Spacer(modifier = Modifier.width(4.dp)) // Space between icon and text
-                        Text(
-                            text = "Unlock device",
-                            textAlign = TextAlign.Center,
-                            style =
-                                TextStyle(
-                                    fontFamily = FontFamily(Font(R.font.opensans_medium)),
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                ),
-                        )
-                    }
-                }
-                Box(
-                    modifier =
-                        Modifier
-                            .height(50.dp)
-                            .weight(1f)
-                            .clickable {
-                                ShopActionExecutor(context).sendActionToClient(
-                                    ActionMessageDTO(device.fcmToken, Actions.ACTION_LOCK_DEVICE),
-                                )
-                            }.background(color = colorResource(R.color.red_300)),
-                    contentAlignment = Alignment.Center, // Centers content inside the Box
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center,
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.Lock,
-                            contentDescription = "Paid Icon",
-                            tint = Color.White,
-                            modifier = Modifier.size(16.dp),
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            text = "Lock Device",
-                            textAlign = TextAlign.Center,
-                            style =
-                                TextStyle(
-                                    fontFamily = FontFamily(Font(R.font.opensans_medium)),
-                                    fontSize = 16.sp,
-                                    color = Color.White,
-                                ),
-                        )
-                    }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun EmiDetailsText(device: DeviceWithEMIStatus) {
+    var emiStatus = ""
+    if (device.emiStatus.isDelayed) {
+        emiStatus = "${device.device.dueDate} EMI delay by ${device.emiStatus.delayInDays} days."
+    } else {
+        emiStatus = "${device.device.dueDate} EMI paid for this month"
+    }
+    if (device.emiStatus.isCompleted) {
+        emiStatus = "EMI for this device is completed!"
+    }
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Icon(
+            imageVector = Icons.Filled.CalendarMonth,
+            contentDescription = "",
+            tint =
+                if (device.emiStatus.isDelayed) {
+                    colorResource(R.color.red_300)
+                } else {
+                    colorResource(
+                        R.color.primary,
+                    )
+                },
+            modifier =
+                Modifier
+                    .height(15.dp)
+                    .width(15.dp),
+        )
+        Text(
+            modifier = Modifier.padding(start = 5.dp),
+            text = emiStatus,
+            textAlign = TextAlign.Center,
+            style =
+                TextStyle(
+                    fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                    fontSize = 12.sp,
+                    color =
+                        if (device.emiStatus.isDelayed) {
+                            colorResource(R.color.red_300)
+                        } else {
+                            colorResource(
+                                R.color.primary,
+                            )
+                        },
+                ),
+        )
+        Spacer(Modifier.width(5.dp))
+        Icon(
+            imageVector =
+                if (device.emiStatus.isDelayed) {
+                    Icons.Filled.Error
+                } else {
+                    Icons.Filled.Check
+                },
+            contentDescription = "",
+            tint =
+                if (device.emiStatus.isDelayed) {
+                    colorResource(R.color.red_300)
+                } else {
+                    colorResource(
+                        R.color.primary,
+                    )
+                },
+            modifier =
+                Modifier
+                    .height(20.dp)
+                    .width(20.dp),
+        )
     }
 }
 

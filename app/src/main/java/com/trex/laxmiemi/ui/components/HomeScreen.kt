@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.QrCode
@@ -51,6 +52,7 @@ import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.ButtonActions
 import com.trex.laxmiemi.ui.components.GridButton
+import com.trex.laxmiemi.ui.devicescreen.DeviceScreenType
 import com.trex.laxmiemi.ui.devicescreen.DevicesActivity
 import com.trex.laxmiemi.ui.profilescreen.ProfileActivity
 import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
@@ -157,7 +159,17 @@ private val homeGridList =
         GridButton(
             icon = Icons.Default.List,
             action = ButtonActions.TotalCustomer,
-            title = "All Devices",
+            title = "Active devices",
+        ),
+        GridButton(
+            icon = Icons.Default.Error,
+            action = ButtonActions.DelayedCustomers,
+            title = "Overdue payments",
+        ),
+        GridButton(
+            icon = Icons.Default.Error,
+            action = ButtonActions.DelayedCustomers,
+            title = "Inactive devices",
         ),
         GridButton(
             icon = Icons.Default.VpnKey,
@@ -225,9 +237,23 @@ fun ButtonGrid() {
                     }
 
                     ButtonActions.TotalCustomer -> {
-                        val intent = Intent(context, DevicesActivity::class.java)
-                        context.startActivity(intent)
+                        DevicesActivity.go(context, DevicesActivity.DevicesExtraData())
                     }
+
+                    ButtonActions.DelayedCustomers -> {
+                        DevicesActivity.go(
+                            context,
+                            DevicesActivity.DevicesExtraData(DeviceScreenType.DELAYED),
+                        )
+                    }
+
+// TODO implement it when is deleted device show only device information
+//                    ButtonActions.DeletedDevices -> {
+//                        DevicesActivity.go(
+//                            context,
+//                            DevicesActivity.DevicesExtraData(DeviceScreenType.DELETED),
+//                        )
+//                    }
 
                     ButtonActions.CallForService -> {
                         val intent = Intent(Intent.ACTION_DIAL)

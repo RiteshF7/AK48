@@ -44,6 +44,8 @@ enum class ButtonActions {
     AddCustomer,
     SES20QR,
     TotalCustomer,
+    DelayedCustomers,
+    DeletedDevices,
     tokenBalance,
     CallForService,
     InstallationVideo,
@@ -64,7 +66,8 @@ fun ButtonGrid(onClick: (action: ButtonActions) -> Unit) {
         listOf(
             GridButton(Icons.Default.Add, ButtonActions.AddCustomer, "Register new customer"),
             GridButton(Icons.Default.QrCode, ButtonActions.SES20QR, "Generate QR code"),
-            GridButton(Icons.Default.Group, ButtonActions.TotalCustomer, "View all customers"),
+            GridButton(Icons.Default.Group, ButtonActions.TotalCustomer, "All devices"),
+            GridButton(Icons.Default.Group, ButtonActions.TotalCustomer, "Overdue payments"),
             GridButton(Icons.Default.Call, ButtonActions.CallForService, "Get support"),
             GridButton(Icons.Default.PlayArrow, ButtonActions.InstallationVideo, "Watch guide"),
             GridButton(Icons.Default.QrCodeScanner, ButtonActions.OldQR, "Legacy QR codes"),
