@@ -84,7 +84,7 @@ fun DeviceScreen(viewModel: DevicesViewModel) {
 
             is DevicesViewState.Success -> {
                 val devices = (viewState as DevicesViewState.Success).devices
-                DeviceList(devices)
+                DeviceList(devices, viewModel)
             }
 
             is DevicesViewState.Error -> {
@@ -127,7 +127,10 @@ fun ErrorScreen(message: String) {
 }
 
 @Composable
-fun DeviceList(devices: List<DeviceWithEMIStatus>) {
+fun DeviceList(
+    devices: List<DeviceWithEMIStatus>,
+    viewModel: DevicesViewModel,
+) {
     if (devices.isEmpty()) {
         NoDevicesScreen()
     } else {
@@ -138,14 +141,17 @@ fun DeviceList(devices: List<DeviceWithEMIStatus>) {
                     .widthIn(max = 500.dp),
         ) {
             items(devices) { deviceWithEMIStatus ->
-                DeviceListItem(deviceWithEMIStatus)
+                DeviceListItem(deviceWithEMIStatus, viewModel)
             }
         }
     }
 }
 
 @Composable
-fun DeviceListItem(deviceWithEMIStatus: DeviceWithEMIStatus) {
+fun DeviceListItem(
+    deviceWithEMIStatus: DeviceWithEMIStatus,
+    viewModel: DevicesViewModel,
+) {
     val context = LocalContext.current
     val device = deviceWithEMIStatus.device
 
@@ -163,7 +169,7 @@ fun DeviceListItem(deviceWithEMIStatus: DeviceWithEMIStatus) {
                 contentColor = Color.White,
             ),
     ) {
-        DeviceItemLayout(myDevice = deviceWithEMIStatus)
+        DeviceItemLayout(myDevice = deviceWithEMIStatus, viewModel)
     }
 }
 
@@ -254,7 +260,10 @@ fun NoDevicesScreen() {
 }
 
 @Composable
-fun DeviceItemLayout(myDevice: DeviceWithEMIStatus) {
+fun DeviceItemLayout(
+    myDevice: DeviceWithEMIStatus,
+    viewModel: DevicesViewModel,
+) {
     val context = LocalContext.current
     val device = myDevice.device
 
@@ -326,7 +335,7 @@ fun DeviceItemLayout(myDevice: DeviceWithEMIStatus) {
                 EmiDetailsText(myDevice)
             }
         }
-        DeviceFooter(myDevice, context)
+        DeviceFooter(myDevice, context, viewModel)
     }
 }
 
@@ -334,15 +343,14 @@ fun DeviceItemLayout(myDevice: DeviceWithEMIStatus) {
 fun DeviceFooter(
     device: DeviceWithEMIStatus,
     context: Context,
+    viewModel: DevicesViewModel,
 ) {
     if (device.emiStatus.isCompleted) {
         Box(
             modifier =
                 Modifier
                     .clickable {
-                        ShopActionExecutor(context).sendActionToClient(
-                            ActionMessageDTO(device.device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
-                        )
+                        viewModel.deleteDevice(device.device)
                     }.background(color = colorResource(R.color.primary)),
         ) {
             Row(
@@ -378,9 +386,13 @@ fun DeviceFooter(
                     .height(50.dp)
                     .weight(1f)
                     .clickable {
-                        ShopActionExecutor(context).sendActionToClient(
-                            ActionMessageDTO(device.device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
-                        )
+                        if (device.emiStatus.isDelayed) {
+                            viewModel.markEmiAsPaid(device.device)
+                        } else {
+                            ShopActionExecutor(context).sendActionToClient(
+                                ActionMessageDTO(device.device.fcmToken, Actions.ACTION_UNLOCK_DEVICE),
+                            )
+                        }
                     }.background(color = colorResource(R.color.primary)),
             contentAlignment = Alignment.Center, // Centers content inside the Box
         ) {

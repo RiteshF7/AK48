@@ -45,12 +45,14 @@ data class EMIStatus(
 class DevicesViewModel : ViewModel() {
     private val _viewState = MutableLiveData<DevicesViewState>()
     val viewState: LiveData<DevicesViewState> = _viewState
+    private lateinit var deviceExtraData: DevicesActivity.DevicesExtraData
 
     private val devicesFirestore = DeviceFirestore(CommonConstants.shodId)
     private val deletedDeviceFirebase = DeletedDeviceFirebase(CommonConstants.shodId)
 
     fun loadData(extraData: DevicesActivity.DevicesExtraData) {
         _viewState.value = DevicesViewState.Loading
+        deviceExtraData = extraData
         when (extraData.devicesType) {
             DeviceScreenType.ACTIVE -> fetchActiveDevices()
             DeviceScreenType.DELETED -> fetchDeletedDevices()
@@ -154,6 +156,29 @@ class DevicesViewModel : ViewModel() {
                     ),
             )
         }
+
+    fun deleteDevice(device: NewDevice) {
+        devicesFirestore.deleteDevice(device.deviceId, {
+            deletedDeviceFirebase.createOrUpdateDevice(device.deviceId, device, {
+                loadData(deviceExtraData)
+            }, {})
+        }, {
+        })
+    }
+
+    fun markEmiAsPaid(device: NewDevice) {
+        val emiUtility =
+            EMIUtility(
+                device.firstDueDate,
+                device.durationInMonths.toInt(),
+                device.dueDate,
+            ) {}
+
+        val nextDueDate = emiUtility.getNextEmiDate()
+        devicesFirestore.updateDueDate(device.deviceId, nextDueDate, {
+            loadData(deviceExtraData)
+        }, {})
+    }
 
     companion object {
         private const val TAG = "DevicesViewModel"

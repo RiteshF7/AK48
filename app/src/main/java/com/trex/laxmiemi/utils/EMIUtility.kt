@@ -1,7 +1,9 @@
 package com.trex.laxmiemi.utils
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import kotlin.math.max
 
 class EMIUtility(
@@ -73,6 +75,11 @@ class EMIUtility(
         currentDueDate.add(Calendar.MONTH, 1)
         paidEMIs++
         return true
+    }
+
+    fun getNextEmiDate(): String {
+        currentDueDate.add(Calendar.MONTH, 1)
+        return currentDueDate.toDateString()
     }
 
     /**
