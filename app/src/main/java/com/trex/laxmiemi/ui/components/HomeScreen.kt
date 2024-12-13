@@ -52,7 +52,6 @@ import com.trex.laxmiemi.MainActivityViewModel
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.ui.components.ButtonActions
 import com.trex.laxmiemi.ui.components.GridButton
-import com.trex.laxmiemi.ui.devicescreen.DeviceScreenType
 import com.trex.laxmiemi.ui.devicescreen.DevicesActivity
 import com.trex.laxmiemi.ui.profilescreen.ProfileActivity
 import com.trex.laxmiemi.ui.qrcodescreen.ScanQrActivity
@@ -243,7 +242,7 @@ fun ButtonGrid() {
                     ButtonActions.DelayedCustomers -> {
                         DevicesActivity.go(
                             context,
-                            DevicesActivity.DevicesExtraData(DeviceScreenType.DELAYED),
+                            DevicesActivity.DevicesExtraData(DevicesActivity.DeviceScreenType.DELAYED),
                         )
                     }
 

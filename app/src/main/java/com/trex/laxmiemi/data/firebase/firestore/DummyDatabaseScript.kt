@@ -124,23 +124,23 @@ class DummyDatabaseScript {
 
         // Create a new device
         val deviceFirestore = DeviceFirestore("shop1")
-        deviceFirestore.createOrUpdateDevice(
-            null,
-            NewDevice(imeiOne = "123456789", costumerName = "Jane Doe", fcmToken = "", shopId = ""),
-            {
-                Log.d("Firestore", "Device added or updated successfully!")
-            },
-            {
-                Log.e("Firestore", "Failed to add or update device", it)
-            },
-        )
+//        deviceFirestore.createOrUpdateDevice(
+//            null,
+//            NewDevice(imeiOne = "123456789", costumerName = "Jane Doe", fcmToken = "", shopId = ""),
+//            {
+//                Log.d("Firestore", "Device added or updated successfully!")
+//            },
+//            {
+//                Log.e("Firestore", "Failed to add or update device", it)
+//            },
+//        )
 
         // Update lock status of a device
-        deviceFirestore.updateLockStatus("RP4OoUi28Sw0GVIcDcp3", "locked", {
-            Log.d("Firestore", "Lock status updated successfully!")
-        }, {
-            Log.e("Firestore", "Failed to update lock status", it)
-        })
+//        deviceFirestore.updateLockStatus("RP4OoUi28Sw0GVIcDcp3", "locked", {
+//            Log.d("Firestore", "Lock status updated successfully!")
+//        }, {
+//            Log.e("Firestore", "Failed to update lock status", it)
+//        })
 
         // Delete a device
         deviceFirestore.deleteDevice("device1", {

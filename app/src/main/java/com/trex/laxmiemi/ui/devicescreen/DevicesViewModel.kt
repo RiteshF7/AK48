@@ -1,6 +1,5 @@
 package com.trex.laxmiemi.ui.devicescreen
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,12 +9,7 @@ import com.trex.rexnetwork.data.NewDevice
 import com.trex.rexnetwork.domain.firebasecore.firesstore.DeletedDeviceFirebase
 import com.trex.rexnetwork.domain.firebasecore.firesstore.DeviceFirestore
 
-enum class DeviceScreenType {
-    ACTIVE,
-    DELETED,
-    DELAYED,
-}
-
+// ViewStates to represent different UI states
 sealed class DevicesViewState {
     object Loading : DevicesViewState()
 
@@ -28,6 +22,7 @@ sealed class DevicesViewState {
     ) : DevicesViewState()
 }
 
+// Data classes to hold device and EMI information
 data class DeviceWithEMIStatus(
     val device: NewDevice,
     val isDeviceLocked: Boolean,
@@ -45,61 +40,20 @@ data class EMIStatus(
 class DevicesViewModel : ViewModel() {
     private val _viewState = MutableLiveData<DevicesViewState>()
     val viewState: LiveData<DevicesViewState> = _viewState
-    private lateinit var deviceExtraData: DevicesActivity.DevicesExtraData
 
     private val devicesFirestore = DeviceFirestore(CommonConstants.shodId)
     private val deletedDeviceFirebase = DeletedDeviceFirebase(CommonConstants.shodId)
 
-    fun loadData(extraData: DevicesActivity.DevicesExtraData) {
+    fun loadDevices() {
         _viewState.value = DevicesViewState.Loading
-        deviceExtraData = extraData
-        when (extraData.devicesType) {
-            DeviceScreenType.ACTIVE -> fetchActiveDevices()
-            DeviceScreenType.DELETED -> fetchDeletedDevices()
-            DeviceScreenType.DELAYED -> fetchDelayedDevices()
-        }
-    }
-
-    private fun fetchActiveDevices() {
         devicesFirestore.getAllDevices(
             onSuccess = { devices ->
                 processDevices(devices)
             },
-            onFailure = {
-                _viewState.value = DevicesViewState.Error("Failed to fetch active devices")
-                Log.e(TAG, "Error getting active devices", it)
-            },
+            onFailure = { _viewState.value = DevicesViewState.Error("Failed to fetch devices") },
         )
     }
 
-    private fun fetchDeletedDevices() {
-        deletedDeviceFirebase.getAllDevices(
-            onSuccess = { devices ->
-                processDevices(devices)
-            },
-            onFailure = {
-                _viewState.value = DevicesViewState.Error("Failed to fetch deleted devices")
-                Log.e(TAG, "Error getting deleted devices", it)
-            },
-        )
-    }
-
-    private fun fetchDelayedDevices() {
-        devicesFirestore.getAllDevices(
-            onSuccess = { allDevices ->
-                val delayedDevices =
-                    allDevices.filter { device ->
-                        processDeviceEMIStatus(device).emiStatus.isDelayed
-                    }
-                _viewState.value =
-                    DevicesViewState.Success(delayedDevices.map { processDeviceEMIStatus(it) })
-            },
-            onFailure = {
-                _viewState.value = DevicesViewState.Error("Failed to fetch delayed devices")
-                Log.e(TAG, "Error getting delayed devices", it)
-            },
-        )
-    }
 
     private fun processDevices(devices: List<NewDevice>) {
         try {
@@ -110,77 +64,57 @@ class DevicesViewModel : ViewModel() {
             _viewState.value = DevicesViewState.Success(processedDevices)
         } catch (e: Exception) {
             _viewState.value = DevicesViewState.Error("Error processing devices: ${e.message}")
-            Log.e(TAG, "Error processing devices", e)
         }
     }
 
-    private fun processDeviceEMIStatus(device: NewDevice): DeviceWithEMIStatus =
-        try {
-            val emiUtility =
-                EMIUtility(
-                    firstDueDate = device.firstDueDate,
-                    durationInMonths = device.durationInMonths.toIntOrNull() ?: 0,
-                    initialCurrentDueDate = device.dueDate,
-                ) { updatedDueDate ->
-                    // Handle due date updates if needed
-                    Log.d(TAG, "Due date updated for device ${device.deviceId}: $updatedDueDate")
-                }
-
-            val utilStatus = emiUtility.getEMIStatus()
-
-            DeviceWithEMIStatus(
-                device = device,
-                isDeviceLocked = device.isDeviceLocked,
-                emiStatus =
-                    EMIStatus(
-                        isDelayed = utilStatus.isDelayed,
-                        delayInDays = utilStatus.delayedDays.toInt(),
-                        isCompleted = utilStatus.isCompleted,
-                        nextDueDate = utilStatus.nextDueDate,
-                        remainingEMIs = utilStatus.remainingEMIs,
-                    ),
-            )
-        } catch (e: Exception) {
-            Log.e(TAG, "Error processing EMI status for device ${device.deviceId}", e)
-            // Return a default status in case of error
-            DeviceWithEMIStatus(
-                device = device,
-                isDeviceLocked = device.isDeviceLocked,
-                emiStatus =
-                    EMIStatus(
-                        isDelayed = false,
-                        delayInDays = 0,
-                        isCompleted = false,
-                        nextDueDate = device.dueDate,
-                        remainingEMIs = 0,
-                    ),
-            )
-        }
-
-    fun deleteDevice(device: NewDevice) {
-        devicesFirestore.deleteDevice(device.deviceId, {
-            deletedDeviceFirebase.createOrUpdateDevice(device.deviceId, device, {
-                loadData(deviceExtraData)
-            }, {})
-        }, {
-        })
-    }
-
-    fun markEmiAsPaid(device: NewDevice) {
+    private fun processDeviceEMIStatus(device: NewDevice): DeviceWithEMIStatus {
         val emiUtility =
             EMIUtility(
-                device.firstDueDate,
-                device.durationInMonths.toInt(),
-                device.dueDate,
-            ) {}
+                firstDueDate = device.firstDueDate,
+                durationInMonths = device.durationInMonths.toIntOrNull() ?: 0,
+            )
 
-        val nextDueDate = emiUtility.getNextEmiDate()
-        devicesFirestore.updateDueDate(device.deviceId, nextDueDate, {
-            loadData(deviceExtraData)
-        }, {})
+        val status = emiUtility.getEMIStatus(device.dueDate)
+
+        return DeviceWithEMIStatus(
+            device = device,
+            isDeviceLocked = device.isLocked,
+            emiStatus =
+                EMIStatus(
+                    isDelayed = status.isDelayed,
+                    delayInDays = status.delayedDays.toInt(),
+                    isCompleted = status.isCompleted,
+                    nextDueDate = emiUtility.getNextMonthDate(device.dueDate),
+                    remainingEMIs = status.remainingEMIs,
+                ),
+        )
     }
 
-    companion object {
-        private const val TAG = "DevicesViewModel"
+    fun markEmiAsPaid(deviceWithEMIStatus: DeviceWithEMIStatus) {
+        val device = deviceWithEMIStatus.device
+        val nextDueDate = deviceWithEMIStatus.emiStatus.nextDueDate
+        devicesFirestore.updateDueDate(
+            device.deviceId,
+            nextDueDate,
+            onSuccess = { loadDevices() },
+            onFailure = { /* Handle error */ },
+        )
     }
+
+
+    fun deleteDevice(device: NewDevice) {
+        devicesFirestore.deleteDevice(
+            device.deviceId,
+            onSuccess = {
+                deletedDeviceFirebase.createOrUpdateDevice(
+                    device.deviceId,
+                    device,
+                    onSuccess = { loadDevices() },
+                    onFailure = { /* Handle error */ },
+                )
+            },
+            onFailure = { /* Handle error */ },
+        )
+    }
+
 }
