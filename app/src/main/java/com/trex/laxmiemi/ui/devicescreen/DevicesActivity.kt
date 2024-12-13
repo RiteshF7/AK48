@@ -17,7 +17,11 @@ class DevicesActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         extraData = intent.getExtraData<DevicesExtraData>()
         val vm: DevicesViewModel by viewModels()
-        vm.loadDevices()
+        if (extraData.devicesType == DeviceScreenType.DELAYED) {
+            vm.loadDevices(true)
+        } else {
+            vm.loadDevices(false)
+        }
 
         setContent {
             DevicesScreen(vm)
@@ -38,7 +42,7 @@ class DevicesActivity : ComponentActivity() {
         val devicesType: DeviceScreenType = DeviceScreenType.ACTIVE,
     ) : Parcelable
 
-    enum class DeviceScreenType{
+    enum class DeviceScreenType {
         ACTIVE,
         INACTIVE,
         DELAYED,

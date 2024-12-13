@@ -40,28 +40,37 @@ data class EMIStatus(
 class DevicesViewModel : ViewModel() {
     private val _viewState = MutableLiveData<DevicesViewState>()
     val viewState: LiveData<DevicesViewState> = _viewState
+    private var isDelayedDevices = false
 
     private val devicesFirestore = DeviceFirestore(CommonConstants.shodId)
     private val deletedDeviceFirebase = DeletedDeviceFirebase(CommonConstants.shodId)
 
-    fun loadDevices() {
+    fun loadDevices(isDelayed: Boolean) {
+        isDelayedDevices = isDelayed
         _viewState.value = DevicesViewState.Loading
         devicesFirestore.getAllDevices(
             onSuccess = { devices ->
-                processDevices(devices)
+                processDevices(devices, isDelayed)
             },
             onFailure = { _viewState.value = DevicesViewState.Error("Failed to fetch devices") },
         )
     }
 
-
-    private fun processDevices(devices: List<NewDevice>) {
+    private fun processDevices(
+        devices: List<NewDevice>,
+        isDelayed: Boolean,
+    ) {
         try {
             val processedDevices =
                 devices.map { device ->
                     processDeviceEMIStatus(device)
                 }
-            _viewState.value = DevicesViewState.Success(processedDevices)
+            if (isDelayed) {
+                val delayedDevices = processedDevices.filter { it.emiStatus.isDelayed }
+                _viewState.value = DevicesViewState.Success(delayedDevices)
+            } else {
+                _viewState.value = DevicesViewState.Success(processedDevices)
+            }
         } catch (e: Exception) {
             _viewState.value = DevicesViewState.Error("Error processing devices: ${e.message}")
         }
@@ -96,11 +105,10 @@ class DevicesViewModel : ViewModel() {
         devicesFirestore.updateDueDate(
             device.deviceId,
             nextDueDate,
-            onSuccess = { loadDevices() },
+            onSuccess = { loadDevices(isDelayedDevices) },
             onFailure = { /* Handle error */ },
         )
     }
-
 
     fun deleteDevice(device: NewDevice) {
         devicesFirestore.deleteDevice(
@@ -109,12 +117,11 @@ class DevicesViewModel : ViewModel() {
                 deletedDeviceFirebase.createOrUpdateDevice(
                     device.deviceId,
                     device,
-                    onSuccess = { loadDevices() },
+                    onSuccess = { loadDevices(isDelayedDevices) },
                     onFailure = { /* Handle error */ },
                 )
             },
             onFailure = { /* Handle error */ },
         )
     }
-
 }

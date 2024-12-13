@@ -19,6 +19,7 @@ import com.trex.laxmiemi.R
 import com.trex.laxmiemi.handlers.ShopActionExecutor
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
+import com.trex.rexnetwork.data.NewDevice
 
 @Composable
 fun DevicesScreen(viewModel: DevicesViewModel) {
@@ -101,7 +102,7 @@ private fun DeviceCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             // EMI Status
-            EMIStatusSection(emiStatus)
+            EMIStatusSection(emiStatus,device)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -127,7 +128,7 @@ private fun DeviceCard(
 }
 
 @Composable
-private fun EMIStatusSection(emiStatus: EMIStatus) {
+private fun EMIStatusSection(emiStatus: EMIStatus, device: NewDevice) {
     val statusColor =
         when {
             emiStatus.isCompleted -> colorResource(R.color.primary)
@@ -157,7 +158,7 @@ private fun EMIStatusSection(emiStatus: EMIStatus) {
                 when {
                     emiStatus.isCompleted -> "EMI Completed"
                     emiStatus.isDelayed -> "Delayed by ${emiStatus.delayInDays} days"
-                    else -> "Next due: ${emiStatus.nextDueDate}"
+                    else -> "Next due: ${device.dueDate}"
                 },
             color = statusColor,
         )
