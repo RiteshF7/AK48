@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.devicescreen
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -14,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.handlers.ShopActionExecutor
@@ -84,14 +86,14 @@ private fun DeviceCard(
                 contentColor = Color.White,
             ),
         modifier = Modifier.fillMaxWidth(),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(20.dp),
         ) {
             // Device Info
             Text(
                 text = device.costumerName,
+                fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleLarge,
             )
             Text(
@@ -102,7 +104,7 @@ private fun DeviceCard(
             Spacer(modifier = Modifier.height(8.dp))
 
             // EMI Status
-            EMIStatusSection(emiStatus,device)
+            EMIStatusSection(emiStatus, device)
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -118,9 +120,18 @@ private fun DeviceCard(
                         } else {
                             Actions.ACTION_LOCK_DEVICE
                         }
-                    ShopActionExecutor(context).sendActionToClient(
-                        ActionMessageDTO(device.fcmToken, action),
-                    )
+                    if (emiStatus.isCompleted && action == Actions.ACTION_LOCK_DEVICE) {
+                        Toast
+                            .makeText(
+                                context,
+                                "Cannot lock device after EMIs are completed!",
+                                Toast.LENGTH_SHORT,
+                            ).show()
+                    } else {
+                        ShopActionExecutor(context).sendActionToClient(
+                            ActionMessageDTO(device.fcmToken, action),
+                        )
+                    }
                 },
             )
         }
@@ -128,7 +139,10 @@ private fun DeviceCard(
 }
 
 @Composable
-private fun EMIStatusSection(emiStatus: EMIStatus, device: NewDevice) {
+private fun EMIStatusSection(
+    emiStatus: EMIStatus,
+    device: NewDevice,
+) {
     val statusColor =
         when {
             emiStatus.isCompleted -> colorResource(R.color.primary)
@@ -143,7 +157,7 @@ private fun EMIStatusSection(emiStatus: EMIStatus, device: NewDevice) {
         Icon(
             imageVector =
                 when {
-                    emiStatus.isDelayed -> Icons.Default.Cached
+                    emiStatus.isDelayed -> Icons.Default.Error
                     emiStatus.isCompleted -> Icons.Default.CheckCircle
                     else -> Icons.Default.Schedule
                 },
@@ -156,9 +170,9 @@ private fun EMIStatusSection(emiStatus: EMIStatus, device: NewDevice) {
         Text(
             text =
                 when {
-                    emiStatus.isCompleted -> "EMI Completed"
-                    emiStatus.isDelayed -> "Delayed by ${emiStatus.delayInDays} days"
-                    else -> "Next due: ${device.dueDate}"
+                    emiStatus.isCompleted -> "All EMIs are Completed"
+                    emiStatus.isDelayed -> "EMI Delayed by ${emiStatus.delayInDays} days"
+                    else -> "EMI Paid\nNext due: ${device.dueDate}"
                 },
             color = statusColor,
         )
@@ -178,6 +192,7 @@ private fun ActionButtons(
     ) {
         // Lock/Unlock Button
         Button(
+            modifier = Modifier.weight(1f).padding(end = 10.dp),
             onClick = onLockToggle,
             colors =
                 ButtonDefaults.buttonColors(
@@ -213,6 +228,7 @@ private fun ActionButtons(
         when {
             deviceWithStatus.emiStatus.isCompleted -> {
                 Button(
+                    modifier = Modifier.weight(1f).padding(end = 10.dp),
                     onClick = onDelete,
                     colors =
                         ButtonDefaults.buttonColors(
@@ -231,6 +247,7 @@ private fun ActionButtons(
 
             deviceWithStatus.emiStatus.isDelayed -> {
                 Button(
+                    modifier = Modifier.weight(1f).padding(start = 10.dp),
                     onClick = onMarkPaid,
                     colors =
                         ButtonDefaults.buttonColors(
