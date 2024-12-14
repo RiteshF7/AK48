@@ -20,9 +20,9 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AppBlocking
 import androidx.compose.material.icons.filled.CallEnd
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.CameraAlt
@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.CastConnected
 import androidx.compose.material.icons.filled.Contacts
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Devices
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.LockOpen
@@ -58,6 +57,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
@@ -103,19 +103,53 @@ fun DeviceDetails(
                     QuickActionButton(
                         "Get device info",
                         Modifier
-                            .padding(5.dp),
+                            .padding(5.dp)
+                            .background(
+                                color = colorResource(R.color.primary),
+                                shape = RoundedCornerShape(5.dp),
+                            ),
                         Icons.Default.Devices,
-                    ){
-                        EditDeviceInfoActivity.go(context,device.deviceId)
+                    ) {
+                        EditDeviceInfoActivity.go(context, device.deviceId)
+                    }
+                    val lockIcon: ImageVector
+                    val lockBackColor: Color
+                    val lockText: String
+                    val action: Actions
+
+                    when {
+                        device.isLocked -> {
+                            lockIcon = Icons.Default.LockOpen
+                            lockBackColor = colorResource(R.color.primary)
+                            lockText = "Unlock device"
+                            action = Actions.ACTION_UNLOCK_DEVICE
+                        }
+
+                        else -> {
+                            lockIcon = Icons.Default.Lock
+                            lockBackColor = colorResource(R.color.red_300)
+                            lockText = "Lock device"
+                            action = Actions.ACTION_LOCK_DEVICE
+                        }
+                    }
+
+                    QuickActionButton(
+                        lockText,
+                        Modifier
+                            .padding(5.dp)
+                            .background(lockBackColor, shape = RoundedCornerShape(5.dp)),
+                        lockIcon,
+                    ) {
+                        onActionClick(action)
                     }
                 }
             }
         }
         Box(
             modifier =
-            Modifier
-                .weight(1f) // Takes available space while respecting other elements
-                .fillMaxWidth(),
+                Modifier
+                    .weight(1f) // Takes available space while respecting other elements
+                    .fillMaxWidth(),
         ) {
             ActionsButtonGrid(list = deviceActionDataList, onActionClick)
         }
@@ -137,7 +171,8 @@ fun HeaderButtons(
     QuickActionButton(
         codeText,
         Modifier
-            .padding(5.dp),
+            .padding(5.dp)
+            .background(color = colorResource(R.color.primary), shape = RoundedCornerShape(5.dp)),
         Icons.Default.Password,
     ) {
         SharedPreferenceManager(context).getShopId()?.let { shopId ->
@@ -157,16 +192,16 @@ fun DeleteDeviceButton(
 
     Box(
         modifier =
-        Modifier
-            .padding(16.dp)
-            .fillMaxWidth()
-            .height(45.dp)
-            .height(40.dp)
-            .clickable { showConfirmationDialog = true }
-            .background(
-                color = colorResource(R.color.red_300),
-                shape = RoundedCornerShape(5.dp),
-            ),
+            Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .height(45.dp)
+                .height(40.dp)
+                .clickable { showConfirmationDialog = true }
+                .background(
+                    color = colorResource(R.color.red_300),
+                    shape = RoundedCornerShape(5.dp),
+                ),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -208,7 +243,9 @@ fun DeleteDeviceButton(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        Toast.makeText(context, "Device will be deleted soon!", Toast.LENGTH_SHORT).show()
+                        Toast
+                            .makeText(context, "Device will be deleted soon!", Toast.LENGTH_SHORT)
+                            .show()
                         vm.deleteDevice(device, onActionClick)
                         showConfirmationDialog = false
                     },
@@ -246,15 +283,11 @@ fun QuickActionButton(
 ) {
     Box(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .height(45.dp)
-            .height(40.dp)
-            .clickable { onClick() }
-            .background(
-                color = colorResource(R.color.primary).copy(alpha = 0.8f),
-                shape = RoundedCornerShape(5.dp),
-            ),
+            modifier
+                .fillMaxWidth()
+                .height(45.dp)
+                .height(40.dp)
+                .clickable { onClick() },
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -280,41 +313,72 @@ fun QuickActionButton(
 
 @Composable
 private fun DeviceDetailHeader(device: NewDevice) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center,
+    Box(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 15.dp, horizontal = 15.dp),
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    colorResource(R.color.primary),
+                                    Color.Transparent,
+                                ),
+                        ),
+                ).padding(15.dp),
     ) {
-        Card(
-            colors =
-                CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.1f),
-                    contentColor = Color.White,
-                ),
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 15.dp, horizontal = 15.dp),
         ) {
-            Icon(
-                imageVector = Icons.Default.MapsHomeWork,
-                contentDescription = "",
-                tint = colorResource(R.color.primary),
-                modifier =
-                    Modifier
-                        .padding(10.dp)
-                        .size(30.dp),
-            )
-        }
-        Column(modifier = Modifier.padding(start = 20.dp)) {
-            Text(
-                text = device.modelNumber,
-                style =
-                    TextStyle(
-                        fontFamily = FontFamily(Font(R.font.opensans_bold)),
-                        fontSize = 26.sp,
-                        color = colorResource(id = R.color.white),
+            Card(
+                colors =
+                    CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.3f),
+                        contentColor = Color.White,
                     ),
-            )
+                shape = CircleShape,
+                modifier = Modifier.size(60.dp),
+            ) {
+                Icon(
+                    imageVector = Icons.Default.MapsHomeWork,
+                    contentDescription = "Device Icon",
+                    tint = colorResource(R.color.primary),
+                    modifier =
+                        Modifier
+                            .padding(15.dp)
+                            .size(30.dp),
+                )
+            }
+            Column(
+                modifier = Modifier.padding(start = 20.dp),
+                verticalArrangement = Arrangement.Center,
+            ) {
+                Text(
+                    text = device.modelNumber,
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_bold)),
+                            fontSize = 26.sp,
+                            color = Color.White,
+                        ),
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    text = device.costumerName, // Replace with actual device name if available
+                    style =
+                        TextStyle(
+                            fontFamily = FontFamily(Font(R.font.opensans_medium)),
+                            fontSize = 16.sp,
+                            color = Color.White.copy(alpha = 0.7f),
+                        ),
+                )
+            }
         }
     }
 }
@@ -415,16 +479,6 @@ fun DeviceActionButton(
 val deviceActionDataList =
     listOf(
         DeviceActionData(
-            Icons.Default.Lock,
-            Actions.ACTION_LOCK_DEVICE,
-            "Lock Device",
-        ),
-        DeviceActionData(
-            Icons.Default.LockOpen,
-            Actions.ACTION_UNLOCK_DEVICE,
-            "Unlock device",
-        ),
-        DeviceActionData(
             Icons.Default.LocationOn,
             Actions.ACTION_GET_LOCATION,
             "Get Location",
@@ -468,11 +522,6 @@ val deviceActionDataList =
             Icons.Default.Wallpaper,
             Actions.ACTION_REMOVE_WALLPAPER,
             "Remove Wallpaper",
-        ),
-        DeviceActionData(
-            Icons.Default.AppBlocking,
-            Actions.ACTION_APP_LOCK,
-            "Lock Apps",
         ),
         DeviceActionData(
             Icons.Default.RestartAlt,

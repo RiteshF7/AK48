@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.handlers.ShopActionExecutor
+import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
 import com.trex.rexnetwork.data.NewDevice
@@ -80,6 +81,9 @@ private fun DeviceCard(
     val emiStatus = deviceWithStatus.emiStatus
 
     Card(
+        onClick = {
+            DeviceDetailActivity.go(context, deviceWithStatus.device)
+        },
         colors =
             CardDefaults.cardColors(
                 containerColor = Color.White.copy(alpha = 0.1f),
