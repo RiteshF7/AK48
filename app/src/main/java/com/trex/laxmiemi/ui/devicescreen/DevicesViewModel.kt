@@ -87,7 +87,7 @@ class DevicesViewModel : ViewModel() {
 
         return DeviceWithEMIStatus(
             device = device,
-            isDeviceLocked = device.isLocked,
+            isDeviceLocked = device.deviceLockStatus,
             emiStatus =
                 EMIStatus(
                     isDelayed = status.isDelayed,

@@ -39,6 +39,19 @@ class EMIUtility(
         return calendar.toDateString()
     }
 
+    fun isDateInProperFormat(
+        date: String,
+        dateFormat: String = "dd-MM-yyyy",
+    ): Boolean =
+        try {
+            val sdf = SimpleDateFormat(dateFormat, Locale.getDefault())
+            sdf.isLenient = false
+            sdf.parse(date)
+            true
+        } catch (e: Exception) {
+            false
+        }
+
     fun getEMIStatus(currentDueDate: String): EMIStatus {
         val now =
             Calendar.getInstance().apply {

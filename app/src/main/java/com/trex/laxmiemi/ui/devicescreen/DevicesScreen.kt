@@ -119,7 +119,7 @@ private fun DeviceCard(
                 onDelete = onDelete,
                 onLockToggle = {
                     val action =
-                        if (device.isLocked) {
+                        if (device.deviceLockStatus) {
                             Actions.ACTION_UNLOCK_DEVICE
                         } else {
                             Actions.ACTION_LOCK_DEVICE
@@ -211,9 +211,9 @@ private fun ActionButtons(
             Icon(
                 imageVector =
                     if (deviceWithStatus.isDeviceLocked) {
-                        Icons.Default.Lock
-                    } else {
                         Icons.Default.LockOpen
+                    } else {
+                        Icons.Default.Lock
                     },
                 contentDescription = null,
             )

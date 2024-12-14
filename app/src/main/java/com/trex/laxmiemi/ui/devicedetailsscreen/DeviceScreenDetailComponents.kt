@@ -118,7 +118,7 @@ fun DeviceDetails(
                     val action: Actions
 
                     when {
-                        device.isLocked -> {
+                        device.deviceLockStatus -> {
                             lockIcon = Icons.Default.LockOpen
                             lockBackColor = colorResource(R.color.primary)
                             lockText = "Unlock device"

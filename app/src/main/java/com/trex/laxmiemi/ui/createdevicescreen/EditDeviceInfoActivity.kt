@@ -101,6 +101,7 @@ class EditDeviceInfoActivity : ComponentActivity() {
                         newDevice.costumerPhone = data.costumerPhone
                         newDevice.emiPerMonth = data.emiPerMonth
                         newDevice.dueDate = data.dueDate
+                        newDevice.firstDueDate = data.dueDate
                         newDevice.durationInMonths = data.durationInMonths
                         newDevice.modelNumber = data.deviceModel
                         handleFormSubmission()
@@ -413,7 +414,7 @@ private fun getFormErrors(
     if (data.dueDate.isBlank()) {
         errors["dueDate"] = "Due date is required"
     } else if (!isValidDate(data.dueDate)) {
-        errors["dueDate"] = "Invalid date format. Please use dd-mm-yyyy."
+        errors["dueDate"] = "Invalid date format. Please provide date in dd-mm-yyyy format."
     }
 
     if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
