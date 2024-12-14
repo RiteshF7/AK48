@@ -20,6 +20,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Error
@@ -38,7 +40,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -89,7 +95,16 @@ fun Header() {
         modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(vertical = 50.dp),
+                .background(
+                    brush =
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    colorResource(R.color.primary),
+                                    colorResource(R.color.green_100),
+                                ),
+                        ),
+                ).padding(vertical = 50.dp),
     ) {
         Row(
             modifier = Modifier.align(Alignment.Center),
@@ -97,15 +112,21 @@ fun Header() {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
-                contentDescription = "",
                 painter = painterResource(R.drawable.shield),
-                modifier = Modifier.size(64.dp),
+                contentDescription = "Shield Icon",
+                modifier =
+                    Modifier
+                        .size(64.dp)
+                        .background(
+                            color = Color.White.copy(alpha = 0.15f),
+                            shape = CircleShape,
+                        ).padding(12.dp),
             )
             Spacer(modifier = Modifier.width(16.dp))
             HeaderText()
         }
     }
-    HorizontalDivider(thickness = 2.dp)
+    HorizontalDivider(thickness = 2.dp, color = Color.White.copy(alpha = 0.5f))
 }
 
 @Composable
@@ -118,15 +139,22 @@ fun HeaderText() {
                 TextStyle(
                     fontFamily = FontFamily(Font(R.font.opensans_bold)),
                     fontSize = 26.sp,
+                    shadow =
+                        Shadow(
+                            color = Color.Black,
+                            offset = Offset(2f, 2f),
+                            blurRadius = 4f,
+                        ),
                 ),
         )
         Text(
             text = "Secure EMI payments",
-            color = Color.White,
+            color = Color.White.copy(alpha = 0.7f),
             style =
                 TextStyle(
                     fontFamily = FontFamily(Font(R.font.opensans_medium)),
                     fontSize = 15.sp,
+                    letterSpacing = 0.5.sp,
                 ),
         )
     }
@@ -217,11 +245,12 @@ fun ButtonGrid() {
                             ShopFirestore().getTokenBalanceList(shopId) { tokenBalanceList ->
                                 if (tokenBalanceList.isEmpty()) {
                                     context.startMyActivity(TokenBalanceActivity::class.java)
-                                    Toast.makeText(
-                                        context,
-                                        "Low token balance!\n PLease buy token to proceed!",
-                                        Toast.LENGTH_LONG,
-                                    )
+                                    Toast
+                                        .makeText(
+                                            context,
+                                            "Low token balance!\nPlease buy token to proceed!",
+                                            Toast.LENGTH_LONG,
+                                        ).show()
                                 } else {
                                     val newDeviceIds =
                                         NewDeviceIds(shopId, tokenBalanceList.first())
@@ -245,24 +274,21 @@ fun ButtonGrid() {
                             DevicesActivity.DevicesExtraData(DevicesActivity.DeviceScreenType.DELAYED),
                         )
                     }
-
 // TODO implement it when is deleted device show only device information
-//                    ButtonActions.DeletedDevices -> {
-//                        DevicesActivity.go(
-//                            context,
-//                            DevicesActivity.DevicesExtraData(DeviceScreenType.DELETED),
-//                        )
-//                    }
-
+// ButtonActions.DeletedDevices -> {
+// DevicesActivity.go(
+// context,
+// DevicesActivity.DevicesExtraData(DeviceScreenType.DELETED),
+// )
+// }
                     ButtonActions.CallForService -> {
                         val intent = Intent(Intent.ACTION_DIAL)
-                        intent.setData(Uri.parse("tel:9910000163"))
+                        intent.data = Uri.parse("tel:9910000163")
                         context.startActivity(intent)
                     }
 
                     ButtonActions.InstallationVideo -> {
-                        val intent =
-                            Intent(context, VideoPlayerActivity::class.java)
+                        val intent = Intent(context, VideoPlayerActivity::class.java)
                         context.startActivity(intent)
                     }
 
@@ -282,7 +308,7 @@ fun ButtonGrid() {
 @Composable
 fun MenuItemCard(
     item: GridButton,
-    modifier: Modifier = Modifier, // Added modifier parameter
+    modifier: Modifier = Modifier,
     onClick: (ButtonActions) -> Unit,
 ) {
     Column(
@@ -294,33 +320,39 @@ fun MenuItemCard(
                 .padding(4.dp),
     ) {
         Card(
-            modifier = Modifier.fillMaxSize(),
+            modifier =
+                Modifier
+                    .fillMaxSize(),
             colors =
                 CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.1f),
-                    contentColor = Color.Green,
+                    containerColor = Color.White.copy(alpha = 0.2f),
+                    contentColor = Color.White,
                 ),
+            shape = RoundedCornerShape(12.dp), // Rounded corners for modern look
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier =
                     Modifier
-                        .padding(10.dp)
+                        .padding(horizontal = 10.dp, vertical = 30.dp)
                         .fillMaxSize(),
             ) {
                 Card(
                     colors =
                         CardDefaults.cardColors(
-                            containerColor = Color.Green.copy(alpha = 0.1f),
-                            contentColor = Color.Green,
+                            containerColor = Color.White.copy(alpha = 0.1f),
+                            contentColor = colorResource(R.color.primary),
                         ),
+                    shape = CircleShape,
+                    modifier = Modifier.size(50.dp), // Adjusted size for better visuals
                 ) {
                     Box(Modifier.padding(10.dp)) {
                         Icon(
                             imageVector = item.icon,
-                            contentDescription = "",
-                            modifier = Modifier.size(35.dp),
+                            contentDescription = null,
+                            modifier = Modifier.size(30.dp),
+                            tint = colorResource(R.color.primary), // Consistent icon color
                         )
                     }
                 }
@@ -331,8 +363,14 @@ fun MenuItemCard(
                     style =
                         TextStyle(
                             fontFamily = FontFamily(Font(R.font.roboto_medium)),
-                            fontSize = 13.sp,
-                            color = colorResource(id = R.color.white),
+                            fontSize = 14.sp,
+                            color = Color.White,
+                            shadow =
+                                Shadow(
+                                    color = Color.Black,
+                                    offset = Offset(1f, 1f),
+                                    blurRadius = 2f,
+                                ), // Added shadow to text for better readability
                         ),
                 )
             }
