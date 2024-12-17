@@ -479,6 +479,16 @@ fun DeviceActionButton(
 val deviceActionDataList =
     listOf(
         DeviceActionData(
+            Icons.Default.Lock,
+            Actions.ACTION_LOCK_DEVICE,
+            "Lock Device",
+        ),
+        DeviceActionData(
+            Icons.Default.LockOpen,
+            Actions.ACTION_UNLOCK_DEVICE,
+            "Unlock device",
+        ),
+        DeviceActionData(
             Icons.Default.LocationOn,
             Actions.ACTION_GET_LOCATION,
             "Get Location",

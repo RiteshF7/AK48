@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.devicescreen
 
+import android.app.Activity
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.trex.laxmiemi.R
 import com.trex.laxmiemi.handlers.ShopActionExecutor
+import com.trex.laxmiemi.ui.createdevicescreen.EditDeviceInfoActivity
 import com.trex.laxmiemi.ui.devicedetailsscreen.DeviceDetailActivity
 import com.trex.rexnetwork.data.ActionMessageDTO
 import com.trex.rexnetwork.data.Actions
@@ -27,7 +29,7 @@ import com.trex.rexnetwork.data.NewDevice
 @Composable
 fun DevicesScreen(viewModel: DevicesViewModel) {
     val viewState by viewModel.viewState.observeAsState(initial = DevicesViewState.Loading)
-
+    val context = LocalContext.current
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.Black.copy(alpha = 0.85f),
@@ -44,6 +46,18 @@ fun DevicesScreen(viewModel: DevicesViewModel) {
                 ErrorView(
                     message = (viewState as DevicesViewState.Error).message,
                 )
+
+            is DevicesViewState.DeviceRegIncomplete -> {
+                Toast
+                    .makeText(
+                        context,
+                        "Please enter full device detail first!",
+                        Toast.LENGTH_SHORT,
+                    ).show()
+                val device = (viewState as DevicesViewState.DeviceRegIncomplete).device
+                EditDeviceInfoActivity.go(context = context, deviceId = device.deviceId)
+                (context as Activity).finish()
+            }
         }
     }
 }

@@ -20,6 +20,10 @@ sealed class DevicesViewState {
     data class Error(
         val message: String,
     ) : DevicesViewState()
+
+    data class DeviceRegIncomplete(
+        val device: NewDevice,
+    ) : DevicesViewState()
 }
 
 // Data classes to hold device and EMI information
@@ -63,6 +67,10 @@ class DevicesViewModel : ViewModel() {
         try {
             val processedDevices =
                 devices.map { device ->
+                    if (device.dueDate.isEmpty()) {
+                        _viewState.value = DevicesViewState.DeviceRegIncomplete(device)
+                        return
+                    }
                     processDeviceEMIStatus(device)
                 }
             if (isDelayed) {
