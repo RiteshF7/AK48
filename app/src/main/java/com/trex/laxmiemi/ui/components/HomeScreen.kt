@@ -193,11 +193,11 @@ private val homeGridList =
             action = ButtonActions.DelayedCustomers,
             title = "Overdue payments",
         ),
-        GridButton(
-            icon = Icons.Default.Error,
-            action = ButtonActions.DelayedCustomers,
-            title = "Inactive devices",
-        ),
+//        GridButton(
+//            icon = Icons.Default.Error,
+//            action = ButtonActions.DelayedCustomers,
+//            title = "Inactive devices",
+//        ),
         GridButton(
             icon = Icons.Default.VpnKey,
             action = ButtonActions.tokenBalance,

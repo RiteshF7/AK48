@@ -1,6 +1,8 @@
 package com.trex.laxmiemi.ui.devicedetailsscreen
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -45,9 +47,21 @@ class DeviceScreenDetailViewModel : ViewModel() {
     fun deleteDevice(
         device: NewDevice,
         onActionClick: (Actions) -> Unit,
+        context: Context,
     ) {
-        onActionClick(Actions.ACTION_REMOVE_DEVICE)
-        _deleteDevice.value = true
-
+        if (device.deviceLockStatus) {
+            Toast
+                .makeText(
+                    context,
+                    "Please unlock device before removing device!",
+                    Toast.LENGTH_SHORT,
+                ).show()
+        } else {
+            Toast
+                .makeText(context, "Device will be deleted soon!", Toast.LENGTH_SHORT)
+                .show()
+            onActionClick(Actions.ACTION_REMOVE_DEVICE)
+            _deleteDevice.value = true
+        }
     }
 }

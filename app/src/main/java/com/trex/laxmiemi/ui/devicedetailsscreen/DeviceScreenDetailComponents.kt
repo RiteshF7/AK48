@@ -243,10 +243,7 @@ fun DeleteDeviceButton(
             confirmButton = {
                 TextButton(
                     onClick = {
-                        Toast
-                            .makeText(context, "Device will be deleted soon!", Toast.LENGTH_SHORT)
-                            .show()
-                        vm.deleteDevice(device, onActionClick)
+                        vm.deleteDevice(device, onActionClick,context)
                         showConfirmationDialog = false
                     },
                     colors =

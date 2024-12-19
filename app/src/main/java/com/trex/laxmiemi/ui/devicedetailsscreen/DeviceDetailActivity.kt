@@ -36,7 +36,7 @@ class DeviceDetailActivity : ComponentActivity() {
         setContent {
             val deleteDevice by vm.deleteDevice
             if (deleteDevice) {
-                this.startMyActivity(LoginWithEmailActivity::class.java)
+//                this.startMyActivity(LoginWithEmailActivity::class.java)
             }
             device.let {
                 Box(

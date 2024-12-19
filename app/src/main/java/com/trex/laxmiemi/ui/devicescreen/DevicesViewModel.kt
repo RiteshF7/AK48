@@ -67,7 +67,7 @@ class DevicesViewModel : ViewModel() {
         try {
             val processedDevices =
                 devices.map { device ->
-                    if (device.dueDate.isEmpty()) {
+                    if (device.dueDate.isEmpty() ||device.firstDueDate.isEmpty()) {
                         _viewState.value = DevicesViewState.DeviceRegIncomplete(device)
                         return
                     }
@@ -75,8 +75,10 @@ class DevicesViewModel : ViewModel() {
                 }
             if (isDelayed) {
                 val delayedDevices = processedDevices.filter { it.emiStatus.isDelayed }
+                delayedDevices.sortedByDescending { it.device.createdAt }
                 _viewState.value = DevicesViewState.Success(delayedDevices)
             } else {
+                processedDevices.sortedByDescending { it.device.createdAt }
                 _viewState.value = DevicesViewState.Success(processedDevices)
             }
         } catch (e: Exception) {

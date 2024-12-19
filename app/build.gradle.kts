@@ -24,11 +24,12 @@ tasks.register<UploadReleaseApkTask>("uploadReleaseApk") {
     dependsOn("assembleRelease")
 }
 // Register the task
-tasks.register<UploadDebugReleaseApkTask>("uploadDebugReleaseApk") {
-    description = "Uploads the release APK to remote server"
-    group = "upload"
-    dependsOn("assembleRelease")
-}
+//no need to upload its debug just run from studio app
+//tasks.register<UploadDebugReleaseApkTask>("uploadDebugReleaseApk") {
+//    description = "Uploads the release APK to remote server"
+//    group = "upload"
+//    dependsOn("assembleRelease")
+//}
 
 android {
     namespace = "com.trex.laxmiemi"

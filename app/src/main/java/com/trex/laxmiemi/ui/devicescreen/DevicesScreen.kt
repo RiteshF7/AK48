@@ -247,7 +247,10 @@ private fun ActionButtons(
             deviceWithStatus.emiStatus.isCompleted -> {
                 Button(
                     modifier = Modifier.weight(1f).padding(end = 10.dp),
-                    onClick = onDelete,
+                    onClick = {
+                        //onDelete
+                        //disable for now will be implemented in future
+                    },
                     colors =
                         ButtonDefaults.buttonColors(
                             containerColor = colorResource(R.color.red_300),
@@ -259,7 +262,7 @@ private fun ActionButtons(
                         contentDescription = null,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Text("Delete")
+                    Text("EMI Completed")
                 }
             }
 

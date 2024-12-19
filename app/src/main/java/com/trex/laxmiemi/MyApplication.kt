@@ -24,6 +24,7 @@ class MyApplication : Application() {
             }
         }
         initPayloadReceiver()
+
     }
 
     private fun initPayloadReceiver() {
