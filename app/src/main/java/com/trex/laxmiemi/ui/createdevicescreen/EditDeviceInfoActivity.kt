@@ -237,7 +237,7 @@ fun DeviceFormScreen(
 
             item {
                 FormField(
-                    label = "Enter Date (dd-mm-yyyy)",
+                    label = "Enter First Due Date (dd-mm-yyyy)",
                     value = formState.dueDate,
                     error = errors["dueDate"],
                     onValueChange = {

@@ -114,9 +114,7 @@ private fun MyScreen(
             ) {
                 Image(
                     modifier =
-                        Modifier
-                            .width(300.dp)
-                            .height(300.dp),
+                        Modifier.fillMaxSize().padding(10.dp),
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = "some useful description",
                 )

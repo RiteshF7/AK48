@@ -22,7 +22,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val updateUtil = AppUpdateUtil()
-        initAppUpdate(updateUtil)
+        //initAppUpdate(updateUtil)
         tokenManager = FCMTokenManager(this, ShopFcmTokenUpdater(this))
         tokenManager.refreshToken {}
         val mainActivityViewModel: MainActivityViewModel by viewModels()
