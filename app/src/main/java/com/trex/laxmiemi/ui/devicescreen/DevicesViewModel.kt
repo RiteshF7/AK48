@@ -1,5 +1,6 @@
 package com.trex.laxmiemi.ui.devicescreen
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -67,19 +68,69 @@ class DevicesViewModel : ViewModel() {
         try {
             val processedDevices =
                 devices.map { device ->
-                    if (device.dueDate.isEmpty() ||device.firstDueDate.isEmpty()) {
+                    if (device.dueDate.isEmpty() || device.firstDueDate.isEmpty()) {
                         _viewState.value = DevicesViewState.DeviceRegIncomplete(device)
                         return
                     }
                     processDeviceEMIStatus(device)
                 }
+
             if (isDelayed) {
-                val delayedDevices = processedDevices.filter { it.emiStatus.isDelayed }
-                delayedDevices.sortedByDescending { it.device.createdAt }
-                _viewState.value = DevicesViewState.Success(delayedDevices)
+                val delayedDevices = processedDevices.filter { it?.emiStatus?.isDelayed == true }
+
+                // Debug log before sorting
+                Log.i("processDevices", "Before sorting (delayedDevices):")
+                delayedDevices.forEach {
+                    Log.i(
+                        "processDevices",
+                        it.device.createdAt
+                            .toDate()
+                            .toString(),
+                    )
+                }
+
+                val sortedDelayedDevices =
+                    delayedDevices.sortedByDescending { it.device.createdAt.seconds }
+
+                // Debug log after sorting
+                Log.i("processDevices", "After sorting (delayedDevices):")
+                sortedDelayedDevices.forEach {
+                    Log.i(
+                        "processDevices",
+                        it.device.createdAt
+                            .toDate()
+                            .toString(),
+                    )
+                }
+
+                _viewState.value = DevicesViewState.Success(sortedDelayedDevices)
             } else {
-                processedDevices.sortedByDescending { it.device.createdAt }
-                _viewState.value = DevicesViewState.Success(processedDevices)
+                // Debug log before sorting
+                Log.i("processDevices", "Before sorting (processedDevices):")
+                processedDevices.forEach {
+                    Log.i(
+                        "processDevices",
+                        it.device.createdAt
+                            .toDate()
+                            .toString(),
+                    )
+                }
+
+                val sortedProcessedDevices =
+                    processedDevices.sortedByDescending { it.device.createdAt.seconds }
+
+                // Debug log after sorting
+                Log.i("processDevices", "After sorting (processedDevices):")
+                sortedProcessedDevices.forEach {
+                    Log.i(
+                        "processDevices",
+                        it.device.createdAt
+                            .toDate()
+                            .toString(),
+                    )
+                }
+
+                _viewState.value = DevicesViewState.Success(sortedProcessedDevices)
             }
         } catch (e: Exception) {
             _viewState.value = DevicesViewState.Error("Error processing devices: ${e.message}")
@@ -118,6 +169,22 @@ class DevicesViewModel : ViewModel() {
             onSuccess = { loadDevices(isDelayedDevices) },
             onFailure = { /* Handle error */ },
         )
+    }
+
+    fun searchDevice(query: String) {
+        // Assuming _devices is your live data holding the list of devices
+        if (_viewState.value is DevicesViewState.Success) {
+            val allDevices = (_viewState.value as DevicesViewState.Success).devices ?: emptyList()
+            val filteredDevices =
+                allDevices.filter { deviceWithStatus ->
+                    val device = deviceWithStatus.device
+                    device.costumerName.contains(query, ignoreCase = true) ||
+                        device.costumerPhone.contains(query, ignoreCase = true)
+                    //add email of user
+//                        device.email.contains(query, ignoreCase = true)
+                }
+            _viewState.value = DevicesViewState.Success(filteredDevices)
+        }
     }
 
     fun deleteDevice(device: NewDevice) {
