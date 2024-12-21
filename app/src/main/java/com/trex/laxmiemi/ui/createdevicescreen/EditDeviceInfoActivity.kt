@@ -139,7 +139,7 @@ fun DeviceFormScreen(
     onFormSubmit: (FormData) -> Unit,
 ) {
     val requiredFields =
-        setOf("costumerName", "deviceModel", "costumerPhone", "dueDate", "email", "loanNumber")
+        setOf("costumerName", "deviceModel", "costumerPhone", "email", "loanNumber")
 
     var formState by remember {
         mutableStateOf(
@@ -450,15 +450,15 @@ private fun getFormErrors(
         errors["durationInMonths"] = "Duration must be a valid number"
     }
 
-    if (requiredFields.contains("dueDate") && data.dueDate.isBlank()) {
-        errors["dueDate"] = "Due date is required"
-    } else if (!isValidDate(data.dueDate)) {
-        errors["dueDate"] = "Invalid date format. Please provide date in dd-mm-yyyy format."
-    }
+//    if (requiredFields.contains("dueDate") && data.dueDate.isBlank()) {
+//        errors["dueDate"] = "Due date is required"
+//    } else if (!isValidDate(data.dueDate)) {
+//        errors["dueDate"] = "Invalid date format. Please provide date in dd-mm-yyyy format."
+//    }
 
-    if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
-        errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"
-    }
+//    if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
+//        errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"
+//    }
 
     if (data.deviceModel.isBlank()) {
         errors["deviceModel"] = "Device model is required"
