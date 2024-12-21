@@ -257,56 +257,56 @@ fun DeviceFormScreen(
                 )
             }
 
-            item {
-                FormField(
-                    label = "EMI Per Month in ₹",
-                    value = formState.emiPerMonth,
-                    error = errors["emiPerMonth"],
-                    onValueChange = {
-                        formState = formState.copy(emiPerMonth = it)
-                        errors = errors - "emiPerMonth"
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-            }
-
-            item {
-                FormField(
-                    label = "Enter First Due Date (dd-mm-yyyy)",
-                    value = formState.dueDate,
-                    error = errors["dueDate"],
-                    onValueChange = {
-                        formState = formState.copy(dueDate = it)
-                        errors = errors - "dueDate"
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-            }
-
-            item {
-                FormField(
-                    label = "Duration (Months)",
-                    value = formState.durationInMonths,
-                    error = errors["durationInMonths"],
-                    onValueChange = {
-                        formState = formState.copy(durationInMonths = it)
-                        errors = errors - "durationInMonths"
-                    },
-                    keyboardOptions =
-                        KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                )
-            }
+//            item {
+//                FormField(
+//                    label = "EMI Per Month in ₹",
+//                    value = formState.emiPerMonth,
+//                    error = errors["emiPerMonth"],
+//                    onValueChange = {
+//                        formState = formState.copy(emiPerMonth = it)
+//                        errors = errors - "emiPerMonth"
+//                    },
+//                    keyboardOptions =
+//                        KeyboardOptions(
+//                            keyboardType = KeyboardType.Number,
+//                            imeAction = ImeAction.Next,
+//                        ),
+//                )
+//            }
+//
+//            item {
+//                FormField(
+//                    label = "Enter First Due Date (dd-mm-yyyy)",
+//                    value = formState.dueDate,
+//                    error = errors["dueDate"],
+//                    onValueChange = {
+//                        formState = formState.copy(dueDate = it)
+//                        errors = errors - "dueDate"
+//                    },
+//                    keyboardOptions =
+//                        KeyboardOptions(
+//                            keyboardType = KeyboardType.Number,
+//                            imeAction = ImeAction.Next,
+//                        ),
+//                )
+//            }
+//
+//            item {
+//                FormField(
+//                    label = "Duration (Months)",
+//                    value = formState.durationInMonths,
+//                    error = errors["durationInMonths"],
+//                    onValueChange = {
+//                        formState = formState.copy(durationInMonths = it)
+//                        errors = errors - "durationInMonths"
+//                    },
+//                    keyboardOptions =
+//                        KeyboardOptions(
+//                            keyboardType = KeyboardType.Number,
+//                            imeAction = ImeAction.Next,
+//                        ),
+//                )
+//            }
         }
 
         // Submit button
@@ -442,15 +442,15 @@ private fun getFormErrors(
         errors["costumerPhone"] = "Invalid phone format"
     }
 
-    if (data.emiPerMonth.isNotBlank() && data.emiPerMonth.toDoubleOrNull() == null) {
+    if (requiredFields.contains("emiPerMonth") && data.emiPerMonth.isNotBlank() && data.emiPerMonth.toDoubleOrNull() == null) {
         errors["emiPerMonth"] = "EMI must be a valid number"
     }
 
-    if (data.durationInMonths.isNotBlank() && data.durationInMonths.toIntOrNull() == null) {
+    if (requiredFields.contains("durationInMonths") && data.durationInMonths.isNotBlank() && data.durationInMonths.toIntOrNull() == null) {
         errors["durationInMonths"] = "Duration must be a valid number"
     }
 
-    if (data.dueDate.isBlank()) {
+    if (requiredFields.contains("dueDate") && data.dueDate.isBlank()) {
         errors["dueDate"] = "Due date is required"
     } else if (!isValidDate(data.dueDate)) {
         errors["dueDate"] = "Invalid date format. Please provide date in dd-mm-yyyy format."
