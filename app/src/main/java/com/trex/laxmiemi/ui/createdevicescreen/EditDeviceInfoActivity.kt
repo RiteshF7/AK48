@@ -50,6 +50,8 @@ import java.util.Locale
 @Parcelize
 data class FormData(
     val costumerName: String = "",
+    val costumerEmail: String = "",
+    val costumerLoanNumer: String = "",
     val costumerPhone: String = "",
     val emiPerMonth: String = "",
     val dueDate: String = "",
@@ -83,6 +85,8 @@ class EditDeviceInfoActivity : ComponentActivity() {
         val formData =
             FormData(
                 costumerName = newDevice.costumerName,
+                costumerEmail = newDevice.email,
+                costumerLoanNumer = newDevice.loanNumber,
                 costumerPhone = newDevice.costumerPhone,
                 emiPerMonth = newDevice.emiPerMonth,
                 dueDate = newDevice.dueDate,
@@ -98,6 +102,8 @@ class EditDeviceInfoActivity : ComponentActivity() {
                     initialFormState = formData,
                     onFormSubmit = { data ->
                         newDevice.costumerName = data.costumerName
+                        newDevice.email = data.costumerEmail
+                        newDevice.loanNumber = data.costumerLoanNumer
                         newDevice.costumerPhone = data.costumerPhone
                         newDevice.emiPerMonth = data.emiPerMonth
                         newDevice.dueDate = data.dueDate
@@ -132,7 +138,8 @@ fun DeviceFormScreen(
     initialFormState: FormData,
     onFormSubmit: (FormData) -> Unit,
 ) {
-    val requiredFields = setOf("costumerName", "deviceModel", "costumerPhone", "dueDate")
+    val requiredFields =
+        setOf("costumerName", "deviceModel", "costumerPhone", "dueDate", "email", "loanNumber")
 
     var formState by remember {
         mutableStateOf(
@@ -174,6 +181,38 @@ fun DeviceFormScreen(
                     onValueChange = {
                         formState = formState.copy(costumerName = it)
                         errors = errors - "costumerName"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Words,
+                        ),
+                )
+            }
+            item {
+                FormField(
+                    label = "Customer Email",
+                    value = formState.costumerEmail,
+                    error = errors["email"],
+                    onValueChange = {
+                        formState = formState.copy(costumerEmail = it)
+                        errors = errors - "email"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Next,
+                            capitalization = KeyboardCapitalization.Words,
+                        ),
+                )
+            }
+            item {
+                FormField(
+                    label = "Loan number",
+                    value = formState.costumerLoanNumer,
+                    error = errors["loanNumber"],
+                    onValueChange = {
+                        formState = formState.copy(costumerLoanNumer = it)
+                        errors = errors - "loanNumber"
                     },
                     keyboardOptions =
                         KeyboardOptions(
@@ -423,6 +462,13 @@ private fun getFormErrors(
 
     if (data.deviceModel.isBlank()) {
         errors["deviceModel"] = "Device model is required"
+    }
+    if (data.costumerEmail.isBlank()) {
+        errors["email"] = "Email is required"
+    }
+
+    if (data.costumerLoanNumer.isBlank()) {
+        errors["loanNumber"] = "loan number is required"
     }
 
     return errors

@@ -91,7 +91,7 @@ fun DevicesScreen(viewModel: DevicesViewModel) {
 
 @Composable
 private fun DeviceList(
-    devices: List<DeviceWithEMIStatus>,
+    devices: List<NewDevice>,
     viewModel: DevicesViewModel,
 ) {
     var searchQuery by remember { mutableStateOf("") }
@@ -112,129 +112,125 @@ private fun DeviceList(
             modifier = Modifier.fillMaxSize(),
         ) {
             items(devices) { device ->
-                DeviceCard(
-                    deviceWithStatus = device,
-                    onMarkPaid = { viewModel.markEmiAsPaid(device) },
-                    onDelete = { viewModel.deleteDevice(device.device) },
-                )
+                DeviceCard(device)
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
-
-@Composable
-private fun DeviceCard(
-    deviceWithStatus: DeviceWithEMIStatus,
-    onMarkPaid: () -> Unit,
-    onDelete: () -> Unit,
-) {
-    val context = LocalContext.current
-    val device = deviceWithStatus.device
-    val emiStatus = deviceWithStatus.emiStatus
-
-    Card(
-        onClick = {
-            DeviceDetailActivity.go(context, deviceWithStatus.device)
-        },
-        colors =
-            CardDefaults.cardColors(
-                containerColor = Color.White.copy(alpha = 0.1f),
-                contentColor = Color.White,
-            ),
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Column(
-            modifier = Modifier.padding(20.dp),
-        ) {
-            // Device Info
-            Text(
-                text = device.costumerName,
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleLarge,
-            )
-            Text(
-                text = device.modelNumber,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // EMI Status
-            EMIStatusSection(emiStatus, device)
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Action Buttons
-            ActionButtons(
-                deviceWithStatus = deviceWithStatus,
-                onMarkPaid = onMarkPaid,
-                onDelete = onDelete,
-                onLockToggle = {
-                    val action =
-                        if (device.deviceLockStatus) {
-                            Actions.ACTION_UNLOCK_DEVICE
-                        } else {
-                            Actions.ACTION_LOCK_DEVICE
-                        }
-                    if (emiStatus.isCompleted && action == Actions.ACTION_LOCK_DEVICE) {
-                        Toast
-                            .makeText(
-                                context,
-                                "Cannot lock device after EMIs are completed!",
-                                Toast.LENGTH_SHORT,
-                            ).show()
-                    } else {
-                        ShopActionExecutor(context).sendActionToClient(
-                            ActionMessageDTO(device.fcmToken, action),
-                        )
-                    }
-                },
-            )
-        }
-    }
-}
-
-@Composable
-private fun EMIStatusSection(
-    emiStatus: EMIStatus,
-    device: NewDevice,
-) {
-    val statusColor =
-        when {
-            emiStatus.isCompleted -> colorResource(R.color.primary)
-            emiStatus.isDelayed -> colorResource(R.color.red_300)
-            else -> colorResource(R.color.primary)
-        }
-
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.fillMaxWidth(),
-    ) {
-        Icon(
-            imageVector =
-                when {
-                    emiStatus.isDelayed -> Icons.Default.Error
-                    emiStatus.isCompleted -> Icons.Default.CheckCircle
-                    else -> Icons.Default.Schedule
-                },
-            contentDescription = null,
-            tint = statusColor,
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Text(
-            text =
-                when {
-                    emiStatus.isCompleted -> "All EMIs are Completed"
-                    emiStatus.isDelayed -> "EMI Delayed by ${emiStatus.delayInDays} days"
-                    else -> "EMI Paid\nNext due: ${device.dueDate}"
-                },
-            color = statusColor,
-        )
-    }
-}
+//
+//@Composable
+//private fun DeviceCard(
+//    deviceWithStatus: DeviceWithEMIStatus,
+//    onMarkPaid: () -> Unit,
+//    onDelete: () -> Unit,
+//) {
+//    val context = LocalContext.current
+//    val device = deviceWithStatus.device
+//    val emiStatus = deviceWithStatus.emiStatus
+//
+//    Card(
+//        onClick = {
+//            DeviceDetailActivity.go(context, deviceWithStatus.device)
+//        },
+//        colors =
+//            CardDefaults.cardColors(
+//                containerColor = Color.White.copy(alpha = 0.1f),
+//                contentColor = Color.White,
+//            ),
+//        modifier = Modifier.fillMaxWidth(),
+//    ) {
+//        Column(
+//            modifier = Modifier.padding(20.dp),
+//        ) {
+//            // Device Info
+//            Text(
+//                text = device.costumerName,
+//                fontWeight = FontWeight.Bold,
+//                style = MaterialTheme.typography.titleLarge,
+//            )
+//            Text(
+//                text = device.modelNumber,
+//                style = MaterialTheme.typography.bodyMedium,
+//            )
+//
+//            Spacer(modifier = Modifier.height(8.dp))
+//
+//            // EMI Status
+//            EMIStatusSection(emiStatus, device)
+//
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            // Action Buttons
+//            ActionButtons(
+//                deviceWithStatus = deviceWithStatus,
+//                onMarkPaid = onMarkPaid,
+//                onDelete = onDelete,
+//                onLockToggle = {
+//                    val action =
+//                        if (device.deviceLockStatus) {
+//                            Actions.ACTION_UNLOCK_DEVICE
+//                        } else {
+//                            Actions.ACTION_LOCK_DEVICE
+//                        }
+//                    if (emiStatus.isCompleted && action == Actions.ACTION_LOCK_DEVICE) {
+//                        Toast
+//                            .makeText(
+//                                context,
+//                                "Cannot lock device after EMIs are completed!",
+//                                Toast.LENGTH_SHORT,
+//                            ).show()
+//                    } else {
+//                        ShopActionExecutor(context).sendActionToClient(
+//                            ActionMessageDTO(device.fcmToken, action),
+//                        )
+//                    }
+//                },
+//            )
+//        }
+//    }
+//}
+//
+//@Composable
+//private fun EMIStatusSection(
+//    emiStatus: EMIStatus,
+//    device: NewDevice,
+//) {
+//    val statusColor =
+//        when {
+//            emiStatus.isCompleted -> colorResource(R.color.primary)
+//            emiStatus.isDelayed -> colorResource(R.color.red_300)
+//            else -> colorResource(R.color.primary)
+//        }
+//
+//    Row(
+//        verticalAlignment = Alignment.CenterVertically,
+//        modifier = Modifier.fillMaxWidth(),
+//    ) {
+//        Icon(
+//            imageVector =
+//                when {
+//                    emiStatus.isDelayed -> Icons.Default.Error
+//                    emiStatus.isCompleted -> Icons.Default.CheckCircle
+//                    else -> Icons.Default.Schedule
+//                },
+//            contentDescription = null,
+//            tint = statusColor,
+//        )
+//
+//        Spacer(modifier = Modifier.width(8.dp))
+//
+//        Text(
+//            text =
+//                when {
+//                    emiStatus.isCompleted -> "All EMIs are Completed"
+//                    emiStatus.isDelayed -> "EMI Delayed by ${emiStatus.delayInDays} days"
+//                    else -> "EMI Paid\nNext due: ${device.dueDate}"
+//                },
+//            color = statusColor,
+//        )
+//    }
+//}
 
 @Composable
 private fun ActionButtons(

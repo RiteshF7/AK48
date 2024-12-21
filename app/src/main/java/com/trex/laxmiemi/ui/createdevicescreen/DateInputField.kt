@@ -8,12 +8,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 @Composable
 fun FormField(
@@ -33,6 +40,7 @@ fun FormField(
             textState = it
             onValueChange(it)
         },
+        maxLines = 1,
         label = { Text(label) },
         isError = error != null,
         keyboardOptions = keyboardOptions,
@@ -46,7 +54,16 @@ fun FormField(
                         onValueChange(formattedDate)
                     }
                 },
-        readOnly = true,
+        colors =
+            OutlinedTextFieldDefaults.colors(
+                focusedBorderColor = Color.Green,
+                focusedTextColor = Color.Green,
+                unfocusedTextColor = Color.White,
+                focusedLabelColor = Color.Green,
+                unfocusedLabelColor = Color.White,
+                unfocusedBorderColor = Color.Gray,
+            ),
+        readOnly = false,
     )
 
     if (error != null) {

@@ -34,15 +34,14 @@ fun SearchBox(
             onQueryChanged(newValue.text)
         },
         colors =
-        OutlinedTextFieldDefaults.colors(
-            focusedTextColor = Color.White,
-            focusedBorderColor = Color.White,
-            unfocusedBorderColor = Color.Gray,
-        ),
+            OutlinedTextFieldDefaults.colors(
+                focusedTextColor = Color.White,
+                focusedBorderColor = Color.White,
+                unfocusedBorderColor = Color.Gray,
+            ),
         modifier =
             Modifier
-                .fillMaxWidth()
-                .padding(bottom = 20.dp),
+                .fillMaxWidth(),
         label = { Text("Search", color = Color.White) },
         singleLine = true,
         trailingIcon = {
