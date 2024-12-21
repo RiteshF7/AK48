@@ -92,6 +92,7 @@ class EditDeviceInfoActivity : ComponentActivity() {
                 dueDate = newDevice.dueDate,
                 durationInMonths = newDevice.durationInMonths,
                 imeiOne = newDevice.imeiOne,
+                imeiTwo = newDevice.imeiTwo,
                 deviceModel = newDevice.modelNumber,
             )
 
@@ -248,6 +249,38 @@ fun DeviceFormScreen(
                     onValueChange = {
                         formState = formState.copy(costumerPhone = it)
                         errors = errors - "costumerPhone"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+            item {
+                FormField(
+                    label = "IMEI one",
+                    value = formState.imeiOne,
+                    error = errors["imeione"],
+                    onValueChange = {
+                        formState = formState.copy(imeiOne = it)
+                        errors = errors - "imeione"
+                    },
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Phone,
+                            imeAction = ImeAction.Next,
+                        ),
+                )
+            }
+            item {
+                FormField(
+                    label = "IMEI two",
+                    value = formState.imeiTwo,
+                    error = errors["imeitwo"],
+                    onValueChange = {
+                        formState = formState.copy(imeiTwo = it)
+                        errors = errors - "imeitwo"
                     },
                     keyboardOptions =
                         KeyboardOptions(
@@ -456,9 +489,13 @@ private fun getFormErrors(
 //        errors["dueDate"] = "Invalid date format. Please provide date in dd-mm-yyyy format."
 //    }
 
-//    if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
-//        errors["imeiTwo"] = "Invalid IMEI format (should be 15 digits)"
-//    }
+    if (data.imeiOne.isNotBlank() && !data.imeiOne.matches(Regex("^[0-9]{15}$"))) {
+        errors["imeione"] = "Invalid IMEI format (should be 15 digits)"
+    }
+
+    if (data.imeiTwo.isNotBlank() && !data.imeiTwo.matches(Regex("^[0-9]{15}$"))) {
+        errors["imeitwo"] = "Invalid IMEI format (should be 15 digits)"
+    }
 
     if (data.deviceModel.isBlank()) {
         errors["deviceModel"] = "Device model is required"
